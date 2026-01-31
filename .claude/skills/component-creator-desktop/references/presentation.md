@@ -84,13 +84,13 @@ export function Card({ variant = "default", className, children }: {
   );
 }
 
-Card.Header = ({ children, className }: { children: ReactNode; className?: string }) => (
-  <div className={cn("border-b p-4", className)}>{children}</div>
-);
+export function CardHeader({ children, className }: { children: ReactNode; className?: string }) {
+  return <div className={cn("border-b p-4", className)}>{children}</div>;
+}
 
-Card.Body = ({ children, className }: { children: ReactNode; className?: string }) => (
-  <div className={cn("p-4", className)}>{children}</div>
-);
+export function CardBody({ children, className }: { children: ReactNode; className?: string }) {
+  return <div className={cn("p-4", className)}>{children}</div>;
+}
 
 const variantStyles = {
   default: "bg-white shadow-sm",

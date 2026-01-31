@@ -112,12 +112,13 @@ export function Card({ variant = "default", children }: { variant?: "default" | 
   );
 }
 
-Card.Header = ({ children }: { children: ReactNode }) => (
-  <View style={styles.header}>{children}</View>
-);
-Card.Body = ({ children }: { children: ReactNode }) => (
-  <View style={styles.body}>{children}</View>
-);
+export function CardHeader({ children }: { children: ReactNode }) {
+  return <View style={styles.header}>{children}</View>;
+}
+
+export function CardBody({ children }: { children: ReactNode }) {
+  return <View style={styles.body}>{children}</View>;
+}
 
 const styles = StyleSheet.create({
   card: { borderRadius: 12, overflow: "hidden" },
