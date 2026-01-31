@@ -5,7 +5,7 @@
 以下のいずれかに該当する場合、カスタムフックに切り出す:
 
 1. **状態 + 操作のセット** — `useState` と、その状態を操作する関数がセットになっている
-2. **副作用を伴うデータ取得** — `useEffect` でデータをフェッチしている
+2. **データ取得** — `use()` + Suspense でデータをフェッチしている
 3. **複数の状態が連動する** — ある状態の変更が別の状態にも影響する
 4. **コンポーネントが 1 つでも** — 再利用性ではなく可読性のために分離する
 
@@ -18,59 +18,83 @@
 export function useEditMode() {
   const [isEditing, setIsEditing] = useState(false);
 
-  const startEdit = useCallback(() => setIsEditing(true), []);
-  const cancelEdit = useCallback(() => setIsEditing(false), []);
+  const startEdit = () => setIsEditing(true);
+  const cancelEdit = () => setIsEditing(false);
 
   return { isEditing, startEdit, cancelEdit } as const;
 }
 ```
 
-**ポイント**: コンポーネントからは `useEditMode()` の一行で済み、`useState` / `useCallback` の実装詳細を意識しない。
+**ポイント**: コンポーネントからは `useEditMode()` の一行で済み、`useState` の実装詳細を意識しない。
 
 ### 2. データ取得の抽象化
 
 ```tsx
 // hooks/use-user.ts
-export function useUser(userId: string) {
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    fetchUser(userId).then(setUser);
-  }, [userId]);
-
-  if (!user) throw new Promise(() => {}); // Suspense pattern
-
+export function useUser(userPromise: Promise<User>) {
+  const user = use(userPromise);
   return user;
+}
+
+// 親コンポーネントで Suspense を設定
+function UserPage({ userId }: { userId: string }) {
+  const userPromise = fetchUser(userId);
+  return (
+    <Suspense fallback={<Skeleton />}>
+      <UserProfile userPromise={userPromise} />
+    </Suspense>
+  );
 }
 ```
 
-**ポイント**: フェッチのタイミング・キャッシュ・エラーハンドリングは全てフック内に閉じる。
+**ポイント**: `useEffect` + `useState` での fetch ではなく `use()` + `<Suspense>` を使う。Promise はレンダー毎に新規生成せず、キャッシュか props 経由で渡す。
 
 ### 3. フォーム管理
 
 ```tsx
 // hooks/use-login-form.ts
-export function useLoginForm(onSubmit: (credentials: LoginCredentials) => void) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const validation = validateLoginForm({ email, password });
+import { useActionState } from "react";
 
-  const handleSubmit = useCallback(() => {
-    if (validation.isValid) {
-      onSubmit({ email, password });
-    }
-  }, [email, password, validation.isValid, onSubmit]);
+export function useLoginForm() {
+  const [state, submitAction, isPending] = useActionState(
+    async (prevState: LoginState, formData: FormData) => {
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
+      const validation = validateLoginForm({ email, password });
+      if (!validation.isValid) {
+        return { error: validation.message };
+      }
+      const result = await login(email, password);
+      if (!result.ok) {
+        return { error: result.message };
+      }
+      redirect("/dashboard");
+      return { error: null };
+    },
+    { error: null }
+  );
 
-  return {
-    email,
-    setEmail,
-    password,
-    setPassword,
-    validation,
-    handleSubmit,
-  } as const;
+  return { state, submitAction, isPending } as const;
+}
+
+// 使用側
+function LoginForm() {
+  const { state, submitAction, isPending } = useLoginForm();
+
+  return (
+    <form action={submitAction}>
+      <input name="email" type="email" />
+      <input name="password" type="password" />
+      {state.error && <p className="error">{state.error}</p>}
+      <button type="submit" disabled={isPending}>
+        {isPending ? "Logging in..." : "Log in"}
+      </button>
+    </form>
+  );
 }
 ```
+
+**ポイント**: `useState` + `onSubmit` の手動管理ではなく `useActionState` + `<form action={...}>` を使う。
 
 ### 4. 複数フックの組み合わせ
 
@@ -93,7 +117,7 @@ export function Dashboard() {
 
 | パターン             | 命名例                | 返り値                     |
 | -------------------- | --------------------- | -------------------------- |
-| データ取得           | `useUser(id)`         | データそのもの             |
+| データ取得           | `useUser(promise)`    | データそのもの             |
 | 状態 + 操作          | `useEditMode()`       | `{ state, actions }`      |
-| イベントハンドラ集約 | `useFormHandlers()`   | `{ onSubmit, onChange }`   |
+| フォームアクション   | `useLoginForm()`      | `{ state, submitAction, isPending }` |
 | UI 状態              | `useDisclosure()`     | `{ isOpen, open, close }` |
