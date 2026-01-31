@@ -73,7 +73,7 @@ function parseEventLine(line: string, date: string): CalendarEvent | null {
 	const cleanTitle = title.replace(/#\w+/g, "").trim();
 
 	return {
-		id: `${date}-${crypto.randomUUID().slice(0, 8)}`,
+		id: `${date}-${Math.random().toString(36).slice(2, 10)}`,
 		title: cleanTitle,
 		date,
 		startTime,

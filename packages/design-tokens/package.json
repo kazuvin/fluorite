@@ -1,0 +1,36 @@
+{
+	"name": "@fluorite/design-tokens",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./css": {
+			"types": "./dist/css.d.ts",
+			"import": "./dist/css.js"
+		},
+		"./tailwind": {
+			"types": "./dist/tailwind.d.ts",
+			"import": "./dist/tailwind.js"
+		},
+		"./theme.css": "./generated/theme.css"
+	},
+	"scripts": {
+		"build": "tsc && node --import tsx scripts/generate-css.ts",
+		"build:types": "tsc",
+		"generate:css": "node --import tsx scripts/generate-css.ts",
+		"typecheck": "tsc --noEmit",
+		"test": "vitest run",
+		"test:watch": "vitest"
+	},
+	"devDependencies": {
+		"tsx": "^4.19.0",
+		"typescript": "^5.7.0",
+		"vitest": "^3.0.0"
+	}
+}

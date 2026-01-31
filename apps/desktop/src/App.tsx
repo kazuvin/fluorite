@@ -13,31 +13,25 @@ function App() {
 	const days = parseCalendarMarkdown(markdown);
 
 	return (
-		<main style={{ padding: "2rem", fontFamily: "system-ui" }}>
-			<h1>Fluorite Calendar</h1>
+		<main className="p-8 bg-background text-text min-h-screen">
+			<h1 className="text-3xl font-bold mb-5">Fluorite Calendar</h1>
 			{days.map((day) => (
-				<section key={day.date}>
-					<h2>{day.date}</h2>
-					<ul>
+				<section key={day.date} className="mb-5">
+					<h2 className="text-xl font-semibold mb-2">{day.date}</h2>
+					<ul className="space-y-1">
 						{day.events.map((event) => (
-							<li key={event.id}>
+							<li key={event.id} className="flex items-center flex-wrap gap-2 py-1">
 								{event.startTime && (
-									<strong>
+									<span className="font-semibold text-tint">
 										{event.startTime}
-										{event.endTime && `-${event.endTime}`}{" "}
-									</strong>
+										{event.endTime && `-${event.endTime}`}
+									</span>
 								)}
-								{event.title}
+								<span className="text-base">{event.title}</span>
 								{event.tags?.map((tag) => (
 									<span
 										key={tag}
-										style={{
-											marginLeft: "0.5rem",
-											padding: "0.1rem 0.4rem",
-											backgroundColor: "#e0e7ff",
-											borderRadius: "0.25rem",
-											fontSize: "0.85em",
-										}}
+										className="px-2 py-0.5 bg-tint/15 text-tint rounded-sm text-sm"
 									>
 										#{tag}
 									</span>

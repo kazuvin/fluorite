@@ -1,3 +1,6 @@
+@import "tailwindcss";
+@import "@fluorite/design-tokens/theme.css";
+
 .logo.vite:hover {
 	filter: drop-shadow(0 0 2em #747bff);
 }
@@ -11,8 +14,8 @@
 	line-height: 24px;
 	font-weight: 400;
 
-	color: #0f0f0f;
-	background-color: #f6f6f6;
+	color: var(--color-text);
+	background-color: var(--color-background);
 
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
@@ -96,11 +99,6 @@ button {
 }
 
 @media (prefers-color-scheme: dark) {
-	:root {
-		color: #f6f6f6;
-		background-color: #2f2f2f;
-	}
-
 	a:hover {
 		color: #24c8db;
 	}

@@ -54,16 +54,18 @@ const styles = StyleSheet.create({
   },
 });
 
+// デザイントークンを @fluorite/design-tokens から import して利用
+// import { colors } from "@fluorite/design-tokens";
 const variantStyles = StyleSheet.create({
-  primary: { backgroundColor: "#2563eb" },
-  secondary: { backgroundColor: "#e5e7eb" },
+  primary: { backgroundColor: colors.light.tint },
+  secondary: { backgroundColor: colors.light.icon + "1a" },
   ghost: { backgroundColor: "transparent" },
 });
 
 const textVariantStyles = StyleSheet.create({
-  primary: { color: "#ffffff" },
-  secondary: { color: "#1f2937" },
-  ghost: { color: "#1f2937" },
+  primary: { color: colors.light.background },
+  secondary: { color: colors.light.text },
+  ghost: { color: colors.light.text },
 });
 
 const sizeStyles = StyleSheet.create({
@@ -86,6 +88,7 @@ const textSizeStyles = StyleSheet.create({
 3. `style?: ViewStyle` prop で外部カスタマイズ可能に
 4. 配列でスタイル合成: `style={[base, variant, custom]}`
 5. `({ pressed })` callback でプレスフィードバック
+6. ハードコードされた色値の代わりに `@fluorite/design-tokens` からトークンを import して使う
 
 ## スタイル合成
 

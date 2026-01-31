@@ -1,12 +1,13 @@
 ---
 name: component-creator-mobile
-description: React Native / Expo コンポーネント作成。apps/mobile 配下の作業時に使用。StyleSheet, View/Text/Pressable, @testing-library/react-native を使用。共通パターンは component-common スキルを参照。
+description: React Native / Expo コンポーネント作成。apps/mobile 配下の作業時に使用。StyleSheet, View/Text/Pressable, @testing-library/react-native を使用。デザイントークンは @fluorite/design-tokens から TS import で利用。共通パターンは component-common スキルを参照。
 ---
 
 # Component Creator - Mobile (React Native / Expo)
 
 関連スキル:
 - **component-common**: 共通パターン (Decision Guide, 命名規則, Container パターン)
+- **design-tokens**: デザイントークン (色・スペーシング等の SSoT)
 - **jotai-patterns**: Atom design for containers
 
 ## クイックスタート

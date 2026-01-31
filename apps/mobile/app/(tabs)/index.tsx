@@ -1,4 +1,13 @@
 import { parseCalendarMarkdown } from "@fluorite/core";
+import {
+	colors,
+	fontSize,
+	fontWeight,
+	parseNumeric,
+	radius,
+	spacing,
+} from "@fluorite/design-tokens";
+import { useColorScheme } from "react-native";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 const SAMPLE_MARKDOWN = `## 2025-01-31
@@ -10,25 +19,27 @@ const SAMPLE_MARKDOWN = `## 2025-01-31
 
 export default function HomeScreen() {
 	const days = parseCalendarMarkdown(SAMPLE_MARKDOWN);
+	const scheme = useColorScheme() ?? "light";
+	const theme = colors[scheme];
 
 	return (
-		<ScrollView style={styles.container}>
-			<Text style={styles.title}>Fluorite Calendar</Text>
+		<ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
+			<Text style={[styles.title, { color: theme.text }]}>Fluorite Calendar</Text>
 			{days.map((day) => (
 				<View key={day.date} style={styles.daySection}>
-					<Text style={styles.dateHeading}>{day.date}</Text>
+					<Text style={[styles.dateHeading, { color: theme.text }]}>{day.date}</Text>
 					{day.events.map((event) => (
 						<View key={event.id} style={styles.eventRow}>
 							{event.startTime && (
-								<Text style={styles.time}>
+								<Text style={[styles.time, { color: theme.tint }]}>
 									{event.startTime}
 									{event.endTime ? `-${event.endTime}` : ""}
 								</Text>
 							)}
-							<Text style={styles.eventTitle}>{event.title}</Text>
+							<Text style={[styles.eventTitle, { color: theme.text }]}>{event.title}</Text>
 							{event.tags?.map((tag) => (
-								<View key={tag} style={styles.tag}>
-									<Text style={styles.tagText}>#{tag}</Text>
+								<View key={tag} style={[styles.tag, { backgroundColor: `${theme.tint}26` }]}>
+									<Text style={[styles.tagText, { color: theme.tint }]}>#{tag}</Text>
 								</View>
 							))}
 						</View>
@@ -42,46 +53,41 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		padding: 20,
+		padding: parseNumeric(spacing[5]),
 		paddingTop: 60,
-		backgroundColor: "#fff",
 	},
 	title: {
-		fontSize: 28,
-		fontWeight: "bold",
-		marginBottom: 20,
+		fontSize: parseNumeric(fontSize["3xl"]),
+		fontWeight: fontWeight.bold,
+		marginBottom: parseNumeric(spacing[5]),
 	},
 	daySection: {
-		marginBottom: 20,
+		marginBottom: parseNumeric(spacing[5]),
 	},
 	dateHeading: {
-		fontSize: 20,
-		fontWeight: "600",
-		marginBottom: 8,
+		fontSize: parseNumeric(fontSize.xl),
+		fontWeight: fontWeight.semibold,
+		marginBottom: parseNumeric(spacing[2]),
 	},
 	eventRow: {
 		flexDirection: "row",
 		alignItems: "center",
-		paddingVertical: 6,
+		paddingVertical: parseNumeric(spacing[1]),
 		flexWrap: "wrap",
+		gap: parseNumeric(spacing[2]),
 	},
 	time: {
-		fontWeight: "600",
-		marginRight: 8,
-		color: "#4f46e5",
+		fontWeight: fontWeight.semibold,
 	},
 	eventTitle: {
-		fontSize: 16,
+		fontSize: parseNumeric(fontSize.base),
 	},
 	tag: {
-		marginLeft: 8,
-		backgroundColor: "#e0e7ff",
-		paddingHorizontal: 8,
-		paddingVertical: 2,
-		borderRadius: 4,
+		paddingHorizontal: parseNumeric(spacing[2]),
+		paddingVertical: parseNumeric(spacing[0]),
+		borderRadius: parseNumeric(radius.sm),
 	},
 	tagText: {
-		fontSize: 13,
-		color: "#4338ca",
+		fontSize: parseNumeric(fontSize.sm),
 	},
 });

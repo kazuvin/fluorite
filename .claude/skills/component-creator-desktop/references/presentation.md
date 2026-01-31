@@ -29,10 +29,11 @@ export function Button({ variant = "primary", size = "md", className, children, 
   );
 }
 
+// デザイントークンを @theme 経由で利用 (bg-tint, text-background など)
 const variantStyles = {
-  primary: "bg-blue-600 text-white hover:bg-blue-700",
-  secondary: "bg-gray-200 text-gray-900 hover:bg-gray-300",
-  ghost: "bg-transparent text-gray-900 hover:bg-gray-100",
+  primary: "bg-tint text-background hover:opacity-90",
+  secondary: "bg-icon/10 text-text hover:bg-icon/20",
+  ghost: "bg-transparent text-text hover:bg-icon/10",
 } as const;
 
 const sizeStyles = {
@@ -47,8 +48,9 @@ const sizeStyles = {
 1. ネイティブ HTML を拡張: `ComponentProps<"element">`
 2. 合成可能なスタイル: `className` を受け取り `cn()` でマージ
 3. forwardRef 不要 (React 19: ref は ComponentProps に含まれる)
-4. Tailwind でユーティリティファースト
+4. Tailwind でユーティリティファースト (`@theme` トークン経由)
 5. variant/size スタイルは `as const`
+6. ハードコードされた色値の代わりに `@theme` のトークンを使う (`bg-background`, `text-text`, `text-tint` など)
 
 ## cn() ユーティリティ
 

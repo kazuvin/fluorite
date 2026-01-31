@@ -1,12 +1,13 @@
 ---
 name: component-creator-desktop
-description: Tauri デスクトップアプリ (React + Vite) のコンポーネント作成。apps/desktop 配下の作業時に使用。Tailwind CSS, Radix UI, @testing-library/react を使用。共通パターンは component-common スキルを参照。
+description: Tauri デスクトップアプリ (React + Vite) のコンポーネント作成。apps/desktop 配下の作業時に使用。Tailwind CSS, Radix UI, @testing-library/react を使用。デザイントークンは @fluorite/design-tokens から Tailwind v4 @theme 経由で利用。共通パターンは component-common スキルを参照。
 ---
 
 # Component Creator - Desktop (Tauri / React + Vite)
 
 関連スキル:
 - **component-common**: 共通パターン (Decision Guide, 命名規則, Container パターン)
+- **design-tokens**: デザイントークン (色・スペーシング等の SSoT)
 - **jotai-patterns**: Container 向け Atom 設計
 
 ## クイックスタート
