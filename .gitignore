@@ -1,0 +1,23 @@
+node_modules/
+dist/
+.turbo/
+
+# Tauri
+apps/desktop/src-tauri/target/
+
+# Expo
+apps/mobile/.expo/
+
+# Build outputs
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
