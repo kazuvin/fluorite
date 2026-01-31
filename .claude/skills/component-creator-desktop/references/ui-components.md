@@ -94,12 +94,12 @@ import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi } from "vitest";
 
 describe("ComponentName", () => {
-  it("renders correctly", () => {
+  it("正しくレンダリングされる", () => {
     render(<ComponentName>Test</ComponentName>);
     expect(screen.getByText("Test")).toBeInTheDocument();
   });
 
-  it("handles click events", async () => {
+  it("クリックイベントを処理できる", async () => {
     const user = userEvent.setup();
     const onClick = vi.fn();
     render(<ComponentName onClick={onClick}>Test</ComponentName>);
@@ -107,12 +107,12 @@ describe("ComponentName", () => {
     expect(onClick).toHaveBeenCalled();
   });
 
-  it("merges custom className", () => {
+  it("カスタム className がマージされる", () => {
     render(<ComponentName className="custom-class" data-testid="comp" />);
     expect(screen.getByTestId("comp")).toHaveClass("custom-class");
   });
 
-  it("is accessible", () => {
+  it("アクセシブルである", () => {
     render(<ComponentName aria-label="Action button" />);
     expect(screen.getByLabelText("Action button")).toBeInTheDocument();
   });
