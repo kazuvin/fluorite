@@ -1,6 +1,6 @@
-# コンポーネントテストパターン (React Native)
+# コンポーネントテストパターン
 
-## テストファイルの配置
+## 配置
 
 ```
 components/ui/{name}/
@@ -9,7 +9,7 @@ components/ui/{name}/
 └── index.ts
 ```
 
-## 仕様テンプレート
+## テンプレート
 
 ```typescript
 import { render, screen, fireEvent } from "@testing-library/react-native";
@@ -23,43 +23,30 @@ import { ComponentName } from "./component-name";
  * 用途: [主な使用ケース]
  */
 describe("ComponentName", () => {
-  // ===========================================
-  // 初期状態
-  // ===========================================
   describe("初期状態", () => {
-    it("クラッシュせずにレンダリングされること", () => {
+    it("レンダリングされること", () => {
       render(<ComponentName />);
       expect(screen.getByText("...")).toBeOnTheScreen();
     });
 
-    it("childrenが正しくレンダリングされること", () => {
+    it("childrenが表示されること", () => {
       render(<ComponentName>テストコンテンツ</ComponentName>);
       expect(screen.getByText("テストコンテンツ")).toBeOnTheScreen();
     });
   });
 
-  // ===========================================
-  // Props（API仕様）
-  // ===========================================
   describe("Props", () => {
-    describe("variant prop", () => {
-      it("'primary'バリアントでレンダリングされること", () => {
-        render(<ComponentName variant="primary" testID="component" />);
-        expect(screen.getByTestId("component")).toBeOnTheScreen();
-      });
+    it("variant propを適用すること", () => {
+      render(<ComponentName variant="primary" testID="component" />);
+      expect(screen.getByTestId("component")).toBeOnTheScreen();
     });
 
-    describe("disabled prop", () => {
-      it("disabled=trueのとき無効化されること", () => {
-        render(<ComponentName disabled testID="component" />);
-        expect(screen.getByTestId("component")).toBeDisabled();
-      });
+    it("disabled propで無効化されること", () => {
+      render(<ComponentName disabled testID="component" />);
+      expect(screen.getByTestId("component")).toBeDisabled();
     });
   });
 
-  // ===========================================
-  // ユーザー操作
-  // ===========================================
   describe("ユーザー操作", () => {
     it("プレス時にonPressが呼ばれること", () => {
       const handlePress = vi.fn();
@@ -80,13 +67,10 @@ describe("ComponentName", () => {
     });
   });
 
-  // ===========================================
-  // アクセシビリティ
-  // ===========================================
   describe("アクセシビリティ", () => {
-    it("正しいaccessibilityLabelを持つこと", () => {
-      render(<ComponentName accessibilityLabel="アクセシブルラベル" />);
-      expect(screen.getByLabelText("アクセシブルラベル")).toBeOnTheScreen();
+    it("accessibilityLabelを持つこと", () => {
+      render(<ComponentName accessibilityLabel="ラベル" />);
+      expect(screen.getByLabelText("ラベル")).toBeOnTheScreen();
     });
 
     it("accessibilityRoleが設定されていること", () => {
@@ -95,35 +79,25 @@ describe("ComponentName", () => {
     });
   });
 
-  // ===========================================
-  // エッジケース
-  // ===========================================
   describe("エッジケース", () => {
-    it("非常に長いテキストを処理すること", () => {
+    it("長いテキストを処理すること", () => {
       const longText = "A".repeat(1000);
       render(<ComponentName>{longText}</ComponentName>);
       expect(screen.getByText(longText)).toBeOnTheScreen();
-    });
-
-    it("カスタムstyleが適用されること", () => {
-      render(<ComponentName style={{ marginTop: 20 }} testID="component" />);
-      expect(screen.getByTestId("component")).toBeOnTheScreen();
     });
   });
 });
 ```
 
-## テストパターン
+## パターン
 
 ### イベントハンドラー
 
 ```typescript
 it("テキスト入力でonChangeTextが呼ばれること", () => {
   const handleChange = vi.fn();
-
   render(<Input onChangeText={handleChange} />);
   fireEvent.changeText(screen.getByTestId("input"), "hello");
-
   expect(handleChange).toHaveBeenCalledWith("hello");
 });
 ```
@@ -131,12 +105,12 @@ it("テキスト入力でonChangeTextが呼ばれること", () => {
 ### 条件付きレンダリング
 
 ```typescript
-it("バリデーション失敗時にエラーメッセージを表示すること", () => {
-  render(<Input error="この項目は必須です" />);
-  expect(screen.getByText("この項目は必須です")).toBeOnTheScreen();
+it("エラー時にメッセージを表示すること", () => {
+  render(<Input error="必須項目です" />);
+  expect(screen.getByText("必須項目です")).toBeOnTheScreen();
 });
 
-it("有効な場合はエラーを表示しないこと", () => {
+it("正常時はエラーを表示しないこと", () => {
   render(<Input />);
   expect(screen.queryByText("エラー")).not.toBeOnTheScreen();
 });
@@ -145,7 +119,7 @@ it("有効な場合はエラーを表示しないこと", () => {
 ### ローディング状態
 
 ```typescript
-it("ローディング中はActivityIndicatorを表示すること", () => {
+it("ローディング中はインジケーターを表示すること", () => {
   render(<Button loading>送信</Button>);
   expect(screen.getByTestId("loading-indicator")).toBeOnTheScreen();
 });
@@ -156,17 +130,15 @@ it("ローディング中はActivityIndicatorを表示すること", () => {
 ```typescript
 it("スクロール時にonScrollが呼ばれること", () => {
   const handleScroll = vi.fn();
-
   render(<ListComponent onScroll={handleScroll} />);
   fireEvent.scroll(screen.getByTestId("scroll-view"), {
     nativeEvent: { contentOffset: { y: 100 } },
   });
-
   expect(handleScroll).toHaveBeenCalled();
 });
 ```
 
-## 注意: React Native Testing Library の API
+## Web vs React Native API
 
 | Web (@testing-library/react)        | RN (@testing-library/react-native)    |
 | ------------------------------------ | -------------------------------------- |

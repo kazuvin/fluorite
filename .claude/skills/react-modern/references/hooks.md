@@ -25,7 +25,7 @@ function Page({ userId }: { userId: string }) {
 }
 ```
 
-**注意**: `use()` に渡す Promise はレンダー中に毎回新しく生成しない。キャッシュされた Promise か、親から props で渡す。
+**注意**: Promise はレンダー毎に新規生成せず、キャッシュか props 経由で渡す。
 
 ### Context の読み取り
 
@@ -77,7 +77,7 @@ function LoginForm() {
 }
 ```
 
-**Point**: `<form action={...}>` と組み合わせる。`onSubmit` + `preventDefault` は不要。
+**Point**: `<form action={...}>` と組み合わせる。`onSubmit` 不要。
 
 ## `useOptimistic` (React 19)
 

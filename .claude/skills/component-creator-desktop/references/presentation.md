@@ -1,8 +1,8 @@
-# Presentation Components (Web / Tailwind CSS)
+# Presentation コンポーネント (Web / Tailwind CSS)
 
-共通パターン: see **component-common** skill
+共通パターン: **component-common** スキル参照
 
-## Template
+## テンプレート
 
 ```tsx
 import { type ComponentProps } from "react";
@@ -42,15 +42,15 @@ const sizeStyles = {
 } as const;
 ```
 
-## Key Principles (Web Specific)
+## 基本原則 (Web 固有)
 
-1. Extend native HTML: `ComponentProps<"element">`
-2. Composable styling: accept `className`, merge with `cn()`
-3. No forwardRef (React 19: ref in ComponentProps)
-4. Tailwind for utility-first styling
-5. `as const` for variant/size style objects
+1. ネイティブ HTML を拡張: `ComponentProps<"element">`
+2. 合成可能なスタイル: `className` を受け取り `cn()` でマージ
+3. forwardRef 不要 (React 19: ref は ComponentProps に含まれる)
+4. Tailwind でユーティリティファースト
+5. variant/size スタイルは `as const`
 
-## cn() Utility
+## cn() ユーティリティ
 
 ```tsx
 // src/lib/utils.ts
@@ -62,7 +62,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 ```
 
-## Compound Components
+## 複合コンポーネント
 
 ```tsx
 import { createContext, useContext, type ReactNode } from "react";

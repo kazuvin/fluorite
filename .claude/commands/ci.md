@@ -1,14 +1,14 @@
 ---
-description: Run all CI checks (lint, typecheck, test, build)
+description: すべての CI チェック（lint、typecheck、test、build）を実行する
 ---
 
-# CI Check
+# CI チェック
 
-Run all CI checks for the fluorite monorepo. Execute each step sequentially and report results.
+fluorite モノレポのすべての CI チェックを順序通り実行し、結果をレポートします。
 
-## Steps
+## 実行手順
 
-Run the following checks in order. Stop and report on the first failure.
+以下のチェックを順に実行します。最初の失敗で停止してレポートします。
 
 ### 1. Lint (Biome)
 
@@ -16,36 +16,24 @@ Run the following checks in order. Stop and report on the first failure.
 pnpm lint
 ```
 
-Verify that all files pass Biome linting rules (formatting, import organization, lint rules).
-
-### 2. Type Check
+### 2. 型チェック
 
 ```bash
 pnpm typecheck
 ```
 
-Verify that all packages and apps pass TypeScript type checking without errors.
-
-### 3. Test
+### 3. テスト
 
 ```bash
 pnpm test
 ```
 
-Run the test suite (currently `@fluorite/core` via Vitest).
-
-### 4. Build
+### 4. ビルド
 
 ```bash
 pnpm build:core
 ```
 
-Verify that the core package builds successfully.
+## レポート
 
-## Reporting
-
-After all steps complete (or on failure), provide a summary:
-
-- For each step: PASS or FAIL with details
-- If any step fails, suggest fixes
-- If all steps pass, confirm the codebase is CI-ready
+各ステップについて PASS または FAIL を表示します。失敗時は修正方法を提案します。

@@ -1,6 +1,6 @@
 # UI Component Catalog (React Native)
 
-## Style Patterns
+## スタイルパターン
 
 ```tsx
 import { StyleSheet } from "react-native";
@@ -33,26 +33,26 @@ const sizeStyles = StyleSheet.create({
 });
 ```
 
-## Tests
+## テスト
 
 ```tsx
 import { render, screen, fireEvent } from "@testing-library/react-native";
 import { describe, it, expect, vi } from "vitest";
 
 describe("ComponentName", () => {
-  it("renders correctly", () => {
+  it("正しくレンダリングされる", () => {
     render(<ComponentName>Test</ComponentName>);
     expect(screen.getByText("Test")).toBeOnTheScreen();
   });
 
-  it("handles press events", () => {
+  it("プレスイベントを処理する", () => {
     const onPress = vi.fn();
     render(<ComponentName onPress={onPress}>Test</ComponentName>);
     fireEvent.press(screen.getByText("Test"));
     expect(onPress).toHaveBeenCalled();
   });
 
-  it("applies custom style", () => {
+  it("カスタムスタイルを適用する", () => {
     render(<ComponentName style={{ marginTop: 10 }} testID="comp" />);
     expect(screen.getByTestId("comp")).toHaveStyle({ marginTop: 10 });
   });
@@ -61,17 +61,14 @@ describe("ComponentName", () => {
 
 ## RN Testing Library API
 
-| Action            | API                                     |
-| ----------------- | --------------------------------------- |
-| Render            | `render(<Component />)`                |
-| Find by text      | `screen.getByText("text")`             |
-| Find by testID    | `screen.getByTestId("id")`             |
-| Find by role      | `screen.getByRole("button")`           |
-| Find by label     | `screen.getByLabelText("label")`       |
-| Assert exists     | `toBeOnTheScreen()`                     |
-| Assert not exists | `not.toBeOnTheScreen()`                |
-| Press             | `fireEvent.press(element)`             |
-| Text input        | `fireEvent.changeText(element, "text")`|
-| Scroll            | `fireEvent.scroll(element, { nativeEvent: ... })` |
-| Assert style      | `toHaveStyle({ color: "red" })`        |
-| Assert disabled   | `toBeDisabled()`                        |
+| 操作 | API |
+| --- | --- |
+| レンダリング | `render(<Component />)` |
+| テキスト検索 | `screen.getByText("text")` |
+| testID 検索 | `screen.getByTestId("id")` |
+| role 検索 | `screen.getByRole("button")` |
+| 存在確認 | `toBeOnTheScreen()` |
+| プレス | `fireEvent.press(element)` |
+| テキスト入力 | `fireEvent.changeText(element, "text")` |
+| スタイル確認 | `toHaveStyle({ color: "red" })` |
+| 無効化確認 | `toBeDisabled()` |

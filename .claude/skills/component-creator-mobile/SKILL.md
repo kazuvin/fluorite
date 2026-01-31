@@ -5,11 +5,11 @@ description: React Native / Expo コンポーネント作成。apps/mobile 配�
 
 # Component Creator - Mobile (React Native / Expo)
 
-Related skills:
+関連スキル:
 - **component-common**: 共通パターン (Decision Guide, 命名規則, Container パターン)
 - **jotai-patterns**: Atom design for containers
 
-## Quick Start
+## クイックスタート
 
 ### Presentation
 
@@ -51,11 +51,11 @@ import { isLoadingAtom, loginAtom } from "../stores/auth-atoms";
 export function LoginForm() {
   const isLoading = useAtomValue(isLoadingAtom);
   const login = useSetAtom(loginAtom);
-  // Container/Presentation split → see component-common
+  // Container/Presentation 分割 → component-common 参照
 }
 ```
 
-### Provider Setup (Expo Router)
+### Provider セットアップ (Expo Router)
 
 ```tsx
 // app/_layout.tsx
@@ -71,16 +71,7 @@ export default function RootLayout() {
 }
 ```
 
-## References
+## リファレンス
 
 - [presentation.md](references/presentation.md) - RN Presentation パターン
 - [ui-components.md](references/ui-components.md) - RN UI カタログ
-
-## Mobile Checklist
-
-- [ ] `StyleSheet.create` for styles
-- [ ] `Pressable` over `TouchableOpacity`
-- [ ] `style` prop (ViewStyle) for外部カスタマイズ
-- [ ] Style composition with array: `[base, variant, custom]`
-- [ ] `accessibilityLabel` / `accessibilityRole` 設定
-- [ ] Tests with `@testing-library/react-native`

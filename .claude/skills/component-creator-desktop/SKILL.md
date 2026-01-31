@@ -5,11 +5,11 @@ description: Tauri デスクトップアプリ (React + Vite) のコンポーネ
 
 # Component Creator - Desktop (Tauri / React + Vite)
 
-Related skills:
+関連スキル:
 - **component-common**: 共通パターン (Decision Guide, 命名規則, Container パターン)
-- **jotai-patterns**: Atom design for containers
+- **jotai-patterns**: Container 向け Atom 設計
 
-## Quick Start
+## クイックスタート
 
 ### Presentation
 
@@ -41,11 +41,11 @@ import { isLoadingAtom, loginAtom } from "../stores/auth-atoms";
 export function LoginForm() {
   const isLoading = useAtomValue(isLoadingAtom);
   const login = useSetAtom(loginAtom);
-  // Container/Presentation split → see component-common
+  // Container/Presentation 分離 → component-common 参照
 }
 ```
 
-### Provider Setup (Tauri)
+### Provider セットアップ (Tauri)
 
 ```tsx
 // src/main.tsx
@@ -59,16 +59,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 );
 ```
 
-## References
+## リファレンス
 
 - [presentation.md](references/presentation.md) - Web Presentation パターン (Tailwind)
 - [ui-components.md](references/ui-components.md) - Radix UI / shadcn パターン
-
-## Desktop Checklist
-
-- [ ] `className` + Tailwind for styles
-- [ ] `cn()` for class merging (clsx + tailwind-merge)
-- [ ] `ComponentProps<"element">` for HTML extension
-- [ ] Radix UI wrapper for complex UI (Dialog, Popover, etc.)
-- [ ] ARIA attributes for accessibility
-- [ ] Tests with `@testing-library/react`

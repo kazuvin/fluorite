@@ -1,8 +1,8 @@
 # Presentation Components (React Native)
 
-共通パターン: see **component-common** skill
+共通パターン: **component-common** スキル参照
 
-## Template
+## テンプレート
 
 ```tsx
 import { type ReactNode } from "react";
@@ -79,18 +79,18 @@ const textSizeStyles = StyleSheet.create({
 });
 ```
 
-## Key Principles (RN Specific)
+## 基本原則 (RN 固有)
 
-1. `StyleSheet.create` for all styles (performance optimization)
-2. `Pressable` over `TouchableOpacity` (React Native recommended)
-3. Accept `style?: ViewStyle` prop for外部からのスタイル上書き
-4. Compose styles with array: `style={[base, variant, custom]}`
-5. Use `({ pressed })` callback for press feedback
+1. `StyleSheet.create` で全スタイルを定義（パフォーマンス最適化）
+2. `Pressable` を使用（`TouchableOpacity` より推奨）
+3. `style?: ViewStyle` prop で外部カスタマイズ可能に
+4. 配列でスタイル合成: `style={[base, variant, custom]}`
+5. `({ pressed })` callback でプレスフィードバック
 
-## Style Composition
+## スタイル合成
 
 ```tsx
-// 外部からstyleを受け取り、内部スタイルと合成
+// 外部 style を受け取り内部スタイルと合成
 <View style={[styles.container, style]}>
   {children}
 </View>

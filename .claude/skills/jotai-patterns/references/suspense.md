@@ -2,9 +2,9 @@
 
 Reference: https://zenn.dev/uhyo/books/learn-react-with-jotai
 
-## Core Concept
+## コア概念
 
-派生atomでPromiseを返すと`useAtomValue`がサスペンド。Promiseはatomにキャッシュされる。
+派生atomでPromise返却→`useAtomValue`がサスペンド。Promiseはatomにキャッシュ。
 
 ```tsx
 import { Text } from "react-native";
@@ -24,9 +24,9 @@ const UserProfile: React.FC = () => {
 </Suspense>
 ```
 
-## Pattern 1: Parameter via Atom
+## パターン1: atomでパラメータ管理
 
-同時に1つのパラメータでのみ非同期処理。
+1パラメータのみ同時処理。
 
 ```tsx
 const userIdAtom = atom<string | null>(null);  // private
@@ -41,11 +41,11 @@ export const setUserIdAtom = atom(null, (get, set, userId: string | null) => set
 export const userValueAtom = atom((get) => get(userAtom));
 ```
 
-**ポイント**: パラメータ変更→自動再計算。「実行せよ」ではなく「パラメータ変更」の宣言的アプローチ。
+**ポイント**: パラメータ変更→自動再計算。「実行せよ」でなく「パラメータ変更」の宣言的アプローチ。
 
-## Pattern 2: atomFamily
+## パターン2: atomFamily
 
-複数パラメータで同時に非同期処理。パラメータごとにキャッシュ分離。
+複数パラメータ同時処理。パラメータごとキャッシュ分離。
 
 ```tsx
 import { atomFamily } from "jotai-family";
@@ -60,17 +60,17 @@ const UserProfile: React.FC<{ userId: string }> = ({ userId }) => {
 };
 ```
 
-## Comparison
+## 比較
 
-| 観点         | Pattern 1 (Atom)  | Pattern 2 (Family)  |
+| 観点         | パターン1 (Atom)  | パターン2 (Family)  |
 | ------------ | ----------------- | ------------------- |
 | キャッシュ   | 1つ               | パラメータごと      |
 | user1→2→1    | 再fetch           | キャッシュヒット    |
 | メモリ       | 少                | パラメータ数に比例  |
 
-## Memory Management
+## メモリ管理
 
-atomFamilyは不要なatomがメモリに残る。
+atomFamilyは不要なatomがメモリ残留。
 
 ```tsx
 const userAtomFamily = atomFamily((userId: string) => atom(async () => fetchUser(userId)), {
@@ -78,7 +78,7 @@ const userAtomFamily = atomFamily((userId: string) => atom(async () => fetchUser
 });
 ```
 
-## Complete Example: Search
+## 検索機能の実装例
 
 ```tsx
 // Private
@@ -95,8 +95,8 @@ export const searchResultsAtom = atom((get) => get(searchResultsInternalAtom));
 export const setKeywordAtom = atom(null, (get, set, keyword: string) => set(keywordAtom, keyword));
 ```
 
-## Key Insights
+## 要点
 
-1. UI = f(state): Suspenseで非同期も「f」に組み込み
+1. UI = f(state): Suspenseで非同期も「f」に組込
 2. 宣言的: 「実行せよ」→「パラメータ変更」
-3. ステート数削減: パラメータのみがステート（結果は派生）
+3. ステート削減: パラメータのみステート（結果は派生）

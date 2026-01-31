@@ -1,6 +1,6 @@
-# UI Component Catalog (Web / Tailwind + Radix UI)
+# UI コンポーネントカタログ (Web / Tailwind + Radix UI)
 
-## Style Patterns
+## スタイルパターン
 
 ```tsx
 const baseStyles = "rounded-md transition-colors focus:ring-2 focus:outline-none";
@@ -19,7 +19,7 @@ const sizeStyles = {
 } as const;
 ```
 
-## Radix UI Wrapper
+## Radix UI ラッパー
 
 ```tsx
 import * as DialogPrimitive from "@radix-ui/react-dialog";
@@ -30,7 +30,7 @@ type DialogContentProps = ComponentProps<typeof DialogPrimitive.Content> & {
   size?: "sm" | "md" | "lg";
 };
 
-// forwardRef不要 (React 19)
+// forwardRef 不要 (React 19)
 export function DialogContent({ className, size = "md", children, ...props }: DialogContentProps) {
   return (
     <DialogPrimitive.Portal>
@@ -56,14 +56,14 @@ const sizeStyles = {
 } as const;
 ```
 
-## Compound Components (shadcn style)
+## 複合コンポーネント (shadcn スタイル)
 
-個別エクスポート採用（tree-shaking効率）:
+個別エクスポート採用 (tree-shaking 効率化):
 
 ```tsx
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 
-// NOT: <Dialog.Trigger />
+// NG: <Dialog.Trigger />
 ```
 
 ## Storybook
@@ -86,7 +86,7 @@ export const Primary: Story = { args: { variant: "primary" } };
 export const Small: Story = { args: { size: "sm" } };
 ```
 
-## Tests
+## テスト
 
 ```tsx
 import { render, screen, fireEvent } from "@testing-library/react";
@@ -119,19 +119,15 @@ describe("ComponentName", () => {
 });
 ```
 
-## Web Testing Library API
+## 主要テスト API
 
-| Action            | API                                           |
-| ----------------- | --------------------------------------------- |
-| Render            | `render(<Component />)`                       |
-| Find by text      | `screen.getByText("text")`                    |
-| Find by role      | `screen.getByRole("button")`                  |
-| Find by label     | `screen.getByLabelText("label")`              |
-| Find by testId    | `screen.getByTestId("id")`                    |
-| Assert exists     | `toBeInTheDocument()`                          |
-| Assert not exists | `not.toBeInTheDocument()`                      |
-| Click             | `await user.click(element)`                    |
-| Type              | `await user.type(element, "text")`             |
-| Assert class      | `toHaveClass("class-name")`                    |
-| Assert disabled   | `toBeDisabled()`                               |
-| Assert focus      | `toHaveFocus()`                                |
+| 操作 | API |
+| --- | --- |
+| レンダリング | `render(<Component />)` |
+| テキスト検索 | `screen.getByText("text")` |
+| ロール検索 | `screen.getByRole("button")` |
+| ラベル検索 | `screen.getByLabelText("label")` |
+| クリック | `await user.click(element)` |
+| 入力 | `await user.type(element, "text")` |
+| クラス検証 | `toHaveClass("class-name")` |
+| 存在検証 | `toBeInTheDocument()` |

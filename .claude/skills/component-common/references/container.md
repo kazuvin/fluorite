@@ -1,19 +1,19 @@
-# Container Components (Features + Jotai)
+# Container コンポーネント (Features + Jotai)
 
-Atom design: see **jotai-patterns** skill.
+Atom 設計: **jotai-patterns** スキルを参照。
 
-## Directory Structure
+## ディレクトリ構成
 
 ```
 features/{feature}/
-├── components/     # Feature UI
+├── components/     # 機能 UI
 ├── stores/         # Jotai atoms
-├── hooks/          # Custom hooks (optional)
-├── types/          # Types
-└── index.ts        # Public API
+├── hooks/          # カスタムフック (オプション)
+├── types/          # 型定義
+└── index.ts        # 公開 API
 ```
 
-## Template
+## テンプレート
 
 ```tsx
 import { useAtomValue, useSetAtom } from "jotai";
@@ -35,7 +35,7 @@ export function LoginFormContainer() {
 }
 ```
 
-## Public API
+## 公開 API
 
 ```tsx
 // features/auth/index.ts
@@ -45,10 +45,10 @@ export { isAuthenticatedAtom, userValueAtom } from "./stores/auth-atoms";
 export type { User, LoginCredentials } from "./types";
 ```
 
-## Key Principles
+## 原則
 
-1. Colocation: components, stores, hooks, types in feature folder
-2. Container/Presentation split
-3. Export only what others need
+1. コロケーション: components, stores, hooks, types を feature フォルダ内に配置
+2. Container/Presentation 分離
+3. 必要なものだけをエクスポート
 4. Container は hooks を使い、Presentation に props で渡す
-5. Atom encapsulation: follow **jotai-patterns**
+5. Atom のカプセル化: **jotai-patterns** に従う

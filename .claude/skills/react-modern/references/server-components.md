@@ -13,7 +13,7 @@
 | DB / ファイルシステム    | 直接アクセス可能   | 不可                    |
 | バンドルサイズ           | 含まれない         | 含まれる                |
 
-### Async Server Component
+### 非同期 Server Component
 
 ```tsx
 // Server Component (デフォルト)
@@ -64,7 +64,7 @@ export function ClientSearch({ categories }: { categories: Category[] }) {
 **渡せる Props**: string, number, boolean, Date, Array, plain Object, JSX (ReactNode)
 **渡せない Props**: 関数, クラスインスタンス, Symbol
 
-### Composition パターン（Children で Server Component を渡す）
+### Composition パターン (children で渡す)
 
 ```tsx
 // Server Component
@@ -95,7 +95,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
 }
 ```
 
-**Point**: Client Component の `children` に Server Component を渡すことで、Server Component のメリットを維持しつつインタラクティブなレイアウトを実現。
+**Point**: Client Component の `children` に Server Component を渡し、メリットを維持しつつインタラクティブなレイアウトを実現。
 
 ## Server Actions (React 19)
 
@@ -131,7 +131,7 @@ export function PostForm() {
 }
 ```
 
-### Server Action + useActionState
+### useActionState との組み合わせ
 
 ```tsx
 "use client";
@@ -168,7 +168,7 @@ export function PostForm() {
 }
 ```
 
-### Server Action + useOptimistic
+### useOptimistic との組み合わせ
 
 ```tsx
 "use client";

@@ -1,11 +1,11 @@
 ---
 name: jotai-patterns
-description: Jotai state management patterns with encapsulation and Suspense integration. Use when designing atoms, reviewing Jotai code, implementing async data fetching, or asked about state management architecture. Enforces opaque atom pattern where primitive atoms are private and only derived atoms are exported. Works with React Native / Expo.
+description: カプセル化とSuspense統合を重視したJotai状態管理パターン。atom設計、コードレビュー、非同期データ取得、状態管理アーキテクチャ時に使用。プリミティブatomは非公開、派生atomのみ公開。React Native / Expo対応。
 ---
 
-# Jotai Patterns
+# Jotai パターン
 
-**Core Rule**: プリミティブatomはexportしない。派生atomのみをexport。
+**コアルール**: プリミティブatomは非公開。派生atomのみ公開。
 
 ```tsx
 // ❌ BAD
@@ -17,9 +17,9 @@ export const userValueAtom = atom((get) => get(userAtom));  // read-only
 export const loginAtom = atom(null, async (get, set, creds) => { ... });  // action
 ```
 
-## Pattern Guide
+## パターンガイド
 
-| やりたいこと           | パターン               | 参照                     |
+| 用途                   | パターン               | 参照                     |
 | ---------------------- | ---------------------- | ------------------------ |
 | 状態を読み取りたい     | Read-only derived atom | [basics](references/basics.md) |
 | 状態を更新したい       | Write-only action atom | [basics](references/basics.md) |
@@ -27,15 +27,15 @@ export const loginAtom = atom(null, async (get, set, creds) => { ... });  // act
 | パラメータ付きfetch    | Parameter via atom     | [suspense](references/suspense.md) |
 | 複数キャッシュ         | atomFamily             | [suspense](references/suspense.md) |
 
-## Naming
+## 命名規則
 
-| Type              | Pattern               | Example                  |
+| タイプ            | パターン              | 例                       |
 | ----------------- | --------------------- | ------------------------ |
-| Private primitive | `xxxAtom` (private)   | `userAtom`               |
-| Read-only         | `xxxValueAtom`        | `userValueAtom`          |
-| Action            | verb + `Atom`         | `loginAtom`              |
+| プライベート      | `xxxAtom` (private)   | `userAtom`               |
+| 読み取り専用      | `xxxValueAtom`        | `userValueAtom`          |
+| アクション        | verb + `Atom`         | `loginAtom`              |
 
-## File Structure
+## ファイル構造
 
 ```tsx
 // features/xxx/stores/xxx-atoms.ts
@@ -50,7 +50,7 @@ export const userValueAtom = atom((get) => get(userAtom));
 export const loginAtom = atom(null, async (get, set, creds) => { ... });
 ```
 
-## Expo Provider Setup
+## Expo プロバイダー設定
 
 ```tsx
 // app/_layout.tsx

@@ -1,13 +1,13 @@
-# Jotai Basics: Encapsulation
+# Jotai 基礎: カプセル化
 
 Reference: https://zenn.dev/uhyo/books/learn-react-with-jotai
 
-## Why Encapsulation?
+## カプセル化の理由
 
-派生atomのみを提供することで操作を制御:
-1. フォーマット強制（生の値へのアクセス禁止）
-2. 操作制限（増やせるが減らせない等）
-3. 内部構造変更が外部に影響しない
+派生atomのみ提供し操作を制御:
+1. フォーマット強制（生値アクセス禁止）
+2. 操作制限（増加のみ、減少不可等）
+3. 内部構造変更の影響遮断
 
 ```tsx
 const countAtom = atom(0);  // private
@@ -18,23 +18,23 @@ export const incrementAtom = atom(null, (get, set, step = 1) => {
 });
 ```
 
-## Atom Types
+## Atom タイプ
 
-### Private Primitive (Never export)
+### プライベートプリミティブ（非公開）
 
 ```tsx
 const countAtom = atom(0);
 const userAtom = atom<User | null>(null);
 ```
 
-### Read-Only Derived
+### 読み取り専用派生
 
 ```tsx
 export const countValueAtom = atom((get) => get(countAtom));
 export const isAuthenticatedAtom = atom((get) => get(userAtom) !== null);
 ```
 
-### Write-Only Action
+### 書き込み専用アクション
 
 ```tsx
 export const incrementAtom = atom(null, (get, set, step = 1) => {
@@ -42,7 +42,7 @@ export const incrementAtom = atom(null, (get, set, step = 1) => {
 });
 ```
 
-### Read-Write (when needed)
+### 読み書き可能（必要時のみ）
 
 ```tsx
 export const userNameAtom = atom(
@@ -54,7 +54,7 @@ export const userNameAtom = atom(
 );
 ```
 
-## Auth Module Example
+## 認証モジュール例
 
 ```tsx
 // Private
@@ -85,10 +85,10 @@ export const logoutAtom = atom(null, (get, set) => {
 });
 ```
 
-## Utility: atomWithReset
+## ユーティリティ: atomWithReset
 
 ```tsx
 import { atomWithReset, RESET } from "jotai/utils";
 const countAtom = atomWithReset(0);
-setCount(RESET);  // resets to 0
+setCount(RESET);  // 0にリセット
 ```

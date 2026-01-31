@@ -7,12 +7,12 @@ description: React 18/19 のモダン記法パターン。use() / useActionState
 
 React 18/19 で導入された新しい API・パターンのガイド。
 
-Related skills:
+関連スキル:
 - **react-declarative**: 宣言的設計の原則
 - **component-common**: ディレクトリ構成、命名
 - **jotai-patterns**: 状態管理
 
-## API Quick Reference
+## API クイックリファレンス
 
 | API                  | Version | 用途                           | 参照                                     |
 | -------------------- | ------- | ------------------------------ | ---------------------------------------- |
@@ -27,7 +27,7 @@ Related skills:
 | Server Components    | 19      | サーバー側レンダリング         | [server-components](references/server-components.md) |
 | Server Actions       | 19      | サーバー側ミューテーション     | [server-components](references/server-components.md) |
 
-## Core Rules
+## コアルール
 
 1. **`use()` は Promise と Context の読み取りに使う** — `useEffect` + `useState` での fetch パターンを置き換える
 2. **`useActionState` でフォーム状態を管理する** — `useState` + `onSubmit` の手動管理を置き換える
@@ -35,7 +35,7 @@ Related skills:
 4. **`useTransition` で重い更新を低優先度にする** — ユーザー入力のブロッキングを防ぐ
 5. **`ref` は props として直接渡す** — React 19 では `forwardRef` は不要
 
-## Migration Guide (非推奨パターン → モダンパターン)
+## 移行ガイド
 
 | 非推奨                                    | モダン                          |
 | ----------------------------------------- | ------------------------------- |
@@ -46,17 +46,8 @@ Related skills:
 | `<Context.Provider value={...}>`          | `<Context value={...}>`         |
 | `ref` の cleanup を `useEffect` で行う    | ref callback から cleanup 関数を return |
 
-## References
+## 参照
 
 - [hooks.md](references/hooks.md) — React 18/19 の新しい Hooks 詳細
 - [patterns.md](references/patterns.md) — Suspense / Transition / Streaming パターン
 - [server-components.md](references/server-components.md) — Server Components / Server Actions
-
-## Checklist
-
-- [ ] `forwardRef` を使わず `ref` を props として直接受け取っているか？
-- [ ] `useEffect` + `useState` の fetch パターンが残っていないか？（`use()` + Suspense に置き換え）
-- [ ] フォームは `useActionState` で管理しているか？
-- [ ] 重い状態更新に `useTransition` を使っているか？
-- [ ] `<Context.Provider>` ではなく `<Context>` を使っているか？
-- [ ] ref callback で cleanup が必要な場合、関数を return しているか？

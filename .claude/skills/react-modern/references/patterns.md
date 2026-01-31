@@ -1,4 +1,4 @@
-# Suspense / Transition / Streaming Patterns
+# Suspense / Transition / Streaming パターン
 
 ## Suspense パターン
 
@@ -152,7 +152,7 @@ function App() {
 
 **構成順序**: `ErrorBoundary` > `Suspense` > データを使うコンポーネント
 
-## Activity API (React 19, experimental)
+## Activity API (React 19, 実験的)
 
 画面外のコンポーネントの優先度を下げる。
 
@@ -173,4 +173,4 @@ function TabContent({ activeTab }: { activeTab: string }) {
 }
 ```
 
-**Point**: `hidden` のコンポーネントは低優先度でレンダーされるが、状態は保持される。タブ切り替え時の再マウントを防ぐ。experimental API のため注意。
+**Point**: `hidden` 時も状態保持。タブ切り替え時の再マウントを防ぐ。実験的 API のため注意。

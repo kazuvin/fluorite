@@ -1,4 +1,4 @@
-# Utils Separation Patterns
+# Utils 分離パターン
 
 ## Utils に切り出す基準
 
