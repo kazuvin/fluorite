@@ -4,46 +4,40 @@
 
 **React に依存しないロジック** は全て utils に切り出す:
 
-1. **バリデーション** — `validateEmail(email)`, `validatePassword(password)`
+1. **バリデーション** — Valibot スキーマで定義する（**valibot-patterns** 参照）
 2. **フォーマット** — `formatDate(date)`, `formatCurrency(amount)`
 3. **変換・計算** — `calculateTotal(items)`, `groupBy(items, key)`
 4. **型ガード** — `isUser(value)`, `isError(value)`
 
 ## フックとの棲み分け
 
-| 分類         | 置き場所   | 理由                                         |
-| ------------ | ---------- | -------------------------------------------- |
-| 純粋な計算   | `utils/`   | React に依存しない。テストが容易              |
-| 状態を持つ   | `hooks/`   | `useState` / `useEffect` が必要              |
-| Atom 操作    | `stores/`  | Jotai の atom として定義（jotai-patterns 参照） |
+| 分類         | 置き場所    | 理由                                         |
+| ------------ | ----------- | -------------------------------------------- |
+| 純粋な計算   | `utils/`    | React に依存しない。テストが容易              |
+| バリデーション | `schemas/` | Valibot スキーマで定義（valibot-patterns 参照） |
+| 状態を持つ   | `hooks/`    | `useState` / `useEffect` が必要              |
+| Atom 操作    | `stores/`   | Jotai の atom として定義（jotai-patterns 参照） |
 
 ## パターン
 
-### 1. バリデーション
+### 1. バリデーション (Valibot スキーマ)
 
 ```ts
-// utils/validation.ts
-export interface ValidationResult {
-  isValid: boolean;
-  errors: Record<string, string>;
-}
+// features/auth/schemas/login-form-schema.ts
+import * as v from "valibot";
 
-export function validateLoginForm(values: {
-  email: string;
-  password: string;
-}): ValidationResult {
-  const errors: Record<string, string> = {};
+export const LoginFormSchema = v.object({
+  email: v.pipe(v.string(), v.email("メールアドレスの形式が正しくありません")),
+  password: v.pipe(
+    v.string(),
+    v.minLength(8, "パスワードは8文字以上で入力してください"),
+  ),
+});
 
-  if (!values.email.includes("@")) {
-    errors.email = "メールアドレスの形式が正しくありません";
-  }
-  if (values.password.length < 8) {
-    errors.password = "パスワードは8文字以上で入力してください";
-  }
-
-  return { isValid: Object.keys(errors).length === 0, errors };
-}
+export type LoginForm = v.InferOutput<typeof LoginFormSchema>;
 ```
+
+詳細は **valibot-patterns** スキルを参照。
 
 ### 2. フォーマット
 
@@ -58,45 +52,49 @@ export function formatDate(date: Date, locale = "ja-JP"): string {
 }
 ```
 
-### 3. フック内での utils 利用
+### 3. フック内でのスキーマ利用
 
 ```tsx
 // hooks/use-login-form.ts
-import { validateLoginForm } from "../utils/validation";
+import * as v from "valibot";
+import { LoginFormSchema } from "../schemas/login-form-schema";
 
 export function useLoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // utils の純粋関数を呼ぶだけ
-  const validation = validateLoginForm({ email, password });
+  // Valibot スキーマでバリデーション
+  const result = v.safeParse(LoginFormSchema, { email, password });
 
-  return { email, setEmail, password, setPassword, validation } as const;
+  return { email, setEmail, password, setPassword, isValid: result.success } as const;
 }
 ```
 
-**ポイント**: フック内でもロジックは utils に委譲し、フックは状態管理と utils の接続に専念する。
+**ポイント**: フック内でもバリデーションロジックは Valibot スキーマに委譲し、フックは状態管理とスキーマの接続に専念する。
 
 ## テスト容易性
 
-utils は純粋関数なので、React のテスト環境なしでテストできる:
+スキーマ・utils は純粋関数なので、React のテスト環境なしでテストできる:
 
 ```ts
-describe("validateLoginForm", () => {
+import * as v from "valibot";
+import { LoginFormSchema } from "../schemas/login-form-schema";
+
+describe("LoginFormSchema", () => {
   it("有効なフォーム値を受け入れる", () => {
-    const result = validateLoginForm({
+    const result = v.safeParse(LoginFormSchema, {
       email: "user@example.com",
       password: "password123",
     });
-    expect(result.isValid).toBe(true);
+    expect(result.success).toBe(true);
   });
 
   it("不正なメールアドレスを拒否する", () => {
-    const result = validateLoginForm({
+    const result = v.safeParse(LoginFormSchema, {
       email: "invalid",
       password: "password123",
     });
-    expect(result.errors.email).toBeDefined();
+    expect(result.success).toBe(false);
   });
 });
 ```

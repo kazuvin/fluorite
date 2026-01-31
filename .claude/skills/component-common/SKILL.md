@@ -11,6 +11,7 @@ description: コンポーネント設計の共通パターン。Presentation/Con
 - **component-creator-mobile**: React Native / Expo 固有の実装パターン
 - **component-creator-desktop**: Tauri (React + Vite) 固有の実装パターン
 - **jotai-patterns**: Container 用の Atom 設計
+- **valibot-patterns**: スキーマ定義とバリデーション
 
 ## 判断ガイド
 
@@ -46,9 +47,10 @@ components/
 ```
 features/{feature}/
 ├── components/     # 機能 UI
+├── schemas/        # Valibot スキーマ (valibot-patterns 参照)
 ├── stores/         # Jotai atoms
 ├── hooks/          # カスタムフック (オプション)
-├── types/          # 型定義
+├── types/          # スキーマから導出できない型のみ
 └── index.ts        # 公開 API
 ```
 

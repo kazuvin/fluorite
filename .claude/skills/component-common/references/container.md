@@ -7,9 +7,10 @@ Atom 設計: **jotai-patterns** スキルを参照。
 ```
 features/{feature}/
 ├── components/     # 機能 UI
+├── schemas/        # Valibot スキーマ (valibot-patterns 参照)
 ├── stores/         # Jotai atoms
 ├── hooks/          # カスタムフック (オプション)
-├── types/          # 型定義
+├── types/          # スキーマから導出できない型のみ
 └── index.ts        # 公開 API
 ```
 

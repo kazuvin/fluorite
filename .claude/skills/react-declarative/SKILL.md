@@ -10,6 +10,7 @@ description: React の宣言的設計パターン。コンポーネントは「�
 関連スキル:
 - **component-common**: ディレクトリ構成、命名、Presentation/Container 判断
 - **jotai-patterns**: Atom 設計、状態管理
+- **valibot-patterns**: スキーマ定義、バリデーション
 - **tdd-patterns**: テスト駆動開発
 
 ## 基本原則
@@ -74,7 +75,7 @@ export function UserProfile({ userId }: UserProfileProps) {
 
 1. **コンポーネントにロジックを直接書かない** — `useState`, `useEffect`, `useCallback`, `useMemo` を直接並べず、カスタムフックに包む
 2. **カスタムフックは意図を名前で表現する** — `useUser`, `useEditMode`, `useFormValidation` のように「何を提供するか」が名前から読み取れる
-3. **純粋な計算は utils に分離する** — React に依存しないロジック(バリデーション、フォーマット、変換など)は utils 関数として切り出す
+3. **純粋な計算は utils に分離する** — React に依存しないロジック(フォーマット、変換など)は utils 関数として切り出す。バリデーションは Valibot スキーマで定義する(**valibot-patterns** 参照)
 4. **コンポーネントのトップレベルはフック呼び出しと JSX のみ** — 条件分岐やループはフックの内部か JSX 内に閉じる
 
 ## 参考資料
