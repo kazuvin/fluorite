@@ -16,10 +16,17 @@
 		"@biomejs/biome": "^1.9.4"
 	},
 	"pnpm": {
-		"onlyBuiltDependencies": ["@biomejs/biome", "esbuild", "unrs-resolver"]
+		"onlyBuiltDependencies": [
+			"@biomejs/biome",
+			"esbuild",
+			"unrs-resolver"
+		]
 	},
 	"packageManager": "pnpm@10.28.2",
 	"engines": {
 		"node": ">=22"
+	},
+	"dependencies": {
+		"jotai": "^2.17.0"
 	}
 }
