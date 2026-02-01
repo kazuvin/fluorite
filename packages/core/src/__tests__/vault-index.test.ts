@@ -304,6 +304,119 @@ describe("VaultIndex", () => {
 		});
 	});
 
+	describe("applySync", () => {
+		it("新規ファイルを読み込んで Index に追加する", async () => {
+			const index = new VaultIndex();
+			const files = [{ path: "2026/01/2026-01-01.md", mtime: 1000 }];
+			const readFile = async (path: string) => {
+				if (path === "2026/01/2026-01-01.md") return "# 2026-01-01\n\n- 会議\n";
+				return "";
+			};
+
+			const result = await index.applySync(files, readFile);
+
+			expect(index.size).toBe(1);
+			expect(index.getByDate("2026-01-01")?.entries[0].title).toBe("会議");
+			expect(result.updated).toEqual(["2026/01/2026-01-01.md"]);
+			expect(result.removed).toEqual([]);
+		});
+
+		it("更新されたファイルのみ再パースする", async () => {
+			const index = new VaultIndex();
+			index.set("2026/01/2026-01-01.md", 1000, makeNote("2026-01-01", [{ title: "古い" }]));
+
+			const files = [{ path: "2026/01/2026-01-01.md", mtime: 2000 }];
+			const readFile = async (_path: string) => "# 2026-01-01\n\n- 新しい\n";
+
+			await index.applySync(files, readFile);
+
+			expect(index.size).toBe(1);
+			expect(index.getByDate("2026-01-01")?.entries[0].title).toBe("新しい");
+			expect(index.get("2026/01/2026-01-01.md")?.mtime).toBe(2000);
+		});
+
+		it("mtime が同じファイルは readFile を呼ばない", async () => {
+			const index = new VaultIndex();
+			index.set("2026/01/2026-01-01.md", 1000, makeNote("2026-01-01", [{ title: "元のまま" }]));
+
+			const files = [{ path: "2026/01/2026-01-01.md", mtime: 1000 }];
+			let readCalled = false;
+			const readFile = async (_path: string) => {
+				readCalled = true;
+				return "";
+			};
+
+			const result = await index.applySync(files, readFile);
+
+			expect(readCalled).toBe(false);
+			expect(index.getByDate("2026-01-01")?.entries[0].title).toBe("元のまま");
+			expect(result.updated).toEqual([]);
+			expect(result.removed).toEqual([]);
+		});
+
+		it("ファイルシステムから消えたエントリを削除する", async () => {
+			const index = new VaultIndex();
+			index.set("2026/01/2026-01-01.md", 1000, makeNote("2026-01-01"));
+			index.set("2026/01/2026-01-02.md", 1000, makeNote("2026-01-02"));
+
+			const files = [{ path: "2026/01/2026-01-01.md", mtime: 1000 }];
+			const readFile = async (_path: string) => "";
+
+			const result = await index.applySync(files, readFile);
+
+			expect(index.size).toBe(1);
+			expect(index.has("2026/01/2026-01-02.md")).toBe(false);
+			expect(result.removed).toEqual(["2026/01/2026-01-02.md"]);
+		});
+
+		it("パースに失敗したファイルはスキップする", async () => {
+			const index = new VaultIndex();
+			const files = [
+				{ path: "2026/01/2026-01-01.md", mtime: 1000 },
+				{ path: "2026/01/2026-01-02.md", mtime: 1000 },
+			];
+			const readFile = async (path: string) => {
+				if (path === "2026/01/2026-01-01.md") return "不正なMarkdown";
+				return "# 2026-01-02\n\n- OK\n";
+			};
+
+			const result = await index.applySync(files, readFile);
+
+			expect(index.size).toBe(1);
+			expect(index.has("2026/01/2026-01-01.md")).toBe(false);
+			expect(index.has("2026/01/2026-01-02.md")).toBe(true);
+			expect(result.updated).toEqual(["2026/01/2026-01-02.md"]);
+		});
+
+		it("複合ケース: 新規・更新・削除が一括で処理される", async () => {
+			const index = new VaultIndex();
+			index.set("2026/01/2026-01-01.md", 1000, makeNote("2026-01-01", [{ title: "変更なし" }]));
+			index.set("2026/01/2026-01-02.md", 1000, makeNote("2026-01-02", [{ title: "古い" }]));
+			index.set("2026/01/2026-01-03.md", 1000, makeNote("2026-01-03")); // 削除対象
+
+			const files = [
+				{ path: "2026/01/2026-01-01.md", mtime: 1000 }, // 変更なし
+				{ path: "2026/01/2026-01-02.md", mtime: 2000 }, // 更新
+				{ path: "2026/01/2026-01-04.md", mtime: 1000 }, // 新規
+			];
+			const readFile = async (path: string) => {
+				if (path === "2026/01/2026-01-02.md") return "# 2026-01-02\n\n- 更新済み\n";
+				if (path === "2026/01/2026-01-04.md") return "# 2026-01-04\n\n- 新規\n";
+				return "";
+			};
+
+			const result = await index.applySync(files, readFile);
+
+			expect(index.size).toBe(3);
+			expect(index.getByDate("2026-01-01")?.entries[0].title).toBe("変更なし");
+			expect(index.getByDate("2026-01-02")?.entries[0].title).toBe("更新済み");
+			expect(index.getByDate("2026-01-04")?.entries[0].title).toBe("新規");
+			expect(index.has("2026/01/2026-01-03.md")).toBe(false);
+			expect(result.updated.sort()).toEqual(["2026/01/2026-01-02.md", "2026/01/2026-01-04.md"]);
+			expect(result.removed).toEqual(["2026/01/2026-01-03.md"]);
+		});
+	});
+
 	describe("シリアライズ/デシリアライズ", () => {
 		it("空の Index をシリアライズできる", () => {
 			const index = new VaultIndex();

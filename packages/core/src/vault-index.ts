@@ -1,4 +1,5 @@
 import * as v from "valibot";
+import { parseDailyNote } from "./parser";
 import { DailyNoteSchema } from "./schemas";
 import type { DailyNote } from "./schemas";
 
@@ -125,6 +126,31 @@ export class VaultIndex {
 		}
 
 		return { toUpdate, toRemove };
+	}
+
+	// --- 同期 API ---
+
+	async applySync(
+		files: FileInfo[],
+		readFile: (path: string) => Promise<string>,
+	): Promise<{ updated: string[]; removed: string[] }> {
+		const { toUpdate, toRemove } = this.computeStalePaths(files);
+
+		const updated: string[] = [];
+		for (const file of toUpdate) {
+			const markdown = await readFile(file.path);
+			const note = parseDailyNote(markdown);
+			if (note) {
+				this.set(file.path, file.mtime, note);
+				updated.push(file.path);
+			}
+		}
+
+		for (const path of toRemove) {
+			this.delete(path);
+		}
+
+		return { updated, removed: toRemove };
 	}
 
 	// --- キャッシュ シリアライズ/デシリアライズ ---
