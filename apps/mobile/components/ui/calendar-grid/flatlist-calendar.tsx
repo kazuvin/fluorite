@@ -55,11 +55,14 @@ export function FlatListCalendar({
 		[width],
 	);
 
-	const handleMomentumScrollEnd = useCallback(
+	const lastReportedOffset = useRef<number | undefined>(undefined);
+
+	const handleScroll = useCallback(
 		(event: NativeSyntheticEvent<NativeScrollEvent>) => {
 			const pageIndex = Math.round(event.nativeEvent.contentOffset.x / width);
 			const offset = offsets[pageIndex];
-			if (offset !== undefined) {
+			if (offset !== undefined && offset !== lastReportedOffset.current) {
+				lastReportedOffset.current = offset;
 				const { year, month } = offsetToYearMonth(baseYear, baseMonth, offset);
 				onMonthChange(year, month);
 			}
@@ -143,7 +146,8 @@ export function FlatListCalendar({
 				getItemLayout={getItemLayout}
 				renderItem={renderItem}
 				keyExtractor={keyExtractor}
-				onMomentumScrollEnd={handleMomentumScrollEnd}
+				onScroll={handleScroll}
+				scrollEventThrottle={16}
 				style={{ height: CELL_HEIGHT * 7 }}
 			/>
 		</View>
