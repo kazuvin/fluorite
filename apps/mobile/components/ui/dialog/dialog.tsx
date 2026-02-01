@@ -12,6 +12,7 @@ import { useReanimatedKeyboardAnimation } from "react-native-keyboard-controller
 import Animated, {
 	FadeIn,
 	FadeOut,
+	LinearTransition,
 	SlideInDown,
 	SlideOutDown,
 	useAnimatedStyle,
@@ -56,11 +57,13 @@ function DialogRoot({ visible, onClose, closeOnOverlayPress = true, children }: 
 				</Animated.View>
 				<Animated.View
 					testID="dialog-keyboard-avoiding"
+					layout={LinearTransition.duration(250)}
 					style={[styles.keyboardAvoiding, keyboardAvoidingStyle]}
 				>
 					<Animated.View
 						entering={SlideInDown.duration(250)}
 						exiting={SlideOutDown.duration(200)}
+						layout={LinearTransition.duration(250)}
 						testID="dialog-card"
 						accessibilityRole="alert"
 						style={styles.card}

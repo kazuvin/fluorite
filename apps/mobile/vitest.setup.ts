@@ -13,12 +13,30 @@ vi.mock("react-native-reanimated", () => {
 		Text: View,
 		createAnimatedComponent: (c: unknown) => c,
 	};
+	const chainable = () => {
+		const obj: Record<string, unknown> = {};
+		obj.duration = () => obj;
+		obj.easing = () => obj;
+		return obj;
+	};
+	const easingFn = () => 0;
+	easingFn.out = () => easingFn;
+	easingFn.in = () => easingFn;
+	easingFn.inOut = () => easingFn;
+	easingFn.ease = easingFn;
 	return {
 		default: Animated,
-		FadeIn: { duration: () => ({ duration: () => ({}) }) },
-		FadeOut: { duration: () => ({ duration: () => ({}) }) },
-		SlideInDown: { duration: () => ({ duration: () => ({}) }) },
-		SlideOutDown: { duration: () => ({ duration: () => ({}) }) },
+		Easing: { out: () => easingFn, in: () => easingFn, inOut: () => easingFn, ease: easingFn },
+		FadeIn: chainable(),
+		FadeOut: chainable(),
+		SlideInDown: chainable(),
+		SlideOutDown: chainable(),
+		LinearTransition: chainable(),
+		Keyframe: class {
+			duration() {
+				return this;
+			}
+		},
 		useAnimatedStyle: (fn: () => unknown) => fn(),
 	};
 });
