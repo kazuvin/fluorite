@@ -1,5 +1,6 @@
 import { colors, parseNumeric, radius, spacing } from "@fluorite/design-tokens";
 import type { ReactNode } from "react";
+import { useMemo } from "react";
 import {
 	ActivityIndicator,
 	Pressable,
@@ -8,6 +9,8 @@ import {
 	type ViewStyle,
 	useColorScheme,
 } from "react-native";
+
+import { ButtonContext, type ButtonContextValue } from "./button-context";
 
 const variants = ["primary", "secondary", "outline", "ghost"] as const;
 type Variant = (typeof variants)[number];
@@ -40,29 +43,33 @@ export function Button({
 
 	const variantStyle = getVariantStyle(variant, theme);
 	const sizeStyle = sizeStyles[size];
-	const textColor = getTextColor(variant, theme);
+	const spinnerColor = getSpinnerColor(variant, theme);
+
+	const ctx = useMemo<ButtonContextValue>(() => ({ variant, scheme }), [variant, scheme]);
 
 	return (
-		<Pressable
-			accessibilityRole="button"
-			disabled={isDisabled}
-			aria-disabled={isDisabled}
-			onPress={isDisabled ? undefined : onPress}
-			style={({ pressed }) => [
-				styles.base,
-				sizeStyle,
-				variantStyle,
-				pressed && styles.pressed,
-				isDisabled && styles.disabled,
-				style,
-			]}
-		>
-			{loading ? (
-				<ActivityIndicator testID="button-loading" size="small" color={textColor} />
-			) : (
-				<View style={styles.content}>{children}</View>
-			)}
-		</Pressable>
+		<ButtonContext.Provider value={ctx}>
+			<Pressable
+				accessibilityRole="button"
+				disabled={isDisabled}
+				aria-disabled={isDisabled}
+				onPress={isDisabled ? undefined : onPress}
+				style={({ pressed }) => [
+					styles.base,
+					sizeStyle,
+					variantStyle,
+					pressed && styles.pressed,
+					isDisabled && styles.disabled,
+					style,
+				]}
+			>
+				{loading ? (
+					<ActivityIndicator testID="button-loading" size="small" color={spinnerColor} />
+				) : (
+					<View style={styles.content}>{children}</View>
+				)}
+			</Pressable>
+		</ButtonContext.Provider>
 	);
 }
 
@@ -77,20 +84,19 @@ function getVariantStyle(variant: Variant, theme: (typeof colors)["light"]): Vie
 				backgroundColor: "transparent",
 				borderWidth: 1,
 				borderColor: theme.tint,
+				borderCurve: "continuous",
 			};
 		case "ghost":
 			return { backgroundColor: "transparent" };
 	}
 }
 
-function getTextColor(variant: Variant, theme: (typeof colors)["light"]): string {
+function getSpinnerColor(variant: Variant, theme: (typeof colors)["light"]): string {
 	switch (variant) {
 		case "primary":
-			return "#fff";
 		case "secondary":
 			return "#fff";
 		case "outline":
-			return theme.tint;
 		case "ghost":
 			return theme.tint;
 	}
@@ -100,7 +106,7 @@ const styles = StyleSheet.create({
 	base: {
 		alignItems: "center",
 		justifyContent: "center",
-		borderRadius: parseNumeric(radius.md),
+		borderRadius: parseNumeric(radius.full),
 	},
 	content: {
 		flexDirection: "row",
@@ -117,18 +123,15 @@ const styles = StyleSheet.create({
 
 const sizeStyles = StyleSheet.create({
 	sm: {
-		paddingVertical: parseNumeric(spacing[1]),
-		paddingHorizontal: parseNumeric(spacing[3]),
+		padding: parseNumeric(spacing[4]),
 		minHeight: 32,
 	},
 	md: {
-		paddingVertical: parseNumeric(spacing[2]),
-		paddingHorizontal: parseNumeric(spacing[4]),
+		padding: parseNumeric(spacing[4]),
 		minHeight: 40,
 	},
 	lg: {
-		paddingVertical: parseNumeric(spacing[3]),
-		paddingHorizontal: parseNumeric(spacing[5]),
+		padding: parseNumeric(spacing[4]),
 		minHeight: 48,
 	},
 });

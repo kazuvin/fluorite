@@ -1,20 +1,35 @@
 import { colors, parseNumeric, spacing } from "@fluorite/design-tokens";
 import { useState } from "react";
 import { Pressable, StyleSheet, useColorScheme } from "react-native";
-import { Dialog, DialogClose, DialogTitle } from "../../../components/ui/dialog";
+import { Button, ButtonText } from "../../../components/ui/button";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "../../../components/ui/dialog";
 import { IconSymbol } from "../../../components/ui/icon-symbol";
+import { Input } from "../../../components/ui/input";
 
 export function AddEventFab() {
 	const [visible, setVisible] = useState(false);
+	const [title, setTitle] = useState("");
 	const scheme = useColorScheme() ?? "light";
 	const theme = colors[scheme];
+
+	const handleOpen = () => setVisible(true);
+	const handleClose = () => {
+		setVisible(false);
+		setTitle("");
+	};
 
 	return (
 		<>
 			<Pressable
 				testID="add-event-fab"
 				accessibilityRole="button"
-				onPress={() => setVisible(true)}
+				onPress={handleOpen}
 				style={({ pressed }) => [
 					styles.fab,
 					{ backgroundColor: theme.tint },
@@ -23,9 +38,17 @@ export function AddEventFab() {
 			>
 				<IconSymbol name="plus" size={28} color="#fff" />
 			</Pressable>
-			<Dialog visible={visible} onClose={() => setVisible(false)}>
-				<DialogClose />
-				<DialogTitle>予定を追加</DialogTitle>
+			<Dialog visible={visible} onClose={handleClose}>
+				<DialogHeader>
+					<DialogTitle>予定を追加</DialogTitle>
+					<DialogClose />
+				</DialogHeader>
+				<DialogContent>
+					<Input placeholder="タイトル" value={title} onChangeText={setTitle} />
+					<Button>
+						<ButtonText>追加する</ButtonText>
+					</Button>
+				</DialogContent>
 			</Dialog>
 		</>
 	);

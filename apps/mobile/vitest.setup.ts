@@ -19,5 +19,13 @@ vi.mock("react-native-reanimated", () => {
 		FadeOut: { duration: () => ({ duration: () => ({}) }) },
 		SlideInDown: { duration: () => ({ duration: () => ({}) }) },
 		SlideOutDown: { duration: () => ({ duration: () => ({}) }) },
+		useAnimatedStyle: (fn: () => unknown) => fn(),
 	};
 });
+
+vi.mock("react-native-keyboard-controller", () => ({
+	useReanimatedKeyboardAnimation: () => ({
+		height: { value: 0 },
+		progress: { value: 0 },
+	}),
+}));

@@ -35,6 +35,7 @@
 	/* Light theme colors (default) */
 	--color-text: #11181c;
 	--color-background: #fff;
+	--color-muted: #f1f3f5;
 	--color-tint: #0a7ea4;
 	--color-icon: #687076;
 	--color-tabIconDefault: #687076;
@@ -45,6 +46,7 @@
 	:root {
 		--color-text: #ecedee;
 		--color-background: #151718;
+		--color-muted: #2b2f31;
 		--color-tint: #fff;
 		--color-icon: #9ba1a6;
 		--color-tabIconDefault: #9ba1a6;

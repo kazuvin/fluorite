@@ -38,6 +38,21 @@ describe("AddEventFab", () => {
 			expect(screen.getByText("予定を追加")).toBeInTheDocument();
 		});
 
+		it("DialogHeader 内に DialogTitle と DialogClose が配置される", () => {
+			render(<AddEventFab />);
+			fireEvent.click(screen.getByTestId("add-event-fab"));
+			const header = screen.getByTestId("dialog-header");
+			expect(header).toBeInTheDocument();
+			expect(screen.getByText("予定を追加")).toBeInTheDocument();
+			expect(screen.getByTestId("dialog-close")).toBeInTheDocument();
+		});
+
+		it("DialogContent が表示される", () => {
+			render(<AddEventFab />);
+			fireEvent.click(screen.getByTestId("add-event-fab"));
+			expect(screen.getByTestId("dialog-content")).toBeInTheDocument();
+		});
+
 		it("オーバーレイを押すと Dialog が閉じる", () => {
 			render(<AddEventFab />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
@@ -52,6 +67,41 @@ describe("AddEventFab", () => {
 			expect(screen.getByTestId("dialog-card")).toBeInTheDocument();
 			fireEvent.click(screen.getByTestId("dialog-close"));
 			expect(screen.queryByTestId("dialog-card")).toBeNull();
+		});
+	});
+
+	describe("追加ボタン", () => {
+		it("Dialog 内に追加ボタンが表示される", () => {
+			render(<AddEventFab />);
+			fireEvent.click(screen.getByTestId("add-event-fab"));
+			expect(screen.getByRole("button", { name: "追加" })).toBeInTheDocument();
+		});
+	});
+
+	describe("タイトル入力", () => {
+		it("Dialog 内にタイトル入力欄が表示される", () => {
+			render(<AddEventFab />);
+			fireEvent.click(screen.getByTestId("add-event-fab"));
+			expect(screen.getByPlaceholderText("タイトル")).toBeInTheDocument();
+		});
+
+		it("タイトルを入力できる", () => {
+			render(<AddEventFab />);
+			fireEvent.click(screen.getByTestId("add-event-fab"));
+			const input = screen.getByPlaceholderText("タイトル");
+			fireEvent.change(input, { target: { value: "チームミーティング" } });
+			expect(screen.getByDisplayValue("チームミーティング")).toBeInTheDocument();
+		});
+
+		it("Dialog を閉じて再度開くとタイトルがリセットされる", () => {
+			render(<AddEventFab />);
+			fireEvent.click(screen.getByTestId("add-event-fab"));
+			const input = screen.getByPlaceholderText("タイトル");
+			fireEvent.change(input, { target: { value: "チームミーティング" } });
+			fireEvent.click(screen.getByTestId("dialog-close"));
+			fireEvent.click(screen.getByTestId("add-event-fab"));
+			expect(screen.getByPlaceholderText("タイトル")).toBeInTheDocument();
+			expect(screen.queryByDisplayValue("チームミーティング")).toBeNull();
 		});
 	});
 });

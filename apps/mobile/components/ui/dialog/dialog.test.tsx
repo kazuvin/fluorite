@@ -5,7 +5,15 @@ vi.mock("../icon-symbol", () => ({
 	IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon-${name}`} />,
 }));
 
-import { Dialog, DialogActions, DialogClose, DialogDescription, DialogTitle } from "./dialog";
+import {
+	Dialog,
+	DialogActions,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+} from "./dialog";
 
 describe("Dialog", () => {
 	describe("表示制御", () => {
@@ -123,6 +131,59 @@ describe("Dialog", () => {
 		});
 	});
 
+	describe("DialogHeader", () => {
+		it("DialogHeader が表示される", () => {
+			render(
+				<Dialog visible onClose={vi.fn()}>
+					<DialogHeader>
+						<DialogTitle>タイトル</DialogTitle>
+						<DialogClose />
+					</DialogHeader>
+				</Dialog>,
+			);
+			expect(screen.getByTestId("dialog-header")).toBeInTheDocument();
+		});
+
+		it("DialogTitle と DialogClose が横並びで配置される", () => {
+			render(
+				<Dialog visible onClose={vi.fn()}>
+					<DialogHeader>
+						<DialogTitle>タイトル</DialogTitle>
+						<DialogClose />
+					</DialogHeader>
+				</Dialog>,
+			);
+			const header = screen.getByTestId("dialog-header");
+			expect(header).toHaveStyle({ flexDirection: "row" });
+			expect(header).toHaveStyle({ justifyContent: "space-between" });
+			expect(header).toHaveStyle({ alignItems: "center" });
+		});
+	});
+
+	describe("DialogContent", () => {
+		it("DialogContent が表示される", () => {
+			render(
+				<Dialog visible onClose={vi.fn()}>
+					<DialogContent>
+						<DialogDescription>本文</DialogDescription>
+					</DialogContent>
+				</Dialog>,
+			);
+			expect(screen.getByTestId("dialog-content")).toBeInTheDocument();
+		});
+
+		it("子要素を表示できる", () => {
+			render(
+				<Dialog visible onClose={vi.fn()}>
+					<DialogContent>
+						<span>カスタムコンテンツ</span>
+					</DialogContent>
+				</Dialog>,
+			);
+			expect(screen.getByText("カスタムコンテンツ")).toBeInTheDocument();
+		});
+	});
+
 	describe("アクセシビリティ", () => {
 		it("カードに accessibilityRole が設定されている", () => {
 			render(
@@ -131,6 +192,17 @@ describe("Dialog", () => {
 				</Dialog>,
 			);
 			expect(screen.getByTestId("dialog-card")).toHaveAttribute("role", "alert");
+		});
+	});
+
+	describe("KeyboardAvoidingView", () => {
+		it("キーボード回避用のコンテナが存在する", () => {
+			render(
+				<Dialog visible onClose={vi.fn()}>
+					<DialogTitle>テスト</DialogTitle>
+				</Dialog>,
+			);
+			expect(screen.getByTestId("dialog-keyboard-avoiding")).toBeInTheDocument();
 		});
 	});
 });

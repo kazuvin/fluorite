@@ -8,7 +8,14 @@ import {
 } from "@fluorite/design-tokens";
 import { type ReactNode, createContext, useContext } from "react";
 import { Pressable, StyleSheet, Text, type TextStyle, View, type ViewStyle } from "react-native";
-import Animated, { FadeIn, FadeOut, SlideInDown, SlideOutDown } from "react-native-reanimated";
+import { useReanimatedKeyboardAnimation } from "react-native-keyboard-controller";
+import Animated, {
+	FadeIn,
+	FadeOut,
+	SlideInDown,
+	SlideOutDown,
+	useAnimatedStyle,
+} from "react-native-reanimated";
 import { IconSymbol } from "../icon-symbol";
 
 type DialogProps = {
@@ -20,7 +27,17 @@ type DialogProps = {
 
 const DialogContext = createContext<{ onClose: () => void }>({ onClose: () => {} });
 
+const KEYBOARD_OFFSET = parseNumeric(spacing[4]);
+
 function DialogRoot({ visible, onClose, closeOnOverlayPress = true, children }: DialogProps) {
+	const { height: keyboardHeight } = useReanimatedKeyboardAnimation();
+
+	const keyboardAvoidingStyle = useAnimatedStyle(() => ({
+		transform: [
+			{ translateY: keyboardHeight.value - (keyboardHeight.value !== 0 ? KEYBOARD_OFFSET : 0) },
+		],
+	}));
+
 	if (!visible) return null;
 
 	return (
@@ -38,13 +55,18 @@ function DialogRoot({ visible, onClose, closeOnOverlayPress = true, children }: 
 					/>
 				</Animated.View>
 				<Animated.View
-					entering={SlideInDown.duration(250)}
-					exiting={SlideOutDown.duration(200)}
-					testID="dialog-card"
-					accessibilityRole="alert"
-					style={styles.card}
+					testID="dialog-keyboard-avoiding"
+					style={[styles.keyboardAvoiding, keyboardAvoidingStyle]}
 				>
-					{children}
+					<Animated.View
+						entering={SlideInDown.duration(250)}
+						exiting={SlideOutDown.duration(200)}
+						testID="dialog-card"
+						accessibilityRole="alert"
+						style={styles.card}
+					>
+						{children}
+					</Animated.View>
 				</Animated.View>
 			</View>
 		</DialogContext.Provider>
@@ -73,11 +95,35 @@ function DialogClose({ style }: { style?: ViewStyle } = {}) {
 	);
 }
 
+function DialogHeader({ children, style }: { children: ReactNode; style?: ViewStyle }) {
+	return (
+		<View testID="dialog-header" style={[styles.header, style]}>
+			{children}
+		</View>
+	);
+}
+
+function DialogContent({ children, style }: { children: ReactNode; style?: ViewStyle }) {
+	return (
+		<View testID="dialog-content" style={[styles.content, style]}>
+			{children}
+		</View>
+	);
+}
+
 function DialogActions({ children, style }: { children: ReactNode; style?: ViewStyle }) {
 	return <View style={[styles.actions, style]}>{children}</View>;
 }
 
-export { DialogRoot as Dialog, DialogTitle, DialogDescription, DialogClose, DialogActions };
+export {
+	DialogRoot as Dialog,
+	DialogTitle,
+	DialogDescription,
+	DialogClose,
+	DialogHeader,
+	DialogContent,
+	DialogActions,
+};
 
 export type { DialogProps };
 
@@ -90,8 +136,8 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		justifyContent: "flex-end",
 		alignItems: "center",
-		paddingVertical: parseNumeric(spacing[16]),
-		paddingHorizontal: parseNumeric(spacing[8]),
+		paddingVertical: parseNumeric(spacing[8]),
+		paddingHorizontal: parseNumeric(spacing[4]),
 		zIndex: 1000,
 	},
 	overlayBackground: {
@@ -99,29 +145,39 @@ const styles = StyleSheet.create({
 		backgroundColor: "rgba(0, 0, 0, 0.4)",
 	},
 	closeButton: {
-		position: "absolute",
-		top: parseNumeric(spacing[6]),
-		right: parseNumeric(spacing[6]),
 		width: 32,
 		height: 32,
 		borderRadius: 16,
 		backgroundColor: "rgba(104, 112, 118, 0.12)",
 		alignItems: "center",
 		justifyContent: "center",
-		zIndex: 1,
+	},
+	keyboardAvoiding: {
+		width: "100%",
 	},
 	card: {
 		width: "100%",
 		backgroundColor: colors.light.background,
 		borderCurve: "continuous",
 		borderRadius: parseNumeric(radius["2xl"]),
-		paddingVertical: parseNumeric(spacing[8]),
-		paddingHorizontal: parseNumeric(spacing[8]),
+		padding: parseNumeric(spacing[8]),
+	},
+	header: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		borderBottomWidth: 1,
+		borderBottomColor: colors.light.muted,
+		paddingBottom: parseNumeric(spacing[4]),
+		marginBottom: parseNumeric(spacing[4]),
+	},
+	content: {
+		marginTop: parseNumeric(spacing[2]),
+		gap: parseNumeric(spacing[6]),
 	},
 	title: {
 		fontSize: parseNumeric(fontSize.lg),
 		fontWeight: fontWeight.semibold,
-		marginBottom: parseNumeric(spacing[2]),
 	},
 	description: {
 		fontSize: parseNumeric(fontSize.base),
