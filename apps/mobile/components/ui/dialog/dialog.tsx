@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		justifyContent: "flex-end",
 		alignItems: "center",
-		padding: parseNumeric(spacing[4]),
+		paddingVertical: parseNumeric(spacing[16]),
+		paddingHorizontal: parseNumeric(spacing[8]),
 		zIndex: 1000,
 	},
 	overlayBackground: {
