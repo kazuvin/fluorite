@@ -7,7 +7,7 @@
 		"build:desktop": "pnpm --filter @fluorite/desktop build",
 		"build:core": "pnpm --filter @fluorite/core build",
 		"build:tokens": "pnpm --filter @fluorite/design-tokens build",
-		"test": "pnpm --filter @fluorite/core test",
+		"test": "pnpm --filter @fluorite/core test && pnpm --filter @fluorite/mobile test",
 		"test:tokens": "pnpm --filter @fluorite/design-tokens test",
 		"typecheck": "pnpm -r --parallel run typecheck",
 		"lint": "biome check .",

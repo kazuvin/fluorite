@@ -124,6 +124,9 @@ importers:
       expo-web-browser:
         specifier: ~15.0.7
         version: 15.0.10(expo@54.0.32)(react-native@0.81.4(@babel/core@7.28.6)(@types/react@19.1.17)(react@19.1.0))
+      jotai:
+        specifier: ^2.17.0
+        version: 2.17.0(@babel/core@7.28.6)(@babel/template@7.28.6)(@types/react@19.1.17)(react@19.1.0)
       react:
         specifier: 19.1.0
         version: 19.1.0
@@ -164,6 +167,9 @@ importers:
       typescript:
         specifier: ~5.9.2
         version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.1.0)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/core:
     dependencies:
