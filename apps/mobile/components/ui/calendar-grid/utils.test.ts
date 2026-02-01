@@ -103,6 +103,32 @@ describe("generateCalendarGrid", () => {
 		const todayDays = grid.flat().filter((d) => d.isToday);
 		expect(todayDays).toHaveLength(0);
 	});
+
+	it("dateKey が YYYY-MM-DD 形式で設定される", () => {
+		const grid = generateCalendarGrid(2026, 0); // 2026年1月
+		// 1月1日は木曜日 → 最初の週の index 4
+		const jan1 = grid.flat().find((d) => d.isCurrentMonth && d.date === 1);
+		expect(jan1?.dateKey).toBe("2026-01-01");
+	});
+
+	it("前月の日付でも dateKey が正しく設定される", () => {
+		const grid = generateCalendarGrid(2026, 3); // 2026年4月
+		const prevMonthDays = grid[0].filter((d) => !d.isCurrentMonth);
+		// 4月1日は水曜 → 前月は3月の日
+		expect(prevMonthDays[0].dateKey).toMatch(/^2026-03-/);
+	});
+
+	it("dateKey の月が1-indexed（01-12）である", () => {
+		const grid = generateCalendarGrid(2026, 0); // 2026年1月(month=0)
+		const jan15 = grid.flat().find((d) => d.isCurrentMonth && d.date === 15);
+		expect(jan15?.dateKey).toBe("2026-01-15");
+	});
+
+	it("dateKey の日が zero-padded である", () => {
+		const grid = generateCalendarGrid(2026, 0);
+		const jan5 = grid.flat().find((d) => d.isCurrentMonth && d.date === 5);
+		expect(jan5?.dateKey).toBe("2026-01-05");
+	});
 });
 
 describe("offsetToYearMonth", () => {

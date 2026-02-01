@@ -1,18 +1,22 @@
-import { type DailyNote, parseDailyNote } from "@fluorite/core";
+import { type EventNote, parseEventNote } from "@fluorite/core";
 import { useState } from "react";
 
-const SAMPLE_MARKDOWN = `# 2025-01-31
+const SAMPLE_MARKDOWN = `---
+start: 2025-01-31
+end: 2025-01-31
+time: "09:00 - 10:00"
+tags:
+  - work
+---
 
-- [09:00-10:00] Team standup #work
-- [12:00-13:00] Lunch break
-- [15:00] Review PR #work
+# Team standup
 `;
 
 function App() {
 	const [markdown] = useState(SAMPLE_MARKDOWN);
-	const dailyNote: DailyNote | null = parseDailyNote(markdown);
+	const eventNote: EventNote | null = parseEventNote(markdown);
 
-	if (!dailyNote) {
+	if (!eventNote) {
 		return (
 			<main className="p-8 bg-background text-text min-h-screen">
 				<h1 className="text-3xl font-bold mb-5">Fluorite Calendar</h1>
@@ -25,25 +29,25 @@ function App() {
 		<main className="p-8 bg-background text-text min-h-screen">
 			<h1 className="text-3xl font-bold mb-5">Fluorite Calendar</h1>
 			<section className="mb-5">
-				<h2 className="text-xl font-semibold mb-2">{dailyNote.date}</h2>
-				<ul className="space-y-1">
-					{dailyNote.entries.map((entry) => (
-						<li key={entry.title} className="flex items-center flex-wrap gap-2 py-1">
-							{entry.time && (
-								<span className="font-semibold text-tint">
-									{entry.time.start}
-									{entry.time.end && `-${entry.time.end}`}
-								</span>
-							)}
-							<span className="text-base">{entry.title}</span>
-							{entry.tags?.map((tag: string) => (
-								<span key={tag} className="px-2 py-0.5 bg-tint/15 text-tint rounded-sm text-sm">
-									#{tag}
-								</span>
-							))}
-						</li>
+				<h2 className="text-xl font-semibold mb-2">{eventNote.title}</h2>
+				<div className="flex items-center flex-wrap gap-2 py-1">
+					<span className="text-sm text-muted">
+						{eventNote.start}
+						{eventNote.start !== eventNote.end && ` - ${eventNote.end}`}
+					</span>
+					{eventNote.time && (
+						<span className="font-semibold text-tint">
+							{eventNote.time.start}
+							{eventNote.time.end && `-${eventNote.time.end}`}
+						</span>
+					)}
+					{eventNote.tags?.map((tag: string) => (
+						<span key={tag} className="px-2 py-0.5 bg-tint/15 text-tint rounded-sm text-sm">
+							#{tag}
+						</span>
 					))}
-				</ul>
+				</div>
+				{eventNote.body && <p className="mt-2 text-sm">{eventNote.body}</p>}
 			</section>
 		</main>
 	);

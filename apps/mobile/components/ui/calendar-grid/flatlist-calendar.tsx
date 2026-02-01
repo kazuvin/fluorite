@@ -84,13 +84,35 @@ export function FlatListCalendar({
 					direction={direction}
 					style={{ ...styles.headerTitle, color: colors.text }}
 				/>
-				<Text style={[styles.headerTitle, { color: colors.text }]}>年</Text>
+				<Text
+					style={[
+						styles.headerTitle,
+						{
+							marginTop: parseNumeric(spacing[1]),
+							color: colors.muted,
+							fontSize: parseNumeric(fontSize.xs),
+						},
+					]}
+				>
+					年
+				</Text>
 				<RollingNumber
 					value={String(viewingMonth + 1)}
 					direction={direction}
 					style={{ ...styles.headerTitle, color: colors.text }}
 				/>
-				<Text style={[styles.headerTitle, { color: colors.text }]}>月</Text>
+				<Text
+					style={[
+						styles.headerTitle,
+						{
+							marginTop: parseNumeric(spacing[1]),
+							color: colors.muted,
+							fontSize: parseNumeric(fontSize.xs),
+						},
+					]}
+				>
+					月
+				</Text>
 			</View>
 
 			<View style={styles.weekdayRow}>
@@ -122,8 +144,9 @@ const styles = StyleSheet.create({
 	header: {
 		flexDirection: "row",
 		alignItems: "center",
-		paddingHorizontal: parseNumeric(spacing[3]),
+		paddingHorizontal: parseNumeric(spacing[5]),
 		marginBottom: parseNumeric(spacing[4]),
+		gap: parseNumeric(spacing[1]),
 	},
 	headerTitle: {
 		fontSize: parseNumeric(fontSize.lg),

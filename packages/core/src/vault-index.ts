@@ -1,14 +1,14 @@
 import * as v from "valibot";
-import { parseDailyNote } from "./parser";
-import { DailyNoteSchema } from "./schemas";
-import type { DailyNote } from "./schemas";
+import { parseEventNote } from "./event-note-parser";
+import { EventNoteSchema } from "./event-note-schemas";
+import type { EventNote } from "./event-note-schemas";
 
 // --- 型定義・スキーマ ---
 
 export const CacheEntrySchema = v.object({
 	path: v.string(),
 	mtime: v.number(),
-	note: DailyNoteSchema,
+	note: EventNoteSchema,
 });
 
 export type CacheEntry = v.InferOutput<typeof CacheEntrySchema>;
@@ -36,7 +36,7 @@ export class VaultIndex {
 		return this.entries.size;
 	}
 
-	set(path: string, mtime: number, note: DailyNote): void {
+	set(path: string, mtime: number, note: EventNote): void {
 		this.entries.set(path, { path, mtime, note });
 	}
 
@@ -58,48 +58,34 @@ export class VaultIndex {
 
 	// --- クエリ API ---
 
-	getByDate(date: string): DailyNote | undefined {
+	getByDate(date: string): EventNote[] {
+		const results: EventNote[] = [];
 		for (const entry of this.entries.values()) {
-			if (entry.note.date === date) return entry.note;
-		}
-		return undefined;
-	}
-
-	getByDateRange(start: string, end: string): DailyNote[] {
-		const results: DailyNote[] = [];
-		for (const entry of this.entries.values()) {
-			if (entry.note.date >= start && entry.note.date <= end) {
+			if (entry.note.start <= date && entry.note.end >= date) {
 				results.push(entry.note);
 			}
 		}
-		return results.sort((a, b) => a.date.localeCompare(b.date));
+		return results.sort((a, b) => a.start.localeCompare(b.start));
 	}
 
-	getByTag(tag: string): DailyNote[] {
-		const results: DailyNote[] = [];
+	getByDateRange(start: string, end: string): EventNote[] {
+		const results: EventNote[] = [];
 		for (const entry of this.entries.values()) {
-			const hasTag = entry.note.entries.some((e) => e.tags?.includes(tag));
-			if (hasTag) results.push(entry.note);
-		}
-		return results.sort((a, b) => a.date.localeCompare(b.date));
-	}
-
-	getIncompleteTasks(): Array<{
-		date: string;
-		entry: DailyNote["entries"][number];
-	}> {
-		const results: Array<{
-			date: string;
-			entry: DailyNote["entries"][number];
-		}> = [];
-		for (const cacheEntry of this.entries.values()) {
-			for (const entry of cacheEntry.note.entries) {
-				if (entry.isTask && !entry.done) {
-					results.push({ date: cacheEntry.note.date, entry });
-				}
+			if (entry.note.start <= end && entry.note.end >= start) {
+				results.push(entry.note);
 			}
 		}
-		return results.sort((a, b) => a.date.localeCompare(b.date));
+		return results.sort((a, b) => a.start.localeCompare(b.start));
+	}
+
+	getByTag(tag: string): EventNote[] {
+		const results: EventNote[] = [];
+		for (const entry of this.entries.values()) {
+			if (entry.note.tags?.includes(tag)) {
+				results.push(entry.note);
+			}
+		}
+		return results.sort((a, b) => a.start.localeCompare(b.start));
 	}
 
 	// --- キャッシュ差分判定 ---
@@ -139,7 +125,7 @@ export class VaultIndex {
 		const updated: string[] = [];
 		for (const file of toUpdate) {
 			const markdown = await readFile(file.path);
-			const note = parseDailyNote(markdown);
+			const note = parseEventNote(markdown);
 			if (note) {
 				this.set(file.path, file.mtime, note);
 				updated.push(file.path);

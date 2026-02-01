@@ -4,6 +4,7 @@ export type CalendarDay = {
 	year: number;
 	isCurrentMonth: boolean;
 	isToday: boolean;
+	dateKey: string;
 };
 
 const DAYS_PER_WEEK = 7;
@@ -37,20 +38,28 @@ export function generateCalendarGrid(year: number, month: number, today?: Date):
 	for (let row = 0; row < gridRows; row++) {
 		const week: CalendarDay[] = [];
 		for (let col = 0; col < DAYS_PER_WEEK; col++) {
+			const cYear = current.getFullYear();
+			const cMonth = current.getMonth();
+			const cDate = current.getDate();
+
 			const isToday =
 				today !== undefined &&
-				current.getFullYear() === today.getFullYear() &&
-				current.getMonth() === today.getMonth() &&
-				current.getDate() === today.getDate();
+				cYear === today.getFullYear() &&
+				cMonth === today.getMonth() &&
+				cDate === today.getDate();
+
+			const mm = String(cMonth + 1).padStart(2, "0");
+			const dd = String(cDate).padStart(2, "0");
 
 			week.push({
-				date: current.getDate(),
-				month: current.getMonth(),
-				year: current.getFullYear(),
-				isCurrentMonth: current.getMonth() === month && current.getFullYear() === year,
+				date: cDate,
+				month: cMonth,
+				year: cYear,
+				isCurrentMonth: cMonth === month && cYear === year,
 				isToday,
+				dateKey: `${cYear}-${mm}-${dd}`,
 			});
-			current = new Date(current.getFullYear(), current.getMonth(), current.getDate() + 1);
+			current = new Date(cYear, cMonth, cDate + 1);
 		}
 		grid.push(week);
 	}
