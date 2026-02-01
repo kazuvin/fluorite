@@ -35,6 +35,10 @@ describe("tokens", () => {
 		}
 	});
 
+	it("radius に 2xl トークンが定義されている", () => {
+		expect(radius["2xl"]).toBe("20px");
+	});
+
 	it("lineHeight の値はすべて数値文字列", () => {
 		for (const value of Object.values(lineHeight)) {
 			expect(Number.parseFloat(value)).not.toBeNaN();

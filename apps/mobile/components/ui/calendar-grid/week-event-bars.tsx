@@ -53,6 +53,7 @@ export function WeekEventBars({
 						borderBottomLeftRadius: slot.isStart ? EVENT_BAR_RADIUS : 0,
 						borderTopRightRadius: slot.isEnd ? EVENT_BAR_RADIUS : 0,
 						borderBottomRightRadius: slot.isEnd ? EVENT_BAR_RADIUS : 0,
+						borderCurve: "continuous",
 						paddingHorizontal: slot.isStart ? 3 : 0,
 						justifyContent: "center",
 					}}

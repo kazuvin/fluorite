@@ -56,6 +56,7 @@ export const CalendarMonthPage = memo(function CalendarMonthPage({
 										day.isToday && {
 											color: colors.background,
 											fontWeight: fontWeight.bold,
+											borderCurve: "continuous",
 										},
 									]}
 								>

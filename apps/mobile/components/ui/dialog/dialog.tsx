@@ -113,7 +113,8 @@ const styles = StyleSheet.create({
 	card: {
 		width: "100%",
 		backgroundColor: colors.light.background,
-		borderRadius: parseNumeric(radius.xl),
+		borderCurve: "continuous",
+		borderRadius: parseNumeric(radius["2xl"]),
 		paddingVertical: parseNumeric(spacing[8]),
 		paddingHorizontal: parseNumeric(spacing[8]),
 	},
