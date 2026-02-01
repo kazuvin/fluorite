@@ -1,1 +1,1 @@
-t_wada TDD
+t_wada の TDD を実践せよ

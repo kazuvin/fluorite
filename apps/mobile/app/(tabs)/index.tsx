@@ -1,4 +1,4 @@
-import { parseCalendarMarkdown } from "@fluorite/core";
+import { type DailyNote, parseDailyNote } from "@fluorite/core";
 import {
 	colors,
 	fontSize,
@@ -10,42 +10,49 @@ import {
 import { useColorScheme } from "react-native";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
-const SAMPLE_MARKDOWN = `## 2025-01-31
+const SAMPLE_MARKDOWN = `# 2025-01-31
 
-- 09:00-10:00 Team standup #work
-- 12:00-13:00 Lunch break
-- 15:00 Review PR #work
+- [09:00-10:00] Team standup #work
+- [12:00-13:00] Lunch break
+- [15:00] Review PR #work
 `;
 
 export default function HomeScreen() {
-	const days = parseCalendarMarkdown(SAMPLE_MARKDOWN);
+	const dailyNote: DailyNote | null = parseDailyNote(SAMPLE_MARKDOWN);
 	const scheme = useColorScheme() ?? "light";
 	const theme = colors[scheme];
+
+	if (!dailyNote) {
+		return (
+			<ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
+				<Text style={[styles.title, { color: theme.text }]}>Fluorite Calendar</Text>
+				<Text style={{ color: theme.text }}>No data</Text>
+			</ScrollView>
+		);
+	}
 
 	return (
 		<ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
 			<Text style={[styles.title, { color: theme.text }]}>Fluorite Calendar</Text>
-			{days.map((day) => (
-				<View key={day.date} style={styles.daySection}>
-					<Text style={[styles.dateHeading, { color: theme.text }]}>{day.date}</Text>
-					{day.events.map((event) => (
-						<View key={event.id} style={styles.eventRow}>
-							{event.startTime && (
-								<Text style={[styles.time, { color: theme.tint }]}>
-									{event.startTime}
-									{event.endTime ? `-${event.endTime}` : ""}
-								</Text>
-							)}
-							<Text style={[styles.eventTitle, { color: theme.text }]}>{event.title}</Text>
-							{event.tags?.map((tag) => (
-								<View key={tag} style={[styles.tag, { backgroundColor: `${theme.tint}26` }]}>
-									<Text style={[styles.tagText, { color: theme.tint }]}>#{tag}</Text>
-								</View>
-							))}
-						</View>
-					))}
-				</View>
-			))}
+			<View style={styles.daySection}>
+				<Text style={[styles.dateHeading, { color: theme.text }]}>{dailyNote.date}</Text>
+				{dailyNote.entries.map((entry) => (
+					<View key={entry.title} style={styles.eventRow}>
+						{entry.time && (
+							<Text style={[styles.time, { color: theme.tint }]}>
+								{entry.time.start}
+								{entry.time.end ? `-${entry.time.end}` : ""}
+							</Text>
+						)}
+						<Text style={[styles.eventTitle, { color: theme.text }]}>{entry.title}</Text>
+						{entry.tags?.map((tag) => (
+							<View key={tag} style={[styles.tag, { backgroundColor: `${theme.tint}26` }]}>
+								<Text style={[styles.tagText, { color: theme.tint }]}>#{tag}</Text>
+							</View>
+						))}
+					</View>
+				))}
+			</View>
 		</ScrollView>
 	);
 }
