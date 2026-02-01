@@ -1,4 +1,4 @@
-import type { DailyNote, Entry } from "./types";
+import type { DailyNote, Entry } from "./schemas";
 
 export function parseDailyNote(markdown: string): DailyNote | null {
 	const trimmed = markdown.trim();

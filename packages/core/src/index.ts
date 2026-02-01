@@ -4,5 +4,5 @@ export {
 	EntrySchema,
 	DailyNoteSchema,
 	VaultConfigSchema,
-} from "./types";
-export type { Entry, DailyNote, VaultConfig } from "./types";
+} from "./schemas";
+export type { Entry, DailyNote, VaultConfig } from "./schemas";

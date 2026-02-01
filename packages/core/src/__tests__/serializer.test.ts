@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { parseDailyNote } from "../parser";
+import type { DailyNote } from "../schemas";
 import { serializeDailyNote } from "../serializer";
-import type { DailyNote } from "../types";
 
 describe("serializeDailyNote", () => {
 	it("エントリなしの DailyNote をシリアライズできる", () => {

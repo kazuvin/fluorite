@@ -1,4 +1,4 @@
-import type { DailyNote, Entry } from "./types";
+import type { DailyNote, Entry } from "./schemas";
 
 export function serializeDailyNote(note: DailyNote): string {
 	const lines: string[] = [];
