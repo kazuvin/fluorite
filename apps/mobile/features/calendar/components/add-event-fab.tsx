@@ -1,7 +1,8 @@
 import { colors, parseNumeric, spacing } from "@fluorite/design-tokens";
 import { useState } from "react";
-import { Pressable, StyleSheet, useColorScheme } from "react-native";
+import { Pressable, StyleSheet, View, useColorScheme } from "react-native";
 import { Button, ButtonText } from "../../../components/ui/button";
+import { DatePicker } from "../../../components/ui/date-picker";
 import {
 	Dialog,
 	DialogClose,
@@ -11,10 +12,14 @@ import {
 } from "../../../components/ui/dialog";
 import { IconSymbol } from "../../../components/ui/icon-symbol";
 import { Input } from "../../../components/ui/input";
+import { Switch } from "../../../components/ui/switch";
 
 export function AddEventFab() {
 	const [visible, setVisible] = useState(false);
 	const [title, setTitle] = useState("");
+	const [start, setStart] = useState("");
+	const [end, setEnd] = useState("");
+	const [allDay, setAllDay] = useState(true);
 	const scheme = useColorScheme() ?? "light";
 	const theme = colors[scheme];
 
@@ -22,6 +27,9 @@ export function AddEventFab() {
 	const handleClose = () => {
 		setVisible(false);
 		setTitle("");
+		setStart("");
+		setEnd("");
+		setAllDay(true);
 	};
 
 	return (
@@ -45,6 +53,21 @@ export function AddEventFab() {
 				</DialogHeader>
 				<DialogContent>
 					<Input placeholder="タイトル" value={title} onChangeText={setTitle} />
+					<Switch label="終日" value={allDay} onValueChange={setAllDay} />
+					<View testID="date-row" style={styles.dateRow}>
+						<DatePicker
+							testID="date-picker-start"
+							placeholder="開始日"
+							value={start}
+							onValueChange={setStart}
+						/>
+						<DatePicker
+							testID="date-picker-end"
+							placeholder="終了日"
+							value={end}
+							onValueChange={setEnd}
+						/>
+					</View>
 					<Button>
 						<ButtonText>追加する</ButtonText>
 					</Button>
@@ -55,6 +78,10 @@ export function AddEventFab() {
 }
 
 const styles = StyleSheet.create({
+	dateRow: {
+		flexDirection: "row",
+		gap: parseNumeric(spacing[5]),
+	},
 	fab: {
 		position: "absolute",
 		bottom: parseNumeric(spacing[8]),
