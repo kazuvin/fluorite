@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
 	dayCircle: {
 		width: 20,
 		height: 20,
-		borderRadius: parseNumeric(radius.full),
+		borderRadius: parseNumeric(radius.md),
 		alignItems: "center",
 		justifyContent: "center",
 	},
