@@ -19,10 +19,11 @@ describe("calendar-atoms", () => {
 		expect(store.get(monthValueAtom)).toBe(new Date().getMonth());
 	});
 
-	it("calendarGridValueAtom が 6x7 のグリッドを返す", () => {
+	it("calendarGridValueAtom が必要な行数×7列のグリッドを返す", () => {
 		const store = createStore();
 		const grid = store.get(calendarGridValueAtom);
-		expect(grid).toHaveLength(6);
+		expect(grid.length).toBeGreaterThanOrEqual(4);
+		expect(grid.length).toBeLessThanOrEqual(6);
 		for (const week of grid) {
 			expect(week).toHaveLength(7);
 		}

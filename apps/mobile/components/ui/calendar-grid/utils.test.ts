@@ -2,10 +2,25 @@ import { describe, expect, it } from "vitest";
 import { generateCalendarGrid } from "./utils";
 
 describe("generateCalendarGrid", () => {
-	it("6行×7列のグリッドを返す", () => {
-		const grid = generateCalendarGrid(2026, 1); // 2026年2月
-		expect(grid).toHaveLength(6);
-		for (const week of grid) {
+	it("月に必要な最小行数のグリッドを返す", () => {
+		// 2026年2月: 日曜始まり28日 → 4行で収まる
+		const feb = generateCalendarGrid(2026, 1);
+		expect(feb).toHaveLength(4);
+		for (const week of feb) {
+			expect(week).toHaveLength(7);
+		}
+
+		// 2026年1月: 木曜始まり31日 → 5行必要
+		const jan = generateCalendarGrid(2026, 0);
+		expect(jan).toHaveLength(5);
+		for (const week of jan) {
+			expect(week).toHaveLength(7);
+		}
+
+		// 2026年8月: 土曜始まり31日 → 6行必要
+		const aug = generateCalendarGrid(2026, 7);
+		expect(aug).toHaveLength(6);
+		for (const week of aug) {
 			expect(week).toHaveLength(7);
 		}
 	});
@@ -39,13 +54,19 @@ describe("generateCalendarGrid", () => {
 	});
 
 	it("次月の端数日が正しく埋まる", () => {
-		const grid = generateCalendarGrid(2026, 1); // 2026年2月
+		// 2026年5月: 金曜始まり31日 → 最終週に次月の端数あり
+		const grid = generateCalendarGrid(2026, 4); // 2026年5月
 		const lastWeek = grid[grid.length - 1];
 		const nextMonthDays = lastWeek.filter((d) => !d.isCurrentMonth);
-		// 2026年2月は28日で日曜始まり → ちょうど4週で収まる
-		// → 残りの2週は次月で埋まる
+		expect(nextMonthDays.length).toBeGreaterThan(0);
+		expect(nextMonthDays[0].month).toBe(5); // 6月 (0-indexed)
+	});
+
+	it("ちょうど収まる月は次月の端数がない", () => {
+		// 2026年2月: 日曜始まり28日 → ちょうど4週で収まる
+		const grid = generateCalendarGrid(2026, 1);
 		const allNextMonth = grid.flat().filter((d) => !d.isCurrentMonth && d.month === 2);
-		expect(allNextMonth.length).toBeGreaterThan(0);
+		expect(allNextMonth).toHaveLength(0);
 	});
 
 	it("isToday が今日のみ true になる", () => {
