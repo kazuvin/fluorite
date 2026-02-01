@@ -47,7 +47,7 @@ export const MOCK_EVENT_NOTES: EventNote[] = [
 	{
 		title: "正月休み",
 		start: "2026-01-01",
-		end: "2026-01-03",
+		end: "2026-01-04",
 		allDay: true,
 		tags: ["personal"],
 	},

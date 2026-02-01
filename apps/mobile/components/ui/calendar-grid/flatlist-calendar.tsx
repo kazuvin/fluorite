@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { RollingNumber } from "../rolling-number";
 import { CELL_HEIGHT, type CalendarGridColors, CalendarMonthPage } from "./calendar-month-page";
+import type { CalendarEvent } from "./event-layout";
 import { generateOffsets, offsetToYearMonth } from "./utils";
 
 const WEEKDAY_LABELS = ["日", "月", "火", "水", "木", "金", "土"];
@@ -24,6 +25,7 @@ type FlatListCalendarProps = {
 	viewingMonth: number;
 	direction: 1 | -1;
 	colors: CalendarGridColors;
+	events: CalendarEvent[];
 	onMonthChange: (year: number, month: number) => void;
 };
 
@@ -34,6 +36,7 @@ export function FlatListCalendar({
 	viewingMonth,
 	direction,
 	colors,
+	events,
 	onMonthChange,
 }: FlatListCalendarProps) {
 	const { width } = useWindowDimensions();
@@ -68,10 +71,17 @@ export function FlatListCalendar({
 		({ item: offset }: { item: number }) => {
 			const { year, month } = offsetToYearMonth(baseYear, baseMonth, offset);
 			return (
-				<CalendarMonthPage year={year} month={month} today={today} colors={colors} width={width} />
+				<CalendarMonthPage
+					year={year}
+					month={month}
+					today={today}
+					colors={colors}
+					events={events}
+					width={width}
+				/>
 			);
 		},
-		[baseYear, baseMonth, today, colors, width],
+		[baseYear, baseMonth, today, colors, events, width],
 	);
 
 	const keyExtractor = useCallback((item: number) => String(item), []);
