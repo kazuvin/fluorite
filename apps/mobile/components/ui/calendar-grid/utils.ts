@@ -8,6 +8,22 @@ export type CalendarDay = {
 
 const DAYS_PER_WEEK = 7;
 
+export function offsetToYearMonth(
+	baseYear: number,
+	baseMonth: number,
+	offset: number,
+): { year: number; month: number } {
+	const totalMonths = baseYear * 12 + baseMonth + offset;
+	return {
+		year: Math.floor(totalMonths / 12),
+		month: ((totalMonths % 12) + 12) % 12,
+	};
+}
+
+export function generateOffsets(range: number): number[] {
+	return Array.from({ length: range * 2 + 1 }, (_, i) => i - range);
+}
+
 export function generateCalendarGrid(year: number, month: number, today?: Date): CalendarDay[][] {
 	const firstDay = new Date(year, month, 1);
 	const startDayOfWeek = firstDay.getDay(); // 0=Sun

@@ -1,38 +1,54 @@
 import { colors } from "@fluorite/design-tokens";
 import { useAtomValue, useSetAtom } from "jotai";
+import { useCallback, useMemo, useRef } from "react";
 import { useColorScheme } from "react-native";
-import { CalendarGrid } from "../../../components/ui/calendar-grid";
+import { FlatListCalendar } from "../../../components/ui/calendar-grid";
+import { computeDirection } from "../../../components/ui/rolling-number";
 import {
-	calendarGridValueAtom,
-	goToNextMonthAtom,
-	goToPrevMonthAtom,
-	monthValueAtom,
-	yearValueAtom,
+	baseMonthValueAtom,
+	baseYearValueAtom,
+	setViewingMonthAtom,
+	viewingMonthValueAtom,
+	viewingYearValueAtom,
 } from "../stores/calendar-atoms";
 
 export function CalendarGridContainer() {
 	const scheme = useColorScheme() ?? "light";
 	const theme = colors[scheme];
 
-	const year = useAtomValue(yearValueAtom);
-	const month = useAtomValue(monthValueAtom);
-	const grid = useAtomValue(calendarGridValueAtom);
-	const goToPrevMonth = useSetAtom(goToPrevMonthAtom);
-	const goToNextMonth = useSetAtom(goToNextMonthAtom);
+	const baseYear = useAtomValue(baseYearValueAtom);
+	const baseMonth = useAtomValue(baseMonthValueAtom);
+	const viewingYear = useAtomValue(viewingYearValueAtom);
+	const viewingMonth = useAtomValue(viewingMonthValueAtom);
+	const setViewingMonth = useSetAtom(setViewingMonthAtom);
+
+	const prevYearMonth = useRef({ year: viewingYear, month: viewingMonth });
+	const direction = useMemo(() => {
+		const prev = prevYearMonth.current;
+		const dir = computeDirection(prev.year, prev.month, viewingYear, viewingMonth);
+		prevYearMonth.current = { year: viewingYear, month: viewingMonth };
+		return dir;
+	}, [viewingYear, viewingMonth]);
+
+	const handleMonthChange = useCallback(
+		(year: number, month: number) => setViewingMonth({ year, month }),
+		[setViewingMonth],
+	);
 
 	return (
-		<CalendarGrid
-			year={year}
-			month={month}
-			grid={grid}
+		<FlatListCalendar
+			baseYear={baseYear}
+			baseMonth={baseMonth}
+			viewingYear={viewingYear}
+			viewingMonth={viewingMonth}
+			direction={direction}
 			colors={{
 				text: theme.text,
 				background: theme.background,
 				tint: theme.tint,
 				muted: theme.icon,
 			}}
-			onPrevMonth={goToPrevMonth}
-			onNextMonth={goToNextMonth}
+			onMonthChange={handleMonthChange}
 		/>
 	);
 }

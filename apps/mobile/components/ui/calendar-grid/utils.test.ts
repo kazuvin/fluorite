@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { generateCalendarGrid } from "./utils";
+import { generateCalendarGrid, generateOffsets, offsetToYearMonth } from "./utils";
 
 describe("generateCalendarGrid", () => {
 	it("月に必要な最小行数のグリッドを返す", () => {
@@ -102,5 +102,53 @@ describe("generateCalendarGrid", () => {
 		const grid = generateCalendarGrid(2026, 0, today); // 1月表示
 		const todayDays = grid.flat().filter((d) => d.isToday);
 		expect(todayDays).toHaveLength(0);
+	});
+});
+
+describe("offsetToYearMonth", () => {
+	it("offset=0 で基準年月をそのまま返す", () => {
+		expect(offsetToYearMonth(2026, 1, 0)).toEqual({ year: 2026, month: 1 });
+	});
+
+	it("offset=1 で翌月を返す", () => {
+		expect(offsetToYearMonth(2026, 1, 1)).toEqual({ year: 2026, month: 2 });
+	});
+
+	it("offset=-1 で前月を返す", () => {
+		expect(offsetToYearMonth(2026, 1, -1)).toEqual({ year: 2026, month: 0 });
+	});
+
+	it("12月から offset=1 で翌年1月を返す", () => {
+		expect(offsetToYearMonth(2026, 11, 1)).toEqual({ year: 2027, month: 0 });
+	});
+
+	it("1月から offset=-1 で前年12月を返す", () => {
+		expect(offsetToYearMonth(2026, 0, -1)).toEqual({ year: 2025, month: 11 });
+	});
+
+	it("offset=12 で翌年の同月を返す", () => {
+		expect(offsetToYearMonth(2026, 5, 12)).toEqual({ year: 2027, month: 5 });
+	});
+
+	it("offset=-12 で前年の同月を返す", () => {
+		expect(offsetToYearMonth(2026, 5, -12)).toEqual({ year: 2025, month: 5 });
+	});
+
+	it("offset=-24 で2年前の同月を返す", () => {
+		expect(offsetToYearMonth(2026, 3, -24)).toEqual({ year: 2024, month: 3 });
+	});
+});
+
+describe("generateOffsets", () => {
+	it("range=2 で [-2,-1,0,1,2] を返す", () => {
+		expect(generateOffsets(2)).toEqual([-2, -1, 0, 1, 2]);
+	});
+
+	it("range=0 で [0] を返す", () => {
+		expect(generateOffsets(0)).toEqual([0]);
+	});
+
+	it("range=1 で [-1,0,1] を返す", () => {
+		expect(generateOffsets(1)).toEqual([-1, 0, 1]);
 	});
 });
