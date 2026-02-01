@@ -1,3 +1,8 @@
+export { parseCategoryDefinition } from "./category-definition-parser";
+export { serializeCategoryDefinition } from "./category-definition-serializer";
+export { CategoryRegistry } from "./category-registry";
+export { CategorySchema, CategoryDefinitionSchema } from "./category-schemas";
+export type { Category, CategoryDefinition } from "./category-schemas";
 export { parseEventNote } from "./event-note-parser";
 export { serializeEventNote } from "./event-note-serializer";
 export { EventNoteSchema } from "./event-note-schemas";

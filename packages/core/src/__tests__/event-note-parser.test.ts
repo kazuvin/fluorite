@@ -179,4 +179,44 @@ allDay: true
 		const result = parseEventNote(md);
 		expect(result).not.toHaveProperty("metadata");
 	});
+
+	it("category フィールドをパースできる", () => {
+		const md = `---
+start: 2026-05-01
+end: 2026-05-01
+allDay: true
+category: meeting
+---
+
+# 定例会議`;
+		const result = parseEventNote(md);
+		expect(result).toEqual({
+			title: "定例会議",
+			start: "2026-05-01",
+			end: "2026-05-01",
+			allDay: true,
+			category: "meeting",
+		});
+	});
+
+	it("category と tags の両方を含むイベントをパースできる", () => {
+		const md = `---
+start: 2026-06-15
+end: 2026-06-15
+category: travel
+tags:
+  - business
+  - overseas
+---
+
+# 海外出張`;
+		const result = parseEventNote(md);
+		expect(result).toEqual({
+			title: "海外出張",
+			start: "2026-06-15",
+			end: "2026-06-15",
+			category: "travel",
+			tags: ["business", "overseas"],
+		});
+	});
 });

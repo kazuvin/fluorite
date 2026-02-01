@@ -128,4 +128,41 @@ url: https://example.com
 		const parsed = parseEventNote(serialized);
 		expect(parsed).toEqual(note);
 	});
+
+	it("category フィールドをシリアライズできる", () => {
+		const note: EventNote = {
+			title: "定例会議",
+			start: "2026-05-01",
+			end: "2026-05-01",
+			allDay: true,
+			category: "meeting",
+			tags: ["work"],
+		};
+		const result = serializeEventNote(note);
+		expect(result).toBe(`---
+start: 2026-05-01
+end: 2026-05-01
+allDay: true
+category: meeting
+tags:
+  - work
+---
+
+# 定例会議
+`);
+	});
+
+	it("category 付きイベントでラウンドトリップできる", () => {
+		const note: EventNote = {
+			title: "海外出張",
+			start: "2026-06-15",
+			end: "2026-06-15",
+			category: "travel",
+			tags: ["business"],
+			body: "パリオフィス訪問",
+		};
+		const serialized = serializeEventNote(note);
+		const parsed = parseEventNote(serialized);
+		expect(parsed).toEqual(note);
+	});
 });

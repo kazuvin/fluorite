@@ -1,4 +1,4 @@
-import type { EventNote } from "@fluorite/core";
+import type { CategoryRegistry, EventNote } from "@fluorite/core";
 import type { CalendarDay } from "./utils";
 
 export type CalendarEvent = {
@@ -26,28 +26,18 @@ export type MonthEventLayout = Map<string, DayCellLayout>;
 
 const MAX_VISIBLE_SLOTS = 3;
 
-const TAG_COLORS: Record<string, string> = {
-	"#work": "#4A90D9",
-	"#personal": "#50C878",
-	"#holiday": "#FF6B6B",
-};
 const DEFAULT_COLOR = "#9B9B9B";
 
-function resolveColor(tags?: string[]): string {
-	if (!tags || tags.length === 0) return DEFAULT_COLOR;
-	for (const tag of tags) {
-		if (TAG_COLORS[tag]) return TAG_COLORS[tag];
-	}
-	return DEFAULT_COLOR;
-}
-
-export function eventNotesToCalendarEvents(notes: EventNote[]): CalendarEvent[] {
+export function eventNotesToCalendarEvents(
+	notes: EventNote[],
+	registry?: CategoryRegistry,
+): CalendarEvent[] {
 	return notes.map((note, index) => ({
 		id: `event-${index}`,
 		title: note.title,
 		startDate: note.start,
 		endDate: note.end,
-		color: resolveColor(note.tags),
+		color: (note.category && registry?.getColor(note.category)) || DEFAULT_COLOR,
 		type: note.allDay ? "allDay" : "timed",
 	}));
 }

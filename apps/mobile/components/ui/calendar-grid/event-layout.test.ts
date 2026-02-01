@@ -1,4 +1,4 @@
-import type { EventNote } from "@fluorite/core";
+import { CategoryRegistry, type EventNote } from "@fluorite/core";
 import { describe, expect, it } from "vitest";
 import { computeMonthEventLayout, eventNotesToCalendarEvents } from "./event-layout";
 import type { CalendarEvent, DayCellLayout, EventSlot, MonthEventLayout } from "./event-layout";
@@ -66,17 +66,59 @@ describe("eventNotesToCalendarEvents", () => {
 		expect(events[0].type).toBe("timed");
 	});
 
-	it("タグに基づく色分けが正しい", () => {
+	it("category がある場合、registry の色が使われる", () => {
+		const registry = new CategoryRegistry();
+		registry.set("work", "#4A90D9");
 		const notes: EventNote[] = [
 			{
 				title: "仕事",
 				start: "2026-02-10",
 				end: "2026-02-10",
-				tags: ["#work"],
+				category: "work",
+			},
+		];
+		const events = eventNotesToCalendarEvents(notes, registry);
+		expect(events[0].color).toBe("#4A90D9");
+	});
+
+	it("category が registry に未登録の場合、DEFAULT_COLOR になる", () => {
+		const registry = new CategoryRegistry();
+		const notes: EventNote[] = [
+			{
+				title: "不明",
+				start: "2026-02-10",
+				end: "2026-02-10",
+				category: "unknown",
+			},
+		];
+		const events = eventNotesToCalendarEvents(notes, registry);
+		expect(events[0].color).toBe("#9B9B9B");
+	});
+
+	it("category がない場合、DEFAULT_COLOR になる", () => {
+		const registry = new CategoryRegistry();
+		const notes: EventNote[] = [
+			{
+				title: "メモ",
+				start: "2026-02-10",
+				end: "2026-02-10",
+			},
+		];
+		const events = eventNotesToCalendarEvents(notes, registry);
+		expect(events[0].color).toBe("#9B9B9B");
+	});
+
+	it("registry なしの場合、DEFAULT_COLOR になる", () => {
+		const notes: EventNote[] = [
+			{
+				title: "メモ",
+				start: "2026-02-10",
+				end: "2026-02-10",
+				category: "work",
 			},
 		];
 		const events = eventNotesToCalendarEvents(notes);
-		expect(events[0].color).toBe("#4A90D9");
+		expect(events[0].color).toBe("#9B9B9B");
 	});
 });
 

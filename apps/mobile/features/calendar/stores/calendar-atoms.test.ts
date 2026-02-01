@@ -4,6 +4,7 @@ import {
 	baseMonthValueAtom,
 	baseYearValueAtom,
 	calendarEventsValueAtom,
+	categoryRegistryValueAtom,
 	eventNotesValueAtom,
 	setViewingMonthAtom,
 	viewingMonthValueAtom,
@@ -54,6 +55,25 @@ describe("calendar-atoms", () => {
 			startDate: MOCK_EVENT_NOTES[0].start,
 			endDate: MOCK_EVENT_NOTES[0].end,
 		});
+	});
+
+	it("初期状態: categoryRegistryValueAtom がモック CategoryRegistry を返す", () => {
+		const store = createStore();
+		const registry = store.get(categoryRegistryValueAtom);
+		expect(registry.has("work")).toBe(true);
+		expect(registry.has("personal")).toBe(true);
+		expect(registry.has("holiday")).toBe(true);
+	});
+
+	it("calendarEventsValueAtom が category ベースの色を返す", () => {
+		const store = createStore();
+		const events = store.get(calendarEventsValueAtom);
+		// 最初のイベント "元日" は category: "holiday"
+		const holidayEvent = events.find((e) => e.title === "元日");
+		expect(holidayEvent?.color).toBe("#FF6B6B");
+		// "会議A" は category: "work"
+		const workEvent = events.find((e) => e.title === "会議A");
+		expect(workEvent?.color).toBe("#4A90D9");
 	});
 
 	it("setViewingMonthAtom で baseYear/baseMonth は変化しない", () => {

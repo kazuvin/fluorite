@@ -26,6 +26,10 @@ export function parseEventNote(markdown: string): EventNote | null {
 		result.allDay = true;
 	}
 
+	if (fields.category) {
+		result.category = fields.category;
+	}
+
 	const time = parseTimeField(fields.time);
 	if (time) {
 		result.time = time;
@@ -108,6 +112,7 @@ type FrontmatterFields = {
 	start?: string;
 	end?: string;
 	allDay?: string;
+	category?: string;
 	time?: string;
 	tags?: string[];
 	metadata?: Record<string, string>;
@@ -137,6 +142,7 @@ function parseFrontmatterFields(frontmatter: string): FrontmatterFields {
 			if (key === "start") result.start = value;
 			else if (key === "end") result.end = value;
 			else if (key === "allDay") result.allDay = value;
+			else if (key === "category") result.category = value;
 			else if (key === "time") result.time = value;
 			else if (key === "tags" && value) {
 				result.tags = [value];

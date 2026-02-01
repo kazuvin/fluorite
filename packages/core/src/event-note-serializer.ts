@@ -12,6 +12,10 @@ export function serializeEventNote(note: EventNote): string {
 		lines.push("allDay: true");
 	}
 
+	if (note.category) {
+		lines.push(`category: ${note.category}`);
+	}
+
 	if (note.time) {
 		if (note.time.end) {
 			lines.push(`time: "${note.time.start} - ${note.time.end}"`);

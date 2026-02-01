@@ -8,6 +8,7 @@ export const EventNoteSchema = v.object({
 	start: v.pipe(v.string(), v.regex(datePattern)),
 	end: v.pipe(v.string(), v.regex(datePattern)),
 	allDay: v.optional(v.boolean()),
+	category: v.optional(v.string()),
 	time: v.optional(
 		v.object({
 			start: v.pipe(v.string(), v.regex(timePattern)),

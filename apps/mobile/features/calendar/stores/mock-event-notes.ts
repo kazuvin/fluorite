@@ -7,6 +7,7 @@ export const MOCK_EVENT_NOTES: EventNote[] = [
 		start: "2026-01-01",
 		end: "2026-01-01",
 		allDay: true,
+		category: "holiday",
 		tags: ["holiday"],
 	},
 	{
@@ -14,6 +15,7 @@ export const MOCK_EVENT_NOTES: EventNote[] = [
 		start: "2026-01-01",
 		end: "2026-01-01",
 		time: { start: "10:00" },
+		category: "personal",
 		tags: ["personal"],
 		metadata: { location: "明治神宮" },
 	},
@@ -22,6 +24,7 @@ export const MOCK_EVENT_NOTES: EventNote[] = [
 		start: "2026-01-01",
 		end: "2026-01-01",
 		time: { start: "10:00", end: "12:00" },
+		category: "work",
 		tags: ["work"],
 		metadata: {
 			memo: "先方との機能要件のすり合わせ",
@@ -34,6 +37,7 @@ export const MOCK_EVENT_NOTES: EventNote[] = [
 		start: "2026-01-01",
 		end: "2026-01-01",
 		time: { start: "14:00", end: "15:00" },
+		category: "work",
 		tags: ["work"],
 	},
 	{
@@ -41,6 +45,7 @@ export const MOCK_EVENT_NOTES: EventNote[] = [
 		start: "2026-01-01",
 		end: "2026-01-01",
 		time: { start: "09:00" },
+		category: "work",
 		tags: ["work"],
 	},
 	// 2026-01-01〜01-03 (複数日)
@@ -49,6 +54,7 @@ export const MOCK_EVENT_NOTES: EventNote[] = [
 		start: "2026-01-01",
 		end: "2026-01-04",
 		allDay: true,
+		category: "personal",
 		tags: ["personal"],
 	},
 	// 2026-01-02
@@ -57,6 +63,7 @@ export const MOCK_EVENT_NOTES: EventNote[] = [
 		start: "2026-01-02",
 		end: "2026-01-02",
 		time: { start: "09:00", end: "10:00" },
+		category: "work",
 		tags: ["work"],
 	},
 	{
@@ -64,6 +71,7 @@ export const MOCK_EVENT_NOTES: EventNote[] = [
 		start: "2026-01-02",
 		end: "2026-01-02",
 		time: { start: "13:00", end: "14:00" },
+		category: "work",
 		tags: ["work"],
 	},
 	// 2026-01-05
@@ -72,6 +80,7 @@ export const MOCK_EVENT_NOTES: EventNote[] = [
 		start: "2026-01-05",
 		end: "2026-01-05",
 		allDay: true,
+		category: "work",
 		tags: ["work"],
 	},
 	{
@@ -79,6 +88,7 @@ export const MOCK_EVENT_NOTES: EventNote[] = [
 		start: "2026-01-05",
 		end: "2026-01-05",
 		time: { start: "10:00", end: "11:00" },
+		category: "work",
 		tags: ["work"],
 	},
 	{
@@ -86,6 +96,7 @@ export const MOCK_EVENT_NOTES: EventNote[] = [
 		start: "2026-01-05",
 		end: "2026-01-05",
 		time: { start: "14:00", end: "15:00" },
+		category: "work",
 		tags: ["work"],
 	},
 	{
@@ -93,6 +104,7 @@ export const MOCK_EVENT_NOTES: EventNote[] = [
 		start: "2026-01-05",
 		end: "2026-01-05",
 		time: { start: "16:00" },
+		category: "personal",
 		tags: ["personal"],
 	},
 	// 2026-01-05〜01-07 (複数日)
@@ -101,6 +113,7 @@ export const MOCK_EVENT_NOTES: EventNote[] = [
 		start: "2026-01-05",
 		end: "2026-01-07",
 		allDay: true,
+		category: "work",
 		tags: ["work"],
 	},
 	// 追加イベント
@@ -109,6 +122,7 @@ export const MOCK_EVENT_NOTES: EventNote[] = [
 		start: "2026-01-10",
 		end: "2026-01-10",
 		time: { start: "10:00" },
+		category: "personal",
 		tags: ["personal"],
 	},
 	{
@@ -116,6 +130,7 @@ export const MOCK_EVENT_NOTES: EventNote[] = [
 		start: "2026-01-10",
 		end: "2026-01-10",
 		time: { start: "12:00", end: "13:00" },
+		category: "work",
 		tags: ["work"],
 		metadata: { location: "近くのイタリアン" },
 	},
@@ -124,6 +139,7 @@ export const MOCK_EVENT_NOTES: EventNote[] = [
 		start: "2026-01-10",
 		end: "2026-01-10",
 		time: { start: "18:00", end: "20:00" },
+		category: "personal",
 		tags: ["personal"],
 	},
 ];
