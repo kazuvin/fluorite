@@ -6,7 +6,10 @@ import {
 	calendarEventsValueAtom,
 	categoryRegistryValueAtom,
 	eventNotesValueAtom,
+	filteredCalendarEventsValueAtom,
+	selectedCategoriesValueAtom,
 	setViewingMonthAtom,
+	toggleSelectedCategoryAtom,
 	viewingMonthValueAtom,
 	viewingYearValueAtom,
 } from "./calendar-atoms";
@@ -68,10 +71,8 @@ describe("calendar-atoms", () => {
 	it("calendarEventsValueAtom が category ベースの色を返す", () => {
 		const store = createStore();
 		const events = store.get(calendarEventsValueAtom);
-		// 最初のイベント "元日" は category: "holiday"
 		const holidayEvent = events.find((e) => e.title === "元日");
 		expect(holidayEvent?.color).toBe("#FF6B6B");
-		// "会議A" は category: "work"
 		const workEvent = events.find((e) => e.title === "会議A");
 		expect(workEvent?.color).toBe("#4A90D9");
 	});
@@ -85,5 +86,83 @@ describe("calendar-atoms", () => {
 
 		expect(store.get(baseYearValueAtom)).toBe(baseYear);
 		expect(store.get(baseMonthValueAtom)).toBe(baseMonth);
+	});
+
+	describe("カテゴリフィルタ（複数選択）", () => {
+		it("初期状態: selectedCategoriesValueAtom が空の Set を返す", () => {
+			const store = createStore();
+			const selected = store.get(selectedCategoriesValueAtom);
+			expect(selected.size).toBe(0);
+		});
+
+		it("toggleSelectedCategoryAtom でカテゴリを追加できる", () => {
+			const store = createStore();
+			store.set(toggleSelectedCategoryAtom, "work");
+			const selected = store.get(selectedCategoriesValueAtom);
+			expect(selected.has("work")).toBe(true);
+			expect(selected.size).toBe(1);
+		});
+
+		it("toggleSelectedCategoryAtom で同じカテゴリを再度トグルすると削除される", () => {
+			const store = createStore();
+			store.set(toggleSelectedCategoryAtom, "work");
+			store.set(toggleSelectedCategoryAtom, "work");
+			const selected = store.get(selectedCategoriesValueAtom);
+			expect(selected.has("work")).toBe(false);
+			expect(selected.size).toBe(0);
+		});
+
+		it("複数カテゴリを同時に選択できる", () => {
+			const store = createStore();
+			store.set(toggleSelectedCategoryAtom, "work");
+			store.set(toggleSelectedCategoryAtom, "personal");
+			const selected = store.get(selectedCategoriesValueAtom);
+			expect(selected.has("work")).toBe(true);
+			expect(selected.has("personal")).toBe(true);
+			expect(selected.size).toBe(2);
+		});
+
+		it("filteredCalendarEventsValueAtom: 未選択時は全イベントを返す", () => {
+			const store = createStore();
+			const allEvents = store.get(calendarEventsValueAtom);
+			const filtered = store.get(filteredCalendarEventsValueAtom);
+			expect(filtered).toHaveLength(allEvents.length);
+		});
+
+		it("filteredCalendarEventsValueAtom: work のみ選択すると work カテゴリのイベントのみ返す", () => {
+			const store = createStore();
+			store.set(toggleSelectedCategoryAtom, "work");
+			const filtered = store.get(filteredCalendarEventsValueAtom);
+			const workNotes = MOCK_EVENT_NOTES.filter((n) => n.category === "work");
+			expect(filtered).toHaveLength(workNotes.length);
+			for (const event of filtered) {
+				expect(event.color).toBe("#4A90D9");
+			}
+		});
+
+		it("filteredCalendarEventsValueAtom: work と holiday を選択すると両方のイベントを返す", () => {
+			const store = createStore();
+			store.set(toggleSelectedCategoryAtom, "work");
+			store.set(toggleSelectedCategoryAtom, "holiday");
+			const filtered = store.get(filteredCalendarEventsValueAtom);
+			const expected = MOCK_EVENT_NOTES.filter(
+				(n) => n.category === "work" || n.category === "holiday",
+			);
+			expect(filtered).toHaveLength(expected.length);
+		});
+
+		it("filteredCalendarEventsValueAtom: 全カテゴリ選択後に1つ外すとそのカテゴリが除外される", () => {
+			const store = createStore();
+			store.set(toggleSelectedCategoryAtom, "work");
+			store.set(toggleSelectedCategoryAtom, "personal");
+			store.set(toggleSelectedCategoryAtom, "holiday");
+			// holiday を外す
+			store.set(toggleSelectedCategoryAtom, "holiday");
+			const filtered = store.get(filteredCalendarEventsValueAtom);
+			const expected = MOCK_EVENT_NOTES.filter(
+				(n) => n.category === "work" || n.category === "personal",
+			);
+			expect(filtered).toHaveLength(expected.length);
+		});
 	});
 });

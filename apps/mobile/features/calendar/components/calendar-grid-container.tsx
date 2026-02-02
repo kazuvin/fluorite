@@ -1,7 +1,8 @@
 import { colors } from "@fluorite/design-tokens";
-import { useColorScheme } from "react-native";
+import { View, useColorScheme } from "react-native";
 import { FlatListCalendar } from "../../../components/ui/calendar-grid";
 import { useCalendarGrid } from "../hooks/use-calendar-grid";
+import { CategoryFilterBar } from "./category-filter-bar";
 
 export function CalendarGridContainer() {
 	const scheme = useColorScheme() ?? "light";
@@ -13,25 +14,28 @@ export function CalendarGridContainer() {
 		viewingYear,
 		viewingMonth,
 		direction,
-		calendarEvents,
+		filteredCalendarEvents,
 		handleMonthChange,
 	} = useCalendarGrid();
 
 	return (
-		<FlatListCalendar
-			baseYear={baseYear}
-			baseMonth={baseMonth}
-			viewingYear={viewingYear}
-			viewingMonth={viewingMonth}
-			direction={direction}
-			colors={{
-				text: theme.text,
-				background: theme.background,
-				tint: theme.tint,
-				muted: theme.icon,
-			}}
-			events={calendarEvents}
-			onMonthChange={handleMonthChange}
-		/>
+		<View>
+			<FlatListCalendar
+				baseYear={baseYear}
+				baseMonth={baseMonth}
+				viewingYear={viewingYear}
+				viewingMonth={viewingMonth}
+				direction={direction}
+				colors={{
+					text: theme.text,
+					background: theme.background,
+					tint: theme.tint,
+					muted: theme.icon,
+				}}
+				events={filteredCalendarEvents}
+				onMonthChange={handleMonthChange}
+			/>
+			<CategoryFilterBar />
+		</View>
 	);
 }

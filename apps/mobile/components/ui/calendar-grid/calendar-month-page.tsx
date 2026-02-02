@@ -6,7 +6,7 @@ import { computeMonthEventLayout } from "./event-layout";
 import { generateCalendarGrid } from "./utils";
 import { WeekEventBars } from "./week-event-bars";
 
-export const CELL_HEIGHT = 100;
+export const CELL_HEIGHT = 80;
 
 const DAY_NUMBER_HEIGHT = parseNumeric(spacing[6]);
 const EVENT_AREA_TOP = DAY_NUMBER_HEIGHT + 2;
@@ -41,7 +41,7 @@ export const CalendarMonthPage = memo(function CalendarMonthPage({
 	const cellWidth = width / 7;
 
 	return (
-		<View style={{ width, height: CELL_HEIGHT * 7 }}>
+		<View style={{ width, height: CELL_HEIGHT * 6 }}>
 			{grid.map((week) => (
 				<View key={`week-${week[0].year}-${week[0].month}-${week[0].date}`} style={styles.weekRow}>
 					{week.map((day) => (

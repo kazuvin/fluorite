@@ -25,17 +25,16 @@ export function generateOffsets(range: number): number[] {
 	return Array.from({ length: range * 2 + 1 }, (_, i) => i - range);
 }
 
+const GRID_ROWS = 6;
+
 export function generateCalendarGrid(year: number, month: number, today?: Date): CalendarDay[][] {
 	const firstDay = new Date(year, month, 1);
 	const startDayOfWeek = firstDay.getDay(); // 0=Sun
-	const daysInMonth = new Date(year, month + 1, 0).getDate();
-	const totalCells = startDayOfWeek + daysInMonth;
-	const gridRows = Math.ceil(totalCells / DAYS_PER_WEEK);
 
 	const grid: CalendarDay[][] = [];
 	let current = new Date(year, month, 1 - startDayOfWeek);
 
-	for (let row = 0; row < gridRows; row++) {
+	for (let row = 0; row < GRID_ROWS; row++) {
 		const week: CalendarDay[] = [];
 		for (let col = 0; col < DAYS_PER_WEEK; col++) {
 			const cYear = current.getFullYear();

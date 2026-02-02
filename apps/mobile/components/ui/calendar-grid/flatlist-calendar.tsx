@@ -148,7 +148,7 @@ export function FlatListCalendar({
 				keyExtractor={keyExtractor}
 				onScroll={handleScroll}
 				scrollEventThrottle={16}
-				style={{ height: CELL_HEIGHT * 7 }}
+				style={{ height: CELL_HEIGHT * 6 }}
 			/>
 		</View>
 	);

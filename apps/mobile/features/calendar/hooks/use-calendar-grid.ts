@@ -5,7 +5,7 @@ import { computeDirection } from "../../../components/ui/rolling-number";
 import {
 	baseMonthValueAtom,
 	baseYearValueAtom,
-	calendarEventsValueAtom,
+	filteredCalendarEventsValueAtom,
 	setViewingMonthAtom,
 	viewingMonthValueAtom,
 	viewingYearValueAtom,
@@ -17,7 +17,7 @@ type CalendarGridState = {
 	viewingYear: number;
 	viewingMonth: number;
 	direction: 1 | -1;
-	calendarEvents: CalendarEvent[];
+	filteredCalendarEvents: CalendarEvent[];
 	handleMonthChange: (year: number, month: number) => void;
 };
 
@@ -26,7 +26,7 @@ export function useCalendarGrid(): CalendarGridState {
 	const baseMonth = useAtomValue(baseMonthValueAtom);
 	const viewingYear = useAtomValue(viewingYearValueAtom);
 	const viewingMonth = useAtomValue(viewingMonthValueAtom);
-	const calendarEvents = useAtomValue(calendarEventsValueAtom);
+	const filteredCalendarEvents = useAtomValue(filteredCalendarEventsValueAtom);
 	const setViewingMonth = useSetAtom(setViewingMonthAtom);
 
 	const prevYearMonth = useRef({ year: viewingYear, month: viewingMonth });
@@ -48,7 +48,7 @@ export function useCalendarGrid(): CalendarGridState {
 		viewingYear,
 		viewingMonth,
 		direction,
-		calendarEvents,
+		filteredCalendarEvents,
 		handleMonthChange,
 	};
 }

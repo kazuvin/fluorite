@@ -2,22 +2,22 @@ import { describe, expect, it } from "vitest";
 import { generateCalendarGrid, generateOffsets, offsetToYearMonth } from "./utils";
 
 describe("generateCalendarGrid", () => {
-	it("月に必要な最小行数のグリッドを返す", () => {
-		// 2026年2月: 日曜始まり28日 → 4行で収まる
+	it("すべての月で常に6行のグリッドを返す", () => {
+		// 2026年2月: 日曜始まり28日 → 本来4行だが6行に拡張
 		const feb = generateCalendarGrid(2026, 1);
-		expect(feb).toHaveLength(4);
+		expect(feb).toHaveLength(6);
 		for (const week of feb) {
 			expect(week).toHaveLength(7);
 		}
 
-		// 2026年1月: 木曜始まり31日 → 5行必要
+		// 2026年1月: 木曜始まり31日 → 本来5行だが6行に拡張
 		const jan = generateCalendarGrid(2026, 0);
-		expect(jan).toHaveLength(5);
+		expect(jan).toHaveLength(6);
 		for (const week of jan) {
 			expect(week).toHaveLength(7);
 		}
 
-		// 2026年8月: 土曜始まり31日 → 6行必要
+		// 2026年8月: 土曜始まり31日 → もともと6行
 		const aug = generateCalendarGrid(2026, 7);
 		expect(aug).toHaveLength(6);
 		for (const week of aug) {
@@ -62,11 +62,14 @@ describe("generateCalendarGrid", () => {
 		expect(nextMonthDays[0].month).toBe(5); // 6月 (0-indexed)
 	});
 
-	it("ちょうど収まる月は次月の端数がない", () => {
-		// 2026年2月: 日曜始まり28日 → ちょうど4週で収まる
+	it("6行固定のため短い月では次月の日付で埋められる", () => {
+		// 2026年2月: 日曜始まり28日 → 本来4週だが6行に拡張され次月の日付が入る
 		const grid = generateCalendarGrid(2026, 1);
 		const allNextMonth = grid.flat().filter((d) => !d.isCurrentMonth && d.month === 2);
-		expect(allNextMonth).toHaveLength(0);
+		expect(allNextMonth.length).toBeGreaterThan(0);
+		// 次月の日付は3月1日から連続している
+		expect(allNextMonth[0].date).toBe(1);
+		expect(allNextMonth[0].month).toBe(2); // 3月 (0-indexed)
 	});
 
 	it("isToday が今日のみ true になる", () => {
