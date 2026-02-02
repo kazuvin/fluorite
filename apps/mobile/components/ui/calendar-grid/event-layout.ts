@@ -73,30 +73,17 @@ function emptyDayCellLayout(): DayCellLayout {
 }
 
 /**
- * イベントがこの週の当月内で占める列範囲を算出する。
- * 当月外のみの場合は null を返す。
+ * イベントがこの週で占める列範囲を算出する。
+ * グリッドに表示されている全日を対象とする（隣月の日も含む）。
  */
 function findEffectiveColumns(
 	week: CalendarDay[],
 	eStartNum: number,
 	eEndNum: number,
 ): { startCol: number; endCol: number } | null {
-	const rawStart = week.findIndex((d) => dateToNum(d.dateKey) >= eStartNum);
-	const rawEnd = week.findLastIndex((d) => dateToNum(d.dateKey) <= eEndNum);
-	if (rawStart === -1 || rawEnd === -1 || rawStart > rawEnd) return null;
-
-	// 当月内かつイベント範囲に含まれるセルに限定
-	const cmStart = week.findIndex(
-		(d) => d.isCurrentMonth && dateToNum(d.dateKey) >= eStartNum && dateToNum(d.dateKey) <= eEndNum,
-	);
-	const cmEnd = week.findLastIndex(
-		(d) => d.isCurrentMonth && dateToNum(d.dateKey) >= eStartNum && dateToNum(d.dateKey) <= eEndNum,
-	);
-	if (cmStart === -1 || cmEnd === -1) return null;
-
-	const startCol = Math.max(rawStart, cmStart);
-	const endCol = Math.min(rawEnd, cmEnd);
-	if (startCol > endCol) return null;
+	const startCol = week.findIndex((d) => dateToNum(d.dateKey) >= eStartNum);
+	const endCol = week.findLastIndex((d) => dateToNum(d.dateKey) <= eEndNum);
+	if (startCol === -1 || endCol === -1 || startCol > endCol) return null;
 
 	return { startCol, endCol };
 }
@@ -221,10 +208,8 @@ export function computeMonthEventLayout(
 
 			if (assignedRow === -1) {
 				for (let col = startCol; col <= endCol; col++) {
-					if (week[col].isCurrentMonth) {
-						const cell = layout.get(week[col].dateKey);
-						if (cell) cell.overflowCount++;
-					}
+					const cell = layout.get(week[col].dateKey);
+					if (cell) cell.overflowCount++;
 				}
 				continue;
 			}

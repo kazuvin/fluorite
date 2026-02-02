@@ -308,7 +308,7 @@ describe("computeMonthEventLayout", () => {
 		expect(row1.event.type).toBe("timed");
 	});
 
-	it("当月外の日はイベントが配置されない（空の slots）", () => {
+	it("当月外の日にもイベントが配置される", () => {
 		// 2026年4月のグリッドを使う（前月の日が含まれる）
 		const grid = makeGrid(2026, 3); // 4月
 		const events: CalendarEvent[] = [
@@ -323,9 +323,78 @@ describe("computeMonthEventLayout", () => {
 		];
 		const layout = computeMonthEventLayout(events, grid);
 		const cell = getCell(layout, "2026-03-31");
-		// 当月外なのでイベントが配置されない
-		expect(cell.slots.every((s) => s === null)).toBe(true);
-		expect(cell.overflowCount).toBe(0);
+		// グリッドに表示されている日なのでイベントが配置される
+		const slot = getSlot(cell, 0);
+		expect(slot.event.title).toBe("3月のイベント");
+		expect(slot.spanInWeek).toBe(1);
+	});
+
+	it("月をまたぐイベントが隣月セルにも正しくスパンする", () => {
+		// 2026年2月のグリッド。2月は28日まで。グリッドの最後の週に3月の日が含まれる
+		const grid = makeGrid(2026, 1); // 2月
+		// 2026-02-27 ～ 2026-03-02 のイベント
+		const events: CalendarEvent[] = [
+			{
+				id: "1",
+				title: "月またぎ",
+				startDate: "2026-02-27",
+				endDate: "2026-03-02",
+				color: "#4A90D9",
+				type: "allDay",
+			},
+		];
+		const layout = computeMonthEventLayout(events, grid);
+		// 2026-02-27 は金曜日。同じ週内に 2/28, 3/1(日曜は次の週) がある
+		// 2月のグリッドでは 2/27(金)は第4週の最後あたり
+		const startCell = getCell(layout, "2026-02-27");
+		const slot = getSlot(startCell, 0);
+		expect(slot.isStart).toBe(true);
+		// 3/1(日)は次の週の先頭、3/2(月)も次の週
+		// 次の週にもイベントが配置される
+		const marchCell = getCell(layout, "2026-03-01");
+		const marchSlot = getSlot(marchCell, 0);
+		expect(marchSlot.event.title).toBe("月またぎ");
+	});
+
+	it("隣月の overflowCount もカウントされる", () => {
+		const grid = makeGrid(2026, 3); // 4月。3月31日がグリッドに含まれる
+		const events: CalendarEvent[] = [
+			{
+				id: "1",
+				title: "A",
+				startDate: "2026-03-31",
+				endDate: "2026-03-31",
+				color: "#4A90D9",
+				type: "allDay",
+			},
+			{
+				id: "2",
+				title: "B",
+				startDate: "2026-03-31",
+				endDate: "2026-03-31",
+				color: "#4A90D9",
+				type: "allDay",
+			},
+			{
+				id: "3",
+				title: "C",
+				startDate: "2026-03-31",
+				endDate: "2026-03-31",
+				color: "#4A90D9",
+				type: "allDay",
+			},
+			{
+				id: "4",
+				title: "D",
+				startDate: "2026-03-31",
+				endDate: "2026-03-31",
+				color: "#4A90D9",
+				type: "timed",
+			},
+		];
+		const layout = computeMonthEventLayout(events, grid);
+		const cell = getCell(layout, "2026-03-31");
+		expect(cell.overflowCount).toBe(1);
 	});
 
 	it("同じ行に重なるイベントがない（スパンイベントが予約した行は使われない）", () => {
@@ -369,6 +438,123 @@ describe("computeMonthEventLayout", () => {
 			expect(cell.slots).toHaveLength(3);
 			expect(cell.overflowCount).toBe(0);
 		}
+	});
+});
+
+describe("computeMonthEventLayout - 正月休みの配置検証", () => {
+	it("正月休み(1/1-1/4)が1月グリッドのWeek0-1に配置され、Week4-5には配置されない", () => {
+		const grid = makeGrid(2026, 0); // 1月
+		const events: CalendarEvent[] = [
+			{
+				id: "segatsu",
+				title: "正月休み",
+				startDate: "2026-01-01",
+				endDate: "2026-01-04",
+				color: "#50C878",
+				type: "allDay",
+			},
+		];
+		const layout = computeMonthEventLayout(events, grid);
+
+		// Week 0 (Dec 28 - Jan 3): Jan 1 にスロットがある
+		const jan1Cell = getCell(layout, "2026-01-01");
+		const jan1Slot = getSlot(jan1Cell, 0);
+		expect(jan1Slot.event.title).toBe("正月休み");
+		expect(jan1Slot.spanInWeek).toBe(3); // Jan 1-3
+
+		// Week 1 (Jan 4 - Jan 10): Jan 4 にスロットがある
+		const jan4Cell = getCell(layout, "2026-01-04");
+		const jan4Slot = getSlot(jan4Cell, 0);
+		expect(jan4Slot.event.title).toBe("正月休み");
+		expect(jan4Slot.spanInWeek).toBe(1);
+
+		// Week 4-5 には配置されない
+		for (const dateKey of [
+			"2026-01-25",
+			"2026-01-26",
+			"2026-01-27",
+			"2026-01-28",
+			"2026-01-29",
+			"2026-01-30",
+			"2026-01-31",
+			"2026-02-01",
+			"2026-02-02",
+			"2026-02-03",
+			"2026-02-04",
+			"2026-02-05",
+			"2026-02-06",
+			"2026-02-07",
+		]) {
+			const cell = getCell(layout, dateKey);
+			expect(
+				cell.slots.every((s) => s === null),
+				`${dateKey} にイベントが配置されている`,
+			).toBe(true);
+		}
+	});
+});
+
+describe("computeMonthEventLayout - 月間分離", () => {
+	it("1月のイベントが2月のグリッドに表示されない", () => {
+		// 2026年2月: Feb 1 は日曜 → グリッドに1月の日は含まれない
+		const grid = makeGrid(2026, 1); // 2月
+		// 1月のイベント
+		const events: CalendarEvent[] = [
+			{
+				id: "1",
+				title: "元日",
+				startDate: "2026-01-01",
+				endDate: "2026-01-01",
+				color: "#FF6B6B",
+				type: "allDay",
+			},
+			{
+				id: "2",
+				title: "正月休み",
+				startDate: "2026-01-01",
+				endDate: "2026-01-04",
+				color: "#50C878",
+				type: "allDay",
+			},
+			{
+				id: "3",
+				title: "歯医者",
+				startDate: "2026-01-10",
+				endDate: "2026-01-10",
+				color: "#4A90D9",
+				type: "timed",
+			},
+		];
+		const layout = computeMonthEventLayout(events, grid);
+		// 2月の全日でイベントが配置されていないこと
+		for (const week of grid) {
+			for (const day of week) {
+				const cell = getCell(layout, day.dateKey);
+				expect(
+					cell.slots.every((s) => s === null),
+					`${day.dateKey} にイベントが配置されている`,
+				).toBe(true);
+			}
+		}
+	});
+
+	it("12月のグリッドの最終週に1月のイベントが表示される", () => {
+		// 2025年12月: Dec 1 は月曜 → グリッドの最終週に Jan 4-10 が含まれる
+		const grid = makeGrid(2025, 11); // 12月
+		const events: CalendarEvent[] = [
+			{
+				id: "1",
+				title: "仕事始め",
+				startDate: "2026-01-05",
+				endDate: "2026-01-05",
+				color: "#4A90D9",
+				type: "allDay",
+			},
+		];
+		const layout = computeMonthEventLayout(events, grid);
+		const cell = getCell(layout, "2026-01-05");
+		const slot = getSlot(cell, 0);
+		expect(slot.event.title).toBe("仕事始め");
 	});
 });
 
