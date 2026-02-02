@@ -1,6 +1,6 @@
 import { fontSize, fontWeight, parseNumeric, radius, spacing } from "@fluorite/design-tokens";
 import { memo, useMemo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import type { CalendarEvent } from "./event-layout";
 import { computeMonthEventLayout } from "./event-layout";
 import { generateCalendarGrid } from "./utils";
@@ -25,6 +25,8 @@ type CalendarMonthPageProps = {
 	colors: CalendarGridColors;
 	events: CalendarEvent[];
 	width: number;
+	selectedDateKey?: string | null;
+	onSelectDate?: (dateKey: string) => void;
 };
 
 export const CalendarMonthPage = memo(function CalendarMonthPage({
@@ -34,6 +36,8 @@ export const CalendarMonthPage = memo(function CalendarMonthPage({
 	colors,
 	events,
 	width,
+	selectedDateKey,
+	onSelectDate,
 }: CalendarMonthPageProps) {
 	const grid = useMemo(() => generateCalendarGrid(year, month, today), [year, month, today]);
 	const layout = useMemo(() => computeMonthEventLayout(events, grid), [events, grid]);
@@ -44,27 +48,48 @@ export const CalendarMonthPage = memo(function CalendarMonthPage({
 		<View style={{ width, height: CELL_HEIGHT * 6 }}>
 			{grid.map((week) => (
 				<View key={`week-${week[0].year}-${week[0].month}-${week[0].date}`} style={styles.weekRow}>
-					{week.map((day) => (
-						<View key={`${day.year}-${day.month}-${day.date}`} style={styles.dayNumberCell}>
-							<View style={[styles.dayCircle, day.isToday && { backgroundColor: colors.tint }]}>
-								<Text
+					{week.map((day) => {
+						const isSelected = selectedDateKey === day.dateKey;
+						return (
+							<Pressable
+								key={`${day.year}-${day.month}-${day.date}`}
+								style={styles.dayNumberCell}
+								onPress={() => onSelectDate?.(day.dateKey)}
+							>
+								<View
 									style={[
-										styles.dayText,
-										{
-											color: day.isCurrentMonth ? colors.text : colors.muted,
-										},
-										day.isToday && {
-											color: colors.background,
-											fontWeight: fontWeight.bold,
-											borderCurve: "continuous",
-										},
+										styles.dayCircle,
+										day.isToday && { backgroundColor: colors.tint },
+										isSelected &&
+											!day.isToday && {
+												borderWidth: 1.5,
+												borderColor: colors.tint,
+											},
 									]}
 								>
-									{day.date}
-								</Text>
-							</View>
-						</View>
-					))}
+									<Text
+										style={[
+											styles.dayText,
+											{
+												color: day.isCurrentMonth ? colors.text : colors.muted,
+											},
+											isSelected &&
+												!day.isToday && {
+													color: colors.tint,
+													fontWeight: fontWeight.bold,
+												},
+											day.isToday && {
+												color: colors.background,
+												fontWeight: fontWeight.bold,
+											},
+										]}
+									>
+										{day.date}
+									</Text>
+								</View>
+							</Pressable>
+						);
+					})}
 					<WeekEventBars
 						week={week}
 						layout={layout}
@@ -89,6 +114,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "flex-start",
 		paddingTop: parseNumeric(spacing[1]),
+		zIndex: 1,
 	},
 	dayCircle: {
 		width: 20,

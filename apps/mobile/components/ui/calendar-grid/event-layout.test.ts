@@ -1,8 +1,12 @@
 import { CategoryRegistry, type EventNote } from "@fluorite/core";
 import { describe, expect, it } from "vitest";
-import { computeMonthEventLayout, eventNotesToCalendarEvents } from "./event-layout";
+import {
+	computeMonthEventLayout,
+	computeWeekEventLayout,
+	eventNotesToCalendarEvents,
+} from "./event-layout";
 import type { CalendarEvent, DayCellLayout, EventSlot, MonthEventLayout } from "./event-layout";
-import { generateCalendarGrid } from "./utils";
+import { generateCalendarGrid, generateWeekFromDate } from "./utils";
 import type { CalendarDay } from "./utils";
 
 function makeGrid(year: number, month: number): CalendarDay[][] {
@@ -364,6 +368,80 @@ describe("computeMonthEventLayout", () => {
 			const cell = getCell(layout, key);
 			expect(cell.slots).toHaveLength(3);
 			expect(cell.overflowCount).toBe(0);
+		}
+	});
+});
+
+describe("computeWeekEventLayout", () => {
+	it("単一週に対してイベントが配置される", () => {
+		const week = generateWeekFromDate("2026-02-15", 0);
+		const events: CalendarEvent[] = [
+			{
+				id: "1",
+				title: "終日",
+				startDate: "2026-02-15",
+				endDate: "2026-02-15",
+				color: "#4A90D9",
+				type: "allDay",
+			},
+		];
+		const layout = computeWeekEventLayout(events, week);
+		const cell = getCell(layout, "2026-02-15");
+		const slot = getSlot(cell, 0);
+		expect(slot.spanInWeek).toBe(1);
+		expect(slot.isStart).toBe(true);
+		expect(slot.isEnd).toBe(true);
+	});
+
+	it("isCurrentMonth に関係なく全日にイベントが配置される", () => {
+		// 基準: 2026-01-31 → 1月が currentMonth
+		// offset=1 → 2026-02-01(日)〜02-07(土) の週。全て isCurrentMonth=false
+		const week = generateWeekFromDate("2026-01-31", 1);
+		const events: CalendarEvent[] = [
+			{
+				id: "1",
+				title: "2月のイベント",
+				startDate: "2026-02-03",
+				endDate: "2026-02-03",
+				color: "#4A90D9",
+				type: "allDay",
+			},
+		];
+		const layout = computeWeekEventLayout(events, week);
+		const cell = getCell(layout, "2026-02-03");
+		const slot = getSlot(cell, 0);
+		expect(slot.event.title).toBe("2月のイベント");
+	});
+
+	it("週をまたぐイベントが週の端まで正しく伸びる", () => {
+		// 2026-02-08(日)〜02-14(土) の週
+		const week = generateWeekFromDate("2026-02-10", 0);
+		// イベント: 2026-02-06 ~ 2026-02-11 → この週では 02-08(日)〜02-11(水) に表示
+		const events: CalendarEvent[] = [
+			{
+				id: "1",
+				title: "週またぎ",
+				startDate: "2026-02-06",
+				endDate: "2026-02-11",
+				color: "#4A90D9",
+				type: "allDay",
+			},
+		];
+		const layout = computeWeekEventLayout(events, week);
+		const cell = getCell(layout, "2026-02-08"); // 週の日曜（バーの開始列）
+		const slot = getSlot(cell, 0);
+		expect(slot.spanInWeek).toBe(4); // 日〜水 = 4日
+		expect(slot.isStart).toBe(false); // イベント開始日は前の週
+		expect(slot.isEnd).toBe(true); // イベント終了日はこの週内
+	});
+
+	it("空のイベントでも全日のレイアウトが生成される", () => {
+		const week = generateWeekFromDate("2026-02-15", 0);
+		const layout = computeWeekEventLayout([], week);
+		expect(layout.size).toBe(7);
+		for (const day of week) {
+			const cell = getCell(layout, day.dateKey);
+			expect(cell.slots.every((s) => s === null)).toBe(true);
 		}
 	});
 });

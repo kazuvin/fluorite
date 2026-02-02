@@ -118,6 +118,71 @@ function findFreeRow(reserved: Set<number>[], startCol: number, endCol: number):
 	return -1;
 }
 
+/**
+ * 単一週に対するイベントレイアウト計算。
+ * isCurrentMonth フィルタを使わず、全日をレイアウト対象とする。
+ */
+export function computeWeekEventLayout(
+	events: CalendarEvent[],
+	week: CalendarDay[],
+): MonthEventLayout {
+	const layout: MonthEventLayout = new Map();
+
+	for (const day of week) {
+		layout.set(day.dateKey, emptyDayCellLayout());
+	}
+
+	const sortedEvents = sortEvents(events);
+
+	const weekStartNum = dateToNum(week[0].dateKey);
+	const weekEndNum = dateToNum(week[6].dateKey);
+
+	const weekEvents = sortedEvents.filter((e) => {
+		const eStart = dateToNum(e.startDate);
+		const eEnd = dateToNum(e.endDate);
+		return eStart <= weekEndNum && eEnd >= weekStartNum;
+	});
+
+	const reserved: Set<number>[] = Array.from({ length: MAX_VISIBLE_SLOTS }, () => new Set());
+
+	for (const event of weekEvents) {
+		const eStartNum = dateToNum(event.startDate);
+		const eEndNum = dateToNum(event.endDate);
+
+		// findEffectiveColumns without isCurrentMonth filter
+		const rawStart = week.findIndex((d) => dateToNum(d.dateKey) >= eStartNum);
+		const rawEnd = week.findLastIndex((d) => dateToNum(d.dateKey) <= eEndNum);
+		if (rawStart === -1 || rawEnd === -1 || rawStart > rawEnd) continue;
+
+		const startCol = rawStart;
+		const endCol = rawEnd;
+		const assignedRow = findFreeRow(reserved, startCol, endCol);
+
+		if (assignedRow === -1) {
+			for (let col = startCol; col <= endCol; col++) {
+				const cell = layout.get(week[col].dateKey);
+				if (cell) cell.overflowCount++;
+			}
+			continue;
+		}
+
+		for (let col = startCol; col <= endCol; col++) {
+			reserved[assignedRow].add(col);
+		}
+
+		const spanInWeek = endCol - startCol + 1;
+		const isStart = dateToNum(week[startCol].dateKey) === eStartNum;
+		const isEnd = dateToNum(week[endCol].dateKey) === eEndNum;
+
+		const cell = layout.get(week[startCol].dateKey);
+		if (cell) {
+			cell.slots[assignedRow] = { event, spanInWeek, isStart, isEnd };
+		}
+	}
+
+	return layout;
+}
+
 export function computeMonthEventLayout(
 	events: CalendarEvent[],
 	grid: CalendarDay[][],

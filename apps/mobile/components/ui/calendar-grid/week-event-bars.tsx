@@ -95,7 +95,7 @@ export function WeekEventBars({
 		);
 	}
 
-	return <>{bars}</>;
+	return <View pointerEvents="none">{bars}</View>;
 }
 
 const styles = StyleSheet.create({

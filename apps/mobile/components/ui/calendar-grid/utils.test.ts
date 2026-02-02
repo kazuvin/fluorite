@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { generateCalendarGrid, generateOffsets, offsetToYearMonth } from "./utils";
+import {
+	findWeekIndexForDateKey,
+	generateCalendarGrid,
+	generateOffsets,
+	generateWeekFromDate,
+	offsetToYearMonth,
+	parseDateKey,
+} from "./utils";
 
 describe("generateCalendarGrid", () => {
 	it("すべての月で常に6行のグリッドを返す", () => {
@@ -165,6 +172,91 @@ describe("offsetToYearMonth", () => {
 
 	it("offset=-24 で2年前の同月を返す", () => {
 		expect(offsetToYearMonth(2026, 3, -24)).toEqual({ year: 2024, month: 3 });
+	});
+});
+
+describe("findWeekIndexForDateKey", () => {
+	it("対象日付が属する週のインデックスを返す", () => {
+		const grid = generateCalendarGrid(2026, 0); // 2026年1月
+		// 1月1日は木曜 → 最初の週(index 0)
+		expect(findWeekIndexForDateKey(grid, "2026-01-01")).toBe(0);
+		// 1月15日は木曜 → 3週目(index 2)
+		expect(findWeekIndexForDateKey(grid, "2026-01-15")).toBe(2);
+	});
+
+	it("存在しない dateKey の場合 -1 を返す", () => {
+		const grid = generateCalendarGrid(2026, 0);
+		expect(findWeekIndexForDateKey(grid, "2099-12-31")).toBe(-1);
+	});
+});
+
+describe("parseDateKey", () => {
+	it("日付文字列から年月日・曜日を返す", () => {
+		// 2026-01-01 は木曜日
+		expect(parseDateKey("2026-01-01")).toEqual({
+			year: 2026,
+			month: 1,
+			day: 1,
+			weekday: "木",
+		});
+	});
+
+	it("日曜日の曜日名が正しい", () => {
+		// 2026-02-01 は日曜日
+		expect(parseDateKey("2026-02-01").weekday).toBe("日");
+	});
+});
+
+describe("generateWeekFromDate", () => {
+	it("offset=0 で指定日付を含む週（日曜始まり）を返す", () => {
+		// 2026-01-15 は木曜日 → 週は 2026-01-11(日) ~ 2026-01-17(土)
+		const week = generateWeekFromDate("2026-01-15", 0);
+		expect(week).toHaveLength(7);
+		expect(week[0].dateKey).toBe("2026-01-11");
+		expect(week[6].dateKey).toBe("2026-01-17");
+	});
+
+	it("offset=1 で翌週を返す", () => {
+		const week = generateWeekFromDate("2026-01-15", 1);
+		expect(week[0].dateKey).toBe("2026-01-18");
+		expect(week[6].dateKey).toBe("2026-01-24");
+	});
+
+	it("offset=-1 で前週を返す", () => {
+		const week = generateWeekFromDate("2026-01-15", -1);
+		expect(week[0].dateKey).toBe("2026-01-04");
+		expect(week[6].dateKey).toBe("2026-01-10");
+	});
+
+	it("月をまたぐ場合も正しく動作する", () => {
+		// 2026-01-31 は土曜日 → offset=1 で 2026-02-01(日) ~ 2026-02-07(土)
+		const week = generateWeekFromDate("2026-01-31", 1);
+		expect(week[0].dateKey).toBe("2026-02-01");
+		expect(week[6].dateKey).toBe("2026-02-07");
+	});
+
+	it("isCurrentMonth は基準 dateKey の月で判定される", () => {
+		// 基準: 2026-01-15 (1月) → 1月以外は isCurrentMonth=false
+		const week = generateWeekFromDate("2026-01-31", 1); // 2月の週
+		// 基準は 1月31日 → 1月が currentMonth
+		for (const day of week) {
+			expect(day.isCurrentMonth).toBe(day.month === 0); // 1月=0
+		}
+	});
+
+	it("today が指定された場合 isToday が設定される", () => {
+		const today = new Date(2026, 0, 15);
+		const week = generateWeekFromDate("2026-01-15", 0, today);
+		const todayDays = week.filter((d) => d.isToday);
+		expect(todayDays).toHaveLength(1);
+		expect(todayDays[0].dateKey).toBe("2026-01-15");
+	});
+
+	it("日曜日の dateKey を指定した場合、その週の日曜から始まる", () => {
+		// 2026-02-01 は日曜日
+		const week = generateWeekFromDate("2026-02-01", 0);
+		expect(week[0].dateKey).toBe("2026-02-01");
+		expect(week[6].dateKey).toBe("2026-02-07");
 	});
 });
 
