@@ -226,7 +226,27 @@ export function FlatListCalendar({
 								},
 							]}
 						>
-							({selectedDateInfo.weekday})
+							(
+						</Text>
+						<RollingNumber
+							value={selectedDateInfo.weekday}
+							direction={1}
+							style={{
+								...styles.headerTitle,
+								color: colors.muted,
+								fontSize: parseNumeric(fontSize.xs),
+							}}
+						/>
+						<Text
+							style={[
+								styles.headerTitle,
+								{
+									color: colors.muted,
+									fontSize: parseNumeric(fontSize.xs),
+								},
+							]}
+						>
+							)
 						</Text>
 					</Animated.View>
 				)}
