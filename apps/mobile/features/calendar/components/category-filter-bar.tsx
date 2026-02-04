@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet } from "react-native";
 import { Badge } from "../../../components/ui/badge";
 import {
 	categoryRegistryValueAtom,
-	resetSelectedCategoriesAtom,
+	clearSelectedCategoriesAtom,
 	selectedCategoriesValueAtom,
 	toggleSelectedCategoryAtom,
 } from "../stores/calendar-atoms";
@@ -13,7 +13,7 @@ export function CategoryFilterBar() {
 	const categories = useAtomValue(categoryRegistryValueAtom).all();
 	const selectedCategories = useAtomValue(selectedCategoriesValueAtom);
 	const toggleCategory = useSetAtom(toggleSelectedCategoryAtom);
-	const resetCategories = useSetAtom(resetSelectedCategoriesAtom);
+	const clearCategories = useSetAtom(clearSelectedCategoriesAtom);
 
 	const isAllSelected = selectedCategories.size === 0;
 
@@ -28,7 +28,7 @@ export function CategoryFilterBar() {
 				testID="filter-badge-all"
 				label="すべて"
 				selected={isAllSelected}
-				onPress={resetCategories}
+				onPress={clearCategories}
 			/>
 			{categories.map((category) => (
 				<Badge

@@ -56,6 +56,6 @@ export const toggleSelectedCategoryAtom = atom(null, (get, set, category: string
 	set(selectedCategoriesAtom, next);
 });
 
-export const resetSelectedCategoriesAtom = atom(null, (_get, set) => {
+export const clearSelectedCategoriesAtom = atom(null, (_get, set) => {
 	set(selectedCategoriesAtom, new Set());
 });
