@@ -7,10 +7,7 @@ const DateStringSchema = v.pipe(
 	v.regex(DATE_PATTERN, "日付は YYYY-MM-DD 形式で入力してください"),
 );
 
-const OptionalDateStringSchema = v.union([
-	v.literal(""),
-	DateStringSchema,
-]);
+const OptionalDateStringSchema = v.union([v.literal(""), DateStringSchema]);
 
 export const AddEventFormSchema = v.object({
 	title: v.string(),

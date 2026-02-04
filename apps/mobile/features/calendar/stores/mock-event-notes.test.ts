@@ -1,7 +1,7 @@
 import { EventNoteSchema } from "@fluorite/core";
 import * as v from "valibot";
 import { describe, expect, it } from "vitest";
-import { MOCK_EVENT_NOTES } from "./mock-event-notes";
+import { MOCK_EVENT_NOTES } from "../__fixtures__/event-notes";
 
 describe("MOCK_EVENT_NOTES", () => {
 	it("EventNoteSchema で全件バリデーション通過する", () => {

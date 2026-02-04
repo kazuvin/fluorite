@@ -9,12 +9,8 @@ import {
 	View,
 	useWindowDimensions,
 } from "react-native";
-import Animated, {
-	Easing,
-	useAnimatedStyle,
-	useSharedValue,
-	withTiming,
-} from "react-native-reanimated";
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { ANIMATION } from "../../../constants/animation";
 import { RollingNumber } from "../rolling-number";
 import { CELL_HEIGHT, type CalendarGridColors, CalendarMonthPage } from "./calendar-month-page";
 import type { CalendarEvent } from "./event-layout";
@@ -26,8 +22,6 @@ const INITIAL_INDEX = OFFSET_RANGE;
 
 const MONTH_HEIGHT = CELL_HEIGHT * 6;
 const WEEK_HEIGHT = CELL_HEIGHT;
-const ANIMATION_DURATION = 300;
-const TIMING_CONFIG = { duration: ANIMATION_DURATION, easing: Easing.out(Easing.cubic) };
 
 type FlatListCalendarProps = {
 	baseYear: number;
@@ -128,13 +122,13 @@ export function FlatListCalendar({
 
 	useEffect(() => {
 		if (isSelected && selectedWeekIndex != null && selectedWeekIndex >= 0) {
-			calendarHeight.value = withTiming(WEEK_HEIGHT, TIMING_CONFIG);
-			calendarTranslateY.value = withTiming(-CELL_HEIGHT * selectedWeekIndex, TIMING_CONFIG);
-			dayInfoOpacity.value = withTiming(1, TIMING_CONFIG);
+			calendarHeight.value = withTiming(WEEK_HEIGHT, ANIMATION.layout);
+			calendarTranslateY.value = withTiming(-CELL_HEIGHT * selectedWeekIndex, ANIMATION.layout);
+			dayInfoOpacity.value = withTiming(1, ANIMATION.entering);
 		} else {
-			calendarHeight.value = withTiming(MONTH_HEIGHT, TIMING_CONFIG);
-			calendarTranslateY.value = withTiming(0, TIMING_CONFIG);
-			dayInfoOpacity.value = withTiming(0, TIMING_CONFIG);
+			calendarHeight.value = withTiming(MONTH_HEIGHT, ANIMATION.layout);
+			calendarTranslateY.value = withTiming(0, ANIMATION.layout);
+			dayInfoOpacity.value = withTiming(0, ANIMATION.exiting);
 		}
 	}, [isSelected, selectedWeekIndex, calendarHeight, calendarTranslateY, dayInfoOpacity]);
 

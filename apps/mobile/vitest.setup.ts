@@ -19,14 +19,18 @@ vi.mock("react-native-reanimated", () => {
 		obj.easing = () => obj;
 		return obj;
 	};
-	const easingFn = () => 0;
-	easingFn.out = () => easingFn;
-	easingFn.in = () => easingFn;
-	easingFn.inOut = () => easingFn;
-	easingFn.ease = easingFn;
+	const createEasingFn = () => {
+		const fn = () => 0;
+		fn.out = createEasingFn;
+		fn.in = createEasingFn;
+		fn.inOut = createEasingFn;
+		fn.ease = fn;
+		return fn;
+	};
+	const Easing = createEasingFn();
 	return {
 		default: Animated,
-		Easing: { out: () => easingFn, in: () => easingFn, inOut: () => easingFn, ease: easingFn },
+		Easing,
 		FadeIn: chainable(),
 		FadeOut: chainable(),
 		SlideInDown: chainable(),

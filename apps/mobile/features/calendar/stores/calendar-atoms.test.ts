@@ -1,5 +1,6 @@
 import { createStore } from "jotai";
 import { describe, expect, it } from "vitest";
+import { MOCK_EVENT_NOTES } from "../__fixtures__/event-notes";
 import {
 	baseMonthValueAtom,
 	baseYearValueAtom,
@@ -13,7 +14,6 @@ import {
 	viewingMonthValueAtom,
 	viewingYearValueAtom,
 } from "./calendar-atoms";
-import { MOCK_EVENT_NOTES } from "./mock-event-notes";
 
 describe("calendar-atoms", () => {
 	it("初期状態: baseYearValueAtom が現在の年を返す", () => {

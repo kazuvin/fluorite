@@ -1,16 +1,21 @@
-import { renderHook, act } from "@testing-library/react";
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+import { act, renderHook } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useDailyCalendarAnimation } from "./use-daily-calendar-animation";
 
-vi.mock("react-native-reanimated", () => ({
-	useSharedValue: (initial: number) => ({ value: initial }),
-	useAnimatedStyle: (fn: () => object) => fn(),
-	withTiming: (_value: number, _config?: object) => _value,
-	Easing: {
-		out: vi.fn((fn) => fn),
-		cubic: vi.fn(),
-	},
-}));
+vi.mock("react-native-reanimated", () => {
+	const easingFn = vi.fn();
+	return {
+		useSharedValue: (initial: number) => ({ value: initial }),
+		useAnimatedStyle: (fn: () => object) => fn(),
+		withTiming: (_value: number, _config?: object) => _value,
+		Easing: {
+			out: vi.fn(() => easingFn),
+			in: vi.fn(() => easingFn),
+			inOut: vi.fn(() => easingFn),
+			ease: easingFn,
+		},
+	};
+});
 
 describe("useDailyCalendarAnimation", () => {
 	beforeEach(() => {

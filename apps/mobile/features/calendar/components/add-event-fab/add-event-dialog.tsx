@@ -1,6 +1,12 @@
 import { colors, fontSize, parseNumeric, radius, spacing } from "@fluorite/design-tokens";
-import { Pressable, StyleSheet, Text, useColorScheme, View } from "react-native";
-import Animated, { Easing, FadeIn, FadeOut, Keyframe, LinearTransition } from "react-native-reanimated";
+import { Pressable, StyleSheet, Text, View, useColorScheme } from "react-native";
+import Animated, {
+	Easing,
+	FadeIn,
+	FadeOut,
+	Keyframe,
+	LinearTransition,
+} from "react-native-reanimated";
 import { Button, ButtonText } from "../../../../components/ui/button";
 import type { CalendarDay } from "../../../../components/ui/calendar-grid/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../../components/ui/dialog";

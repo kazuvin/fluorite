@@ -1,8 +1,8 @@
 import type { CategoryRegistry } from "@fluorite/core";
 import { atom } from "jotai";
 import { eventNotesToCalendarEvents } from "../../../components/ui/calendar-grid/event-layout";
-import { MOCK_CATEGORY_REGISTRY } from "./mock-category-registry";
-import { MOCK_EVENT_NOTES } from "./mock-event-notes";
+import { MOCK_CATEGORY_REGISTRY } from "../__fixtures__/category-registry";
+import { MOCK_EVENT_NOTES } from "../__fixtures__/event-notes";
 
 // --- Private primitive atoms ---
 const baseYearAtom = atom(new Date().getFullYear());

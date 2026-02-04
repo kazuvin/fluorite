@@ -1,13 +1,8 @@
 import { useEffect } from "react";
-import {
-	Easing,
-	useAnimatedStyle,
-	useSharedValue,
-	withTiming,
-} from "react-native-reanimated";
+import { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { ANIMATION } from "../../../constants/animation";
 
 const DAILY_SLIDE_OFFSET = 20;
-const TIMING_CONFIG = { duration: 300, easing: Easing.out(Easing.cubic) };
 
 export const DAILY_CALENDAR_HEIGHT = 400;
 
@@ -17,11 +12,11 @@ export function useDailyCalendarAnimation(isSelected: boolean) {
 
 	useEffect(() => {
 		if (isSelected) {
-			dailyCalendarOpacity.value = withTiming(1, TIMING_CONFIG);
-			dailyCalendarTranslateY.value = withTiming(0, TIMING_CONFIG);
+			dailyCalendarOpacity.value = withTiming(1, ANIMATION.entering);
+			dailyCalendarTranslateY.value = withTiming(0, ANIMATION.entering);
 		} else {
-			dailyCalendarOpacity.value = withTiming(0, TIMING_CONFIG);
-			dailyCalendarTranslateY.value = withTiming(DAILY_SLIDE_OFFSET, TIMING_CONFIG);
+			dailyCalendarOpacity.value = withTiming(0, ANIMATION.exiting);
+			dailyCalendarTranslateY.value = withTiming(DAILY_SLIDE_OFFSET, ANIMATION.exiting);
 		}
 	}, [isSelected, dailyCalendarOpacity, dailyCalendarTranslateY]);
 

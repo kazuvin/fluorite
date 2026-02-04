@@ -1,6 +1,6 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { getTodayString, padGrid, getDayTestId } from "./calendar-utils";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { CalendarDay } from "../../../components/ui/calendar-grid/utils";
+import { getDayTestId, getTodayString, padGrid } from "./calendar-utils";
 
 describe("calendar-utils", () => {
 	describe("getTodayString", () => {
@@ -42,7 +42,11 @@ describe("calendar-utils", () => {
 			};
 		};
 
-		const createMockWeek = (startYear: number, startMonth: number, startDate: number): CalendarDay[] => {
+		const createMockWeek = (
+			startYear: number,
+			startMonth: number,
+			startDate: number,
+		): CalendarDay[] => {
 			const week: CalendarDay[] = [];
 			for (let i = 0; i < 7; i++) {
 				const d = new Date(startYear, startMonth, startDate + i);
@@ -90,11 +94,7 @@ describe("calendar-utils", () => {
 				lastDayOfOriginal.month,
 				lastDayOfOriginal.date,
 			);
-			const nextDate = new Date(
-				firstDayOfNew.year,
-				firstDayOfNew.month,
-				firstDayOfNew.date,
-			);
+			const nextDate = new Date(firstDayOfNew.year, firstDayOfNew.month, firstDayOfNew.date);
 
 			expect(nextDate.getTime() - lastDate.getTime()).toBe(24 * 60 * 60 * 1000);
 		});
@@ -121,33 +121,23 @@ describe("calendar-utils", () => {
 		});
 
 		it("returns calendar-day-range-end for end date when has range", () => {
-			expect(getDayTestId("2025-01-20", "2025-01-15", "2025-01-20")).toBe(
-				"calendar-day-range-end",
-			);
+			expect(getDayTestId("2025-01-20", "2025-01-15", "2025-01-20")).toBe("calendar-day-range-end");
 		});
 
 		it("returns calendar-day-in-range for dates between start and end", () => {
-			expect(getDayTestId("2025-01-17", "2025-01-15", "2025-01-20")).toBe(
-				"calendar-day-in-range",
-			);
+			expect(getDayTestId("2025-01-17", "2025-01-15", "2025-01-20")).toBe("calendar-day-in-range");
 		});
 
 		it("returns calendar-day for dates outside range", () => {
-			expect(getDayTestId("2025-01-10", "2025-01-15", "2025-01-20")).toBe(
-				"calendar-day",
-			);
+			expect(getDayTestId("2025-01-10", "2025-01-15", "2025-01-20")).toBe("calendar-day");
 		});
 
 		it("returns calendar-day-range-start for start date even without end", () => {
-			expect(getDayTestId("2025-01-15", "2025-01-15", "")).toBe(
-				"calendar-day-range-start",
-			);
+			expect(getDayTestId("2025-01-15", "2025-01-15", "")).toBe("calendar-day-range-start");
 		});
 
 		it("returns calendar-day for non-selected date when end is empty", () => {
-			expect(getDayTestId("2025-01-16", "2025-01-15", "")).toBe(
-				"calendar-day",
-			);
+			expect(getDayTestId("2025-01-16", "2025-01-15", "")).toBe("calendar-day");
 		});
 
 		it("handles same start and end date (no visual range)", () => {

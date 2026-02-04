@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ThemedView } from "../components/themed-view";
+import { ThemedView } from "../components/shared/themed-view";
 import { AddEventFab, CalendarGridContainer } from "../features/calendar";
 
 export default function HomeScreen() {

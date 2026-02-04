@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
 import * as v from "valibot";
-import { AddEventFormSchema, type AddEventFormData } from "./event-schema";
+import { describe, expect, it } from "vitest";
+import { type AddEventFormData, AddEventFormSchema } from "./event-schema";
 
 describe("event-schema", () => {
 	describe("AddEventFormSchema", () => {

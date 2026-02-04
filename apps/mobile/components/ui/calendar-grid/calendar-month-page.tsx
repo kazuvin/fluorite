@@ -1,12 +1,8 @@
 import { fontSize, fontWeight, parseNumeric, radius, spacing } from "@fluorite/design-tokens";
 import { memo, useEffect, useMemo } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import Animated, {
-	Easing,
-	useAnimatedStyle,
-	useSharedValue,
-	withTiming,
-} from "react-native-reanimated";
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { ANIMATION } from "../../../constants/animation";
 import type { CalendarEvent } from "./event-layout";
 import { computeMonthEventLayout } from "./event-layout";
 import { generateCalendarGrid } from "./utils";
@@ -18,7 +14,6 @@ const DAY_NUMBER_HEIGHT = parseNumeric(spacing[6]);
 const EVENT_AREA_TOP = DAY_NUMBER_HEIGHT - 2;
 
 const SELECTION_BORDER_RADIUS = parseNumeric(radius.xl);
-const SELECTION_TIMING = { duration: 280, easing: Easing.out(Easing.cubic) };
 
 export type CalendarGridColors = {
 	text: string;
@@ -79,14 +74,14 @@ export const CalendarMonthPage = memo(function CalendarMonthPage({
 				// First selection: snap position, then fade in
 				indicatorX.value = targetX;
 				indicatorY.value = targetY;
-				indicatorOpacity.value = withTiming(1, SELECTION_TIMING);
+				indicatorOpacity.value = withTiming(1, ANIMATION.entering);
 			} else {
 				// Subsequent selection: animate position
-				indicatorX.value = withTiming(targetX, SELECTION_TIMING);
-				indicatorY.value = withTiming(targetY, SELECTION_TIMING);
+				indicatorX.value = withTiming(targetX, ANIMATION.layout);
+				indicatorY.value = withTiming(targetY, ANIMATION.layout);
 			}
 		} else {
-			indicatorOpacity.value = withTiming(0, { duration: 200, easing: Easing.in(Easing.cubic) });
+			indicatorOpacity.value = withTiming(0, ANIMATION.exiting);
 		}
 	}, [selectedPos, cellWidth, indicatorX, indicatorY, indicatorOpacity]);
 

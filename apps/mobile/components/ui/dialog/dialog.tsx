@@ -17,6 +17,7 @@ import Animated, {
 	SlideOutDown,
 	useAnimatedStyle,
 } from "react-native-reanimated";
+import { ANIMATION } from "../../../constants/animation";
 import { IconSymbol } from "../icon-symbol";
 
 type DialogProps = {
@@ -45,8 +46,8 @@ function DialogRoot({ visible, onClose, closeOnOverlayPress = true, children }: 
 		<DialogContext.Provider value={{ onClose }}>
 			<View style={styles.wrapper}>
 				<Animated.View
-					entering={FadeIn.duration(200)}
-					exiting={FadeOut.duration(150)}
+					entering={FadeIn.duration(ANIMATION.entering.duration).easing(ANIMATION.entering.easing)}
+					exiting={FadeOut.duration(ANIMATION.exiting.duration).easing(ANIMATION.exiting.easing)}
 					style={styles.overlayBackground}
 				>
 					<Pressable
@@ -57,13 +58,21 @@ function DialogRoot({ visible, onClose, closeOnOverlayPress = true, children }: 
 				</Animated.View>
 				<Animated.View
 					testID="dialog-keyboard-avoiding"
-					layout={LinearTransition.duration(250)}
+					layout={LinearTransition.duration(ANIMATION.layout.duration).easing(
+						ANIMATION.layout.easing,
+					)}
 					style={[styles.keyboardAvoiding, keyboardAvoidingStyle]}
 				>
 					<Animated.View
-						entering={SlideInDown.duration(250)}
-						exiting={SlideOutDown.duration(200)}
-						layout={LinearTransition.duration(250)}
+						entering={SlideInDown.duration(ANIMATION.entering.duration).easing(
+							ANIMATION.entering.easing,
+						)}
+						exiting={SlideOutDown.duration(ANIMATION.exiting.duration).easing(
+							ANIMATION.exiting.easing,
+						)}
+						layout={LinearTransition.duration(ANIMATION.layout.duration).easing(
+							ANIMATION.layout.easing,
+						)}
 						testID="dialog-card"
 						accessibilityRole="alert"
 						style={styles.card}
