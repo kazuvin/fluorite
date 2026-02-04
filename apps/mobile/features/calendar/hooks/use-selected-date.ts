@@ -5,6 +5,10 @@ import {
 	generateCalendarGrid,
 } from "../../../components/ui/calendar-grid/utils";
 import {
+	viewingMonthValueAtom,
+	viewingYearValueAtom,
+} from "../stores/calendar-atoms";
+import {
 	clearSelectedDateAtom,
 	selectDateAtom,
 	selectedDateValueAtom,
@@ -17,7 +21,9 @@ type SelectedDateState = {
 	handleClearDate: () => void;
 };
 
-export function useSelectedDate(viewingYear: number, viewingMonth: number): SelectedDateState {
+export function useSelectedDate(): SelectedDateState {
+	const viewingYear = useAtomValue(viewingYearValueAtom);
+	const viewingMonth = useAtomValue(viewingMonthValueAtom);
 	const selectedDateKey = useAtomValue(selectedDateValueAtom);
 	const selectDate = useSetAtom(selectDateAtom);
 	const clearDate = useSetAtom(clearSelectedDateAtom);

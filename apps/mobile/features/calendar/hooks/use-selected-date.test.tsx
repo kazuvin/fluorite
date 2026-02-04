@@ -2,6 +2,7 @@ import { act, renderHook } from "@testing-library/react";
 import { Provider, createStore } from "jotai";
 import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
+import { setViewingMonthAtom } from "../stores/calendar-atoms";
 import { useSelectedDate } from "./use-selected-date";
 
 const createWrapper =
@@ -11,7 +12,8 @@ const createWrapper =
 describe("useSelectedDate", () => {
 	it("初期状態で selectedDateKey が null を返す", () => {
 		const store = createStore();
-		const { result } = renderHook(() => useSelectedDate(2026, 0), {
+		store.set(setViewingMonthAtom, { year: 2026, month: 0 });
+		const { result } = renderHook(() => useSelectedDate(), {
 			wrapper: createWrapper(store),
 		});
 
@@ -20,7 +22,8 @@ describe("useSelectedDate", () => {
 
 	it("初期状態で selectedWeekIndex が -1 を返す", () => {
 		const store = createStore();
-		const { result } = renderHook(() => useSelectedDate(2026, 0), {
+		store.set(setViewingMonthAtom, { year: 2026, month: 0 });
+		const { result } = renderHook(() => useSelectedDate(), {
 			wrapper: createWrapper(store),
 		});
 
@@ -29,7 +32,8 @@ describe("useSelectedDate", () => {
 
 	it("handleSelectDate で日付が選択される", () => {
 		const store = createStore();
-		const { result } = renderHook(() => useSelectedDate(2026, 0), {
+		store.set(setViewingMonthAtom, { year: 2026, month: 0 });
+		const { result } = renderHook(() => useSelectedDate(), {
 			wrapper: createWrapper(store),
 		});
 
@@ -42,7 +46,8 @@ describe("useSelectedDate", () => {
 
 	it("handleSelectDate で同じ日付を選択するとトグルされる", () => {
 		const store = createStore();
-		const { result } = renderHook(() => useSelectedDate(2026, 0), {
+		store.set(setViewingMonthAtom, { year: 2026, month: 0 });
+		const { result } = renderHook(() => useSelectedDate(), {
 			wrapper: createWrapper(store),
 		});
 
@@ -59,7 +64,8 @@ describe("useSelectedDate", () => {
 
 	it("handleClearDate で選択が解除される", () => {
 		const store = createStore();
-		const { result } = renderHook(() => useSelectedDate(2026, 0), {
+		store.set(setViewingMonthAtom, { year: 2026, month: 0 });
+		const { result } = renderHook(() => useSelectedDate(), {
 			wrapper: createWrapper(store),
 		});
 
@@ -76,7 +82,8 @@ describe("useSelectedDate", () => {
 
 	it("selectedWeekIndex が選択された日付の週インデックスを返す", () => {
 		const store = createStore();
-		const { result } = renderHook(() => useSelectedDate(2026, 0), {
+		store.set(setViewingMonthAtom, { year: 2026, month: 0 });
+		const { result } = renderHook(() => useSelectedDate(), {
 			wrapper: createWrapper(store),
 		});
 
