@@ -8,11 +8,15 @@ import Animated, {
 	LinearTransition,
 } from "react-native-reanimated";
 import { Button, ButtonText } from "../../../../components/ui/button";
-import type { CalendarDay } from "../../../../components/ui/calendar-grid/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../../components/ui/dialog";
 import { IconSymbol } from "../../../../components/ui/icon-symbol";
 import { Input } from "../../../../components/ui/input";
 import { Switch } from "../../../../components/ui/switch";
+import type {
+	AddEventFormActions,
+	AddEventFormState,
+	AddEventFormUI,
+} from "../../hooks/use-add-event-form";
 import { DateRangePickerInline } from "./date-range-picker-inline";
 
 const titleEntering = new Keyframe({
@@ -25,57 +29,31 @@ const titleExiting = new Keyframe({
 	100: { opacity: 0, transform: [{ translateX: -20 }], easing: Easing.in(Easing.ease) },
 }).duration(80);
 
-type DatePickerTarget = "start" | "end" | null;
-
-type AddEventDialogProps = {
+export type AddEventDialogProps = {
 	visible: boolean;
 	onClose: () => void;
-	title: string;
-	onTitleChange: (text: string) => void;
-	start: string;
-	end: string;
-	allDay: boolean;
-	onAllDayChange: (value: boolean) => void;
-	isDatePickerMode: boolean;
-	datePickerTarget: DatePickerTarget;
-	onDateTriggerPress: (target: "start" | "end") => void;
-	onDatePickerBack: () => void;
-	displayYear: number;
-	displayMonth: number;
-	grid: CalendarDay[][];
-	hasRange: boolean;
-	onPrevMonth: () => void;
-	onNextMonth: () => void;
-	onDayPress: (dateKey: string) => void;
-	getDateTriggerDisplayValue: (target: "start" | "end") => string;
-	getDateTriggerHasValue: (target: "start" | "end") => boolean;
+	formState: AddEventFormState;
+	ui: Omit<AddEventFormUI, "visible">;
+	actions: AddEventFormActions;
 };
 
-export function AddEventDialog({
-	visible,
-	onClose,
-	title,
-	onTitleChange,
-	start,
-	end,
-	allDay,
-	onAllDayChange,
-	isDatePickerMode,
-	datePickerTarget,
-	onDateTriggerPress,
-	onDatePickerBack,
-	displayYear,
-	displayMonth,
-	grid,
-	hasRange,
-	onPrevMonth,
-	onNextMonth,
-	onDayPress,
-	getDateTriggerDisplayValue,
-	getDateTriggerHasValue,
-}: AddEventDialogProps) {
+export function AddEventDialog({ visible, onClose, formState, ui, actions }: AddEventDialogProps) {
 	const scheme = useColorScheme() ?? "light";
 	const theme = colors[scheme];
+
+	const { title, start, end, allDay } = formState;
+	const { isDatePickerMode, datePickerTarget, displayYear, displayMonth, grid, hasRange } = ui;
+	const {
+		setTitle,
+		setAllDay,
+		handleDateTriggerPress,
+		handleDatePickerBack,
+		handlePrevMonth,
+		handleNextMonth,
+		handleDayPress,
+		getDateTriggerDisplayValue,
+		getDateTriggerHasValue,
+	} = actions;
 
 	return (
 		<Dialog visible={visible} onClose={onClose} closeOnOverlayPress={false}>
@@ -90,7 +68,7 @@ export function AddEventDialog({
 						<Pressable
 							testID="date-picker-back"
 							accessibilityRole="button"
-							onPress={onDatePickerBack}
+							onPress={handleDatePickerBack}
 							style={styles.backButton}
 						>
 							<IconSymbol name="chevron.left" size={20} color={theme.text} />
@@ -124,7 +102,7 @@ export function AddEventDialog({
 						exiting={FadeOut.duration(80).easing(Easing.in(Easing.ease))}
 						style={styles.formFieldsAboveDate}
 					>
-						<Input placeholder="タイトル" value={title} onChangeText={onTitleChange} />
+						<Input placeholder="タイトル" value={title} onChangeText={setTitle} />
 					</Animated.View>
 				)}
 
@@ -139,7 +117,7 @@ export function AddEventDialog({
 					>
 						<Pressable
 							testID="date-trigger-start"
-							onPress={() => onDateTriggerPress("start")}
+							onPress={() => handleDateTriggerPress("start")}
 							style={[
 								styles.dateTrigger,
 								{ backgroundColor: theme.muted },
@@ -165,7 +143,7 @@ export function AddEventDialog({
 					>
 						<Pressable
 							testID="date-trigger-end"
-							onPress={() => onDateTriggerPress("end")}
+							onPress={() => handleDateTriggerPress("end")}
 							style={[
 								styles.dateTrigger,
 								{ backgroundColor: theme.muted },
@@ -200,9 +178,9 @@ export function AddEventDialog({
 							start={start}
 							end={end}
 							hasRange={hasRange}
-							onPrevMonth={onPrevMonth}
-							onNextMonth={onNextMonth}
-							onDayPress={onDayPress}
+							onPrevMonth={handlePrevMonth}
+							onNextMonth={handleNextMonth}
+							onDayPress={handleDayPress}
 						/>
 					</Animated.View>
 				)}
@@ -214,7 +192,7 @@ export function AddEventDialog({
 						exiting={FadeOut.duration(80).easing(Easing.in(Easing.ease))}
 						style={styles.formFieldsAboveDate}
 					>
-						<Switch label="終日" value={allDay} onValueChange={onAllDayChange} />
+						<Switch label="終日" value={allDay} onValueChange={setAllDay} />
 					</Animated.View>
 				)}
 

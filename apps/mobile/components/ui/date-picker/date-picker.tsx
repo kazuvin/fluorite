@@ -6,7 +6,7 @@ import { generateCalendarGrid } from "../calendar-grid/utils";
 import { IconSymbol } from "../icon-symbol";
 import { formatDateLabel, parseDateString } from "./utils";
 
-type DatePickerProps = {
+export type DatePickerProps = {
 	value?: string;
 	onValueChange: (date: string) => void;
 	placeholder?: string;

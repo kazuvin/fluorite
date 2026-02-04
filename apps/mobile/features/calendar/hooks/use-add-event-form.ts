@@ -1,15 +1,46 @@
 import { useCallback, useState } from "react";
+import type { CalendarDay } from "../../../components/ui/calendar-grid/utils";
 import { generateCalendarGrid } from "../../../components/ui/calendar-grid/utils";
 import { formatDateLabel } from "../../../components/ui/date-picker/utils";
 import { getTodayString, padGrid } from "../utils/calendar-utils";
 
-type DatePickerTarget = "start" | "end" | null;
+export type DatePickerTarget = "start" | "end" | null;
 
-type FormState = {
+export type AddEventFormState = {
 	title: string;
 	start: string;
 	end: string;
 	allDay: boolean;
+};
+
+export type AddEventFormUI = {
+	visible: boolean;
+	isDatePickerMode: boolean;
+	datePickerTarget: DatePickerTarget;
+	displayYear: number;
+	displayMonth: number;
+	grid: CalendarDay[][];
+	hasRange: boolean;
+};
+
+export type AddEventFormActions = {
+	handleOpen: () => void;
+	handleClose: () => void;
+	setTitle: (text: string) => void;
+	setAllDay: (value: boolean) => void;
+	handleDateTriggerPress: (target: "start" | "end") => void;
+	handleDayPress: (dateKey: string) => void;
+	handleDatePickerBack: () => void;
+	handlePrevMonth: () => void;
+	handleNextMonth: () => void;
+	getDateTriggerDisplayValue: (target: "start" | "end") => string;
+	getDateTriggerHasValue: (target: "start" | "end") => boolean;
+};
+
+export type UseAddEventFormReturn = {
+	formState: AddEventFormState;
+	ui: AddEventFormUI;
+	actions: AddEventFormActions;
 };
 
 export function useAddEventForm() {
@@ -124,38 +155,33 @@ export function useAddEventForm() {
 	const grid = padGrid(rawGrid);
 
 	return {
-		// Dialog state
-		visible,
-		handleOpen,
-		handleClose,
-
-		// Form state
 		formState: {
 			title,
 			start,
 			end,
 			allDay,
-		} as FormState,
-		setTitle,
-		setAllDay,
-
-		// Date picker state
-		isDatePickerMode,
-		datePickerTarget,
-		handleDateTriggerPress,
-		handleDayPress,
-		handleDatePickerBack,
-
-		// Calendar navigation
-		displayYear,
-		displayMonth,
-		handlePrevMonth,
-		handleNextMonth,
-		grid,
-
-		// Date trigger helpers
-		getDateTriggerDisplayValue,
-		getDateTriggerHasValue,
-		hasRange,
-	};
+		},
+		ui: {
+			visible,
+			isDatePickerMode,
+			datePickerTarget,
+			displayYear,
+			displayMonth,
+			grid,
+			hasRange,
+		},
+		actions: {
+			handleOpen,
+			handleClose,
+			setTitle,
+			setAllDay,
+			handleDateTriggerPress,
+			handleDayPress,
+			handleDatePickerBack,
+			handlePrevMonth,
+			handleNextMonth,
+			getDateTriggerDisplayValue,
+			getDateTriggerHasValue,
+		},
+	} satisfies UseAddEventFormReturn;
 }

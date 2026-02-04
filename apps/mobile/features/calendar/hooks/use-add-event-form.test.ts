@@ -15,7 +15,7 @@ describe("useAddEventForm", () => {
 	describe("initial state", () => {
 		it("starts with dialog closed", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			expect(result.current.visible).toBe(false);
+			expect(result.current.ui.visible).toBe(false);
 		});
 
 		it("initializes start date to today", () => {
@@ -42,18 +42,18 @@ describe("useAddEventForm", () => {
 	describe("dialog controls", () => {
 		it("opens dialog", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			act(() => result.current.handleOpen());
-			expect(result.current.visible).toBe(true);
+			act(() => result.current.actions.handleOpen());
+			expect(result.current.ui.visible).toBe(true);
 		});
 
 		it("closes dialog and resets form", () => {
 			const { result } = renderHook(() => useAddEventForm());
 
-			act(() => result.current.handleOpen());
-			act(() => result.current.setTitle("テスト"));
-			act(() => result.current.handleClose());
+			act(() => result.current.actions.handleOpen());
+			act(() => result.current.actions.setTitle("テスト"));
+			act(() => result.current.actions.handleClose());
 
-			expect(result.current.visible).toBe(false);
+			expect(result.current.ui.visible).toBe(false);
 			expect(result.current.formState.title).toBe("");
 		});
 	});
@@ -61,13 +61,13 @@ describe("useAddEventForm", () => {
 	describe("form state setters", () => {
 		it("updates title", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			act(() => result.current.setTitle("新しい予定"));
+			act(() => result.current.actions.setTitle("新しい予定"));
 			expect(result.current.formState.title).toBe("新しい予定");
 		});
 
 		it("updates allDay", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			act(() => result.current.setAllDay(false));
+			act(() => result.current.actions.setAllDay(false));
 			expect(result.current.formState.allDay).toBe(false);
 		});
 	});
@@ -75,54 +75,54 @@ describe("useAddEventForm", () => {
 	describe("date picker mode", () => {
 		it("starts not in date picker mode", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			expect(result.current.isDatePickerMode).toBe(false);
+			expect(result.current.ui.isDatePickerMode).toBe(false);
 		});
 
 		it("enters date picker mode for start date", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			act(() => result.current.handleDateTriggerPress("start"));
-			expect(result.current.isDatePickerMode).toBe(true);
-			expect(result.current.datePickerTarget).toBe("start");
+			act(() => result.current.actions.handleDateTriggerPress("start"));
+			expect(result.current.ui.isDatePickerMode).toBe(true);
+			expect(result.current.ui.datePickerTarget).toBe("start");
 		});
 
 		it("enters date picker mode for end date", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			act(() => result.current.handleDateTriggerPress("end"));
-			expect(result.current.isDatePickerMode).toBe(true);
-			expect(result.current.datePickerTarget).toBe("end");
+			act(() => result.current.actions.handleDateTriggerPress("end"));
+			expect(result.current.ui.isDatePickerMode).toBe(true);
+			expect(result.current.ui.datePickerTarget).toBe("end");
 		});
 
 		it("exits date picker mode", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			act(() => result.current.handleDateTriggerPress("start"));
-			act(() => result.current.handleDatePickerBack());
-			expect(result.current.isDatePickerMode).toBe(false);
+			act(() => result.current.actions.handleDateTriggerPress("start"));
+			act(() => result.current.actions.handleDatePickerBack());
+			expect(result.current.ui.isDatePickerMode).toBe(false);
 		});
 	});
 
 	describe("day selection", () => {
 		it("selects start date", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			act(() => result.current.handleDateTriggerPress("start"));
-			act(() => result.current.handleDayPress("2025-01-20"));
+			act(() => result.current.actions.handleDateTriggerPress("start"));
+			act(() => result.current.actions.handleDayPress("2025-01-20"));
 			expect(result.current.formState.start).toBe("2025-01-20");
 		});
 
 		it("selects end date", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			act(() => result.current.handleDateTriggerPress("end"));
-			act(() => result.current.handleDayPress("2025-01-25"));
+			act(() => result.current.actions.handleDateTriggerPress("end"));
+			act(() => result.current.actions.handleDayPress("2025-01-25"));
 			expect(result.current.formState.end).toBe("2025-01-25");
 		});
 
 		it("swaps dates when end is before start", () => {
 			const { result } = renderHook(() => useAddEventForm());
 
-			act(() => result.current.handleDateTriggerPress("start"));
-			act(() => result.current.handleDayPress("2025-01-20"));
+			act(() => result.current.actions.handleDateTriggerPress("start"));
+			act(() => result.current.actions.handleDayPress("2025-01-20"));
 
-			act(() => result.current.handleDateTriggerPress("end"));
-			act(() => result.current.handleDayPress("2025-01-10"));
+			act(() => result.current.actions.handleDateTriggerPress("end"));
+			act(() => result.current.actions.handleDayPress("2025-01-10"));
 
 			expect(result.current.formState.start).toBe("2025-01-10");
 			expect(result.current.formState.end).toBe("2025-01-20");
@@ -131,11 +131,11 @@ describe("useAddEventForm", () => {
 		it("swaps dates when start is after end", () => {
 			const { result } = renderHook(() => useAddEventForm());
 
-			act(() => result.current.handleDateTriggerPress("end"));
-			act(() => result.current.handleDayPress("2025-01-20"));
+			act(() => result.current.actions.handleDateTriggerPress("end"));
+			act(() => result.current.actions.handleDayPress("2025-01-20"));
 
-			act(() => result.current.handleDateTriggerPress("start"));
-			act(() => result.current.handleDayPress("2025-01-25"));
+			act(() => result.current.actions.handleDateTriggerPress("start"));
+			act(() => result.current.actions.handleDayPress("2025-01-25"));
 
 			expect(result.current.formState.start).toBe("2025-01-20");
 			expect(result.current.formState.end).toBe("2025-01-25");
@@ -145,33 +145,33 @@ describe("useAddEventForm", () => {
 	describe("calendar navigation", () => {
 		it("navigates to previous month", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			act(() => result.current.handleDateTriggerPress("start"));
+			act(() => result.current.actions.handleDateTriggerPress("start"));
 
-			const initialMonth = result.current.displayMonth;
-			act(() => result.current.handlePrevMonth());
+			const initialMonth = result.current.ui.displayMonth;
+			act(() => result.current.actions.handlePrevMonth());
 
-			expect(result.current.displayMonth).toBe(initialMonth - 1 < 0 ? 11 : initialMonth - 1);
+			expect(result.current.ui.displayMonth).toBe(initialMonth - 1 < 0 ? 11 : initialMonth - 1);
 		});
 
 		it("navigates to next month", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			act(() => result.current.handleDateTriggerPress("start"));
+			act(() => result.current.actions.handleDateTriggerPress("start"));
 
-			const initialMonth = result.current.displayMonth;
-			act(() => result.current.handleNextMonth());
+			const initialMonth = result.current.ui.displayMonth;
+			act(() => result.current.actions.handleNextMonth());
 
-			expect(result.current.displayMonth).toBe((initialMonth + 1) % 12);
+			expect(result.current.ui.displayMonth).toBe((initialMonth + 1) % 12);
 		});
 
 		it("handles year rollover when navigating to previous month from January", () => {
 			vi.setSystemTime(new Date(2025, 0, 15)); // January
 			const { result } = renderHook(() => useAddEventForm());
-			act(() => result.current.handleDateTriggerPress("start"));
+			act(() => result.current.actions.handleDateTriggerPress("start"));
 
-			act(() => result.current.handlePrevMonth());
+			act(() => result.current.actions.handlePrevMonth());
 
-			expect(result.current.displayMonth).toBe(11);
-			expect(result.current.displayYear).toBe(2024);
+			expect(result.current.ui.displayMonth).toBe(11);
+			expect(result.current.ui.displayYear).toBe(2024);
 		});
 	});
 
@@ -180,60 +180,60 @@ describe("useAddEventForm", () => {
 			const { result } = renderHook(() => useAddEventForm());
 			// Start date is initialized to today, so we need to check with a fresh hook
 			// that has been reset
-			act(() => result.current.handleClose());
-			expect(result.current.getDateTriggerDisplayValue("start")).toContain("2025年1月15日");
+			act(() => result.current.actions.handleClose());
+			expect(result.current.actions.getDateTriggerDisplayValue("start")).toContain("2025年1月15日");
 		});
 
 		it("returns placeholder for empty end date", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			expect(result.current.getDateTriggerDisplayValue("end")).toBe("終了日");
+			expect(result.current.actions.getDateTriggerDisplayValue("end")).toBe("終了日");
 		});
 
 		it("returns formatted date for selected end date", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			act(() => result.current.handleDateTriggerPress("end"));
-			act(() => result.current.handleDayPress("2025-01-20"));
-			expect(result.current.getDateTriggerDisplayValue("end")).toBe("2025年1月20日");
+			act(() => result.current.actions.handleDateTriggerPress("end"));
+			act(() => result.current.actions.handleDayPress("2025-01-20"));
+			expect(result.current.actions.getDateTriggerDisplayValue("end")).toBe("2025年1月20日");
 		});
 	});
 
 	describe("hasValue indicators", () => {
 		it("returns true when start has value", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			expect(result.current.getDateTriggerHasValue("start")).toBe(true);
+			expect(result.current.actions.getDateTriggerHasValue("start")).toBe(true);
 		});
 
 		it("returns false when end is empty", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			expect(result.current.getDateTriggerHasValue("end")).toBe(false);
+			expect(result.current.actions.getDateTriggerHasValue("end")).toBe(false);
 		});
 
 		it("returns true when end has value", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			act(() => result.current.handleDateTriggerPress("end"));
-			act(() => result.current.handleDayPress("2025-01-20"));
-			expect(result.current.getDateTriggerHasValue("end")).toBe(true);
+			act(() => result.current.actions.handleDateTriggerPress("end"));
+			act(() => result.current.actions.handleDayPress("2025-01-20"));
+			expect(result.current.actions.getDateTriggerHasValue("end")).toBe(true);
 		});
 	});
 
 	describe("hasRange", () => {
 		it("returns false when end is empty", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			expect(result.current.hasRange).toBe(false);
+			expect(result.current.ui.hasRange).toBe(false);
 		});
 
 		it("returns false when start equals end", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			act(() => result.current.handleDateTriggerPress("end"));
-			act(() => result.current.handleDayPress("2025-01-15")); // Same as start
-			expect(result.current.hasRange).toBe(false);
+			act(() => result.current.actions.handleDateTriggerPress("end"));
+			act(() => result.current.actions.handleDayPress("2025-01-15")); // Same as start
+			expect(result.current.ui.hasRange).toBe(false);
 		});
 
 		it("returns true when start and end are different", () => {
 			const { result } = renderHook(() => useAddEventForm());
-			act(() => result.current.handleDateTriggerPress("end"));
-			act(() => result.current.handleDayPress("2025-01-20"));
-			expect(result.current.hasRange).toBe(true);
+			act(() => result.current.actions.handleDateTriggerPress("end"));
+			act(() => result.current.actions.handleDayPress("2025-01-20"));
+			expect(result.current.ui.hasRange).toBe(true);
 		});
 	});
 });

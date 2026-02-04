@@ -5,7 +5,7 @@ import { RollingDigit } from "./rolling-digit";
 const DEFAULT_DURATION = 300;
 const DEFAULT_CHAR_HEIGHT = 24;
 
-type RollingNumberProps = {
+export type RollingNumberProps = {
 	value: string;
 	direction: 1 | -1;
 	style?: TextStyle;

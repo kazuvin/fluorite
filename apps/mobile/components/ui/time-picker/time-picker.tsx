@@ -2,7 +2,7 @@ import { colors, fontSize, parseNumeric, radius, spacing } from "@fluorite/desig
 import { useState } from "react";
 import { Pressable, ScrollView, Text, View, useColorScheme } from "react-native";
 
-type TimePickerProps = {
+export type TimePickerProps = {
 	value?: string;
 	onValueChange: (time: string) => void;
 	placeholder?: string;
