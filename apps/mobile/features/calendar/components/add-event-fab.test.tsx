@@ -1,5 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import { Provider, createStore } from "jotai";
+import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { resetFormAtom } from "../stores/add-event-form-atoms";
 
 vi.mock("../../../components/ui/icon-symbol", () => ({
 	IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon-${name}`} />,
@@ -112,52 +115,64 @@ vi.mock("../../../components/ui/text-area", () => ({
 import { AddEventFab } from "./add-event-fab";
 
 describe("AddEventFab", () => {
+	let store: ReturnType<typeof createStore>;
+
 	beforeEach(() => {
 		vi.useFakeTimers();
 		vi.setSystemTime(new Date(2026, 1, 2)); // 2026-02-02
+		store = createStore();
+		store.set(resetFormAtom);
 	});
 
 	afterEach(() => {
 		vi.useRealTimers();
 	});
 
+	function wrapper({ children }: { children: ReactNode }) {
+		return <Provider store={store}>{children}</Provider>;
+	}
+
+	function renderWithProvider(ui: React.ReactElement) {
+		return render(ui, { wrapper });
+	}
+
 	const openDialog = () => {
-		render(<AddEventFab />);
+		renderWithProvider(<AddEventFab />);
 		fireEvent.click(screen.getByTestId("add-event-fab"));
 	};
 
 	describe("基本レンダリング", () => {
 		it("FAB ボタンが表示される", () => {
-			render(<AddEventFab />);
+			renderWithProvider(<AddEventFab />);
 			expect(screen.getByTestId("add-event-fab")).toBeInTheDocument();
 		});
 
 		it("accessibilityRole が button に設定されている", () => {
-			render(<AddEventFab />);
+			renderWithProvider(<AddEventFab />);
 			expect(screen.getByRole("button")).toBeInTheDocument();
 		});
 	});
 
 	describe("Dialog の開閉", () => {
 		it("初期状態では Dialog が表示されない", () => {
-			render(<AddEventFab />);
+			renderWithProvider(<AddEventFab />);
 			expect(screen.queryByTestId("dialog-card")).toBeNull();
 		});
 
 		it("FAB を押すと Dialog が表示される", () => {
-			render(<AddEventFab />);
+			renderWithProvider(<AddEventFab />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			expect(screen.getByTestId("dialog-card")).toBeInTheDocument();
 		});
 
 		it("Dialog にタイトルが表示される", () => {
-			render(<AddEventFab />);
+			renderWithProvider(<AddEventFab />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			expect(screen.getByText("予定を追加")).toBeInTheDocument();
 		});
 
 		it("DialogHeader 内に DialogTitle と DialogClose が配置される", () => {
-			render(<AddEventFab />);
+			renderWithProvider(<AddEventFab />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			const header = screen.getByTestId("dialog-header");
 			expect(header).toBeInTheDocument();
@@ -166,13 +181,13 @@ describe("AddEventFab", () => {
 		});
 
 		it("DialogContent が表示される", () => {
-			render(<AddEventFab />);
+			renderWithProvider(<AddEventFab />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			expect(screen.getByTestId("dialog-content")).toBeInTheDocument();
 		});
 
 		it("オーバーレイを押しても Dialog は閉じない", () => {
-			render(<AddEventFab />);
+			renderWithProvider(<AddEventFab />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			expect(screen.getByTestId("dialog-card")).toBeInTheDocument();
 			fireEvent.click(screen.getByTestId("dialog-overlay"));
@@ -180,7 +195,7 @@ describe("AddEventFab", () => {
 		});
 
 		it("閉じるボタンを押すと Dialog が閉じる", () => {
-			render(<AddEventFab />);
+			renderWithProvider(<AddEventFab />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			expect(screen.getByTestId("dialog-card")).toBeInTheDocument();
 			fireEvent.click(screen.getByTestId("dialog-close"));
@@ -190,7 +205,7 @@ describe("AddEventFab", () => {
 
 	describe("追加ボタン", () => {
 		it("Dialog 内に追加ボタンが表示される", () => {
-			render(<AddEventFab />);
+			renderWithProvider(<AddEventFab />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			expect(screen.getByText("追加する")).toBeInTheDocument();
 		});
@@ -198,13 +213,13 @@ describe("AddEventFab", () => {
 
 	describe("タイトル入力", () => {
 		it("Dialog 内にタイトル入力欄が表示される", () => {
-			render(<AddEventFab />);
+			renderWithProvider(<AddEventFab />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			expect(screen.getByPlaceholderText("タイトル")).toBeInTheDocument();
 		});
 
 		it("タイトルを入力できる", () => {
-			render(<AddEventFab />);
+			renderWithProvider(<AddEventFab />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			const input = screen.getByPlaceholderText("タイトル");
 			fireEvent.change(input, { target: { value: "チームミーティング" } });
@@ -212,7 +227,7 @@ describe("AddEventFab", () => {
 		});
 
 		it("Dialog を閉じて再度開くとタイトルがリセットされる", () => {
-			render(<AddEventFab />);
+			renderWithProvider(<AddEventFab />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			const input = screen.getByPlaceholderText("タイトル");
 			fireEvent.change(input, { target: { value: "チームミーティング" } });
@@ -262,7 +277,7 @@ describe("AddEventFab", () => {
 
 	describe("フォームリセット", () => {
 		it("Dialog を閉じて再度開くと全フィールドがリセットされる", () => {
-			render(<AddEventFab />);
+			renderWithProvider(<AddEventFab />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 
 			// タイトルに値を入力

@@ -1,10 +1,33 @@
-import { useCallback, useState } from "react";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useCallback } from "react";
 import type { CalendarDay } from "../../../components/ui/calendar-grid/utils";
-import { generateCalendarGrid } from "../../../components/ui/calendar-grid/utils";
 import { formatDateLabel } from "../../../components/ui/date-picker/utils";
-import { getTodayString, padGrid } from "../utils/calendar-utils";
+import {
+	type DatePickerTarget,
+	allDayValueAtom,
+	closeFormAtom,
+	datePickerTargetValueAtom,
+	displayMonthValueAtom,
+	displayYearValueAtom,
+	endValueAtom,
+	enterDatePickerModeAtom,
+	exitDatePickerModeAtom,
+	gridValueAtom,
+	hasRangeValueAtom,
+	isDatePickerModeValueAtom,
+	nextMonthAtom,
+	openFormAtom,
+	prevMonthAtom,
+	selectDayAtom,
+	setAllDayAtom,
+	setTitleAtom,
+	startValueAtom,
+	switchDatePickerTargetAtom,
+	titleValueAtom,
+	visibleValueAtom,
+} from "../stores/add-event-form-atoms";
 
-export type DatePickerTarget = "start" | "end" | null;
+export type { DatePickerTarget } from "../stores/add-event-form-atoms";
 
 export type AddEventFormState = {
 	title: string;
@@ -44,97 +67,63 @@ export type UseAddEventFormReturn = {
 };
 
 export function useAddEventForm() {
-	const [visible, setVisible] = useState(false);
-	const [title, setTitle] = useState("");
-	const [start, setStart] = useState(getTodayString);
-	const [end, setEnd] = useState("");
-	const [allDay, setAllDay] = useState(true);
-	const [datePickerTarget, setDatePickerTarget] = useState<DatePickerTarget>(null);
-	const [displayYear, setDisplayYear] = useState(new Date().getFullYear());
-	const [displayMonth, setDisplayMonth] = useState(new Date().getMonth());
+	// Read-only values
+	const title = useAtomValue(titleValueAtom);
+	const start = useAtomValue(startValueAtom);
+	const end = useAtomValue(endValueAtom);
+	const allDay = useAtomValue(allDayValueAtom);
+	const visible = useAtomValue(visibleValueAtom);
+	const datePickerTarget = useAtomValue(datePickerTargetValueAtom);
+	const displayYear = useAtomValue(displayYearValueAtom);
+	const displayMonth = useAtomValue(displayMonthValueAtom);
+	const isDatePickerMode = useAtomValue(isDatePickerModeValueAtom);
+	const hasRange = useAtomValue(hasRangeValueAtom);
+	const grid = useAtomValue(gridValueAtom);
 
-	const isDatePickerMode = datePickerTarget !== null;
-	const hasRange = !!start && !!end && start !== end;
+	// Actions
+	const openForm = useSetAtom(openFormAtom);
+	const closeForm = useSetAtom(closeFormAtom);
+	const setTitle = useSetAtom(setTitleAtom);
+	const setAllDay = useSetAtom(setAllDayAtom);
+	const enterDatePickerMode = useSetAtom(enterDatePickerModeAtom);
+	const switchDatePickerTarget = useSetAtom(switchDatePickerTargetAtom);
+	const exitDatePickerMode = useSetAtom(exitDatePickerModeAtom);
+	const selectDay = useSetAtom(selectDayAtom);
+	const prevMonth = useSetAtom(prevMonthAtom);
+	const nextMonth = useSetAtom(nextMonthAtom);
 
-	const handleOpen = useCallback(() => setVisible(true), []);
-
-	const handleClose = useCallback(() => {
-		setVisible(false);
-		setTitle("");
-		setStart(getTodayString());
-		setEnd("");
-		setAllDay(true);
-		setDatePickerTarget(null);
-	}, []);
-
-	const enterDatePickerMode = useCallback(
-		(target: "start" | "end") => {
-			const currentValue = target === "start" ? start : end;
-			if (currentValue) {
-				const [y, m] = currentValue.split("-").map(Number);
-				setDisplayYear(y);
-				setDisplayMonth(m - 1);
-			} else {
-				setDisplayYear(new Date().getFullYear());
-				setDisplayMonth(new Date().getMonth());
-			}
-			setDatePickerTarget(target);
-		},
-		[start, end],
-	);
+	const handleOpen = useCallback(() => openForm(), [openForm]);
+	const handleClose = useCallback(() => closeForm(), [closeForm]);
 
 	const handleDateTriggerPress = useCallback(
 		(target: "start" | "end") => {
 			if (!isDatePickerMode) {
 				enterDatePickerMode(target);
 			} else {
-				setDatePickerTarget(target);
+				switchDatePickerTarget(target);
 			}
 		},
-		[isDatePickerMode, enterDatePickerMode],
+		[isDatePickerMode, enterDatePickerMode, switchDatePickerTarget],
 	);
 
 	const handleDayPress = useCallback(
 		(dateKey: string) => {
-			if (datePickerTarget === "start") {
-				setStart(dateKey);
-				if (end && dateKey > end) {
-					setStart(end);
-					setEnd(dateKey);
-				}
-			} else if (datePickerTarget === "end") {
-				if (start && dateKey < start) {
-					setEnd(start);
-					setStart(dateKey);
-				} else {
-					setEnd(dateKey);
-				}
-			}
+			selectDay(dateKey);
 		},
-		[datePickerTarget, start, end],
+		[selectDay],
 	);
 
 	const handleDatePickerBack = useCallback(() => {
-		setDatePickerTarget(null);
-	}, []);
+		exitDatePickerMode();
+	}, [exitDatePickerMode]);
 
 	const handlePrevMonth = useCallback(() => {
-		if (displayMonth === 0) {
-			setDisplayYear((y) => y - 1);
-			setDisplayMonth(11);
-		} else {
-			setDisplayMonth((m) => m - 1);
-		}
-	}, [displayMonth]);
+		prevMonth();
+	}, [prevMonth]);
 
 	const handleNextMonth = useCallback(() => {
-		if (displayMonth === 11) {
-			setDisplayYear((y) => y + 1);
-			setDisplayMonth(0);
-		} else {
-			setDisplayMonth((m) => m + 1);
-		}
-	}, [displayMonth]);
+		nextMonth();
+	}, [nextMonth]);
 
 	const getDateTriggerDisplayValue = useCallback(
 		(target: "start" | "end") => {
@@ -150,9 +139,6 @@ export function useAddEventForm() {
 		},
 		[start, end],
 	);
-
-	const rawGrid = generateCalendarGrid(displayYear, displayMonth);
-	const grid = padGrid(rawGrid);
 
 	return {
 		formState: {

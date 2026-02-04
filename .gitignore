@@ -19,5 +19,8 @@ apps/mobile/.expo/
 .vscode/
 .idea/
 
+# Claude Code local settings
+.claude/
+
 # OS
 .DS_Store
