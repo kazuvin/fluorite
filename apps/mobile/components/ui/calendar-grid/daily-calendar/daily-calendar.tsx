@@ -1,6 +1,5 @@
 import { fontSize, fontWeight, parseNumeric, spacing } from "@fluorite/design-tokens";
-import { useWindowDimensions } from "react-native";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { useWindowDimensions , ScrollView, StyleSheet, View } from "react-native";
 import type { DailyEventLayout } from "../daily-event-layout";
 import { AllDaySection } from "./all-day-section";
 import { CurrentTimeIndicator } from "./current-time-indicator";
@@ -24,10 +23,6 @@ export function DailyCalendar({ dateKey, layout, textColor, currentTimeSlot }: D
 
 	return (
 		<View testID="daily-calendar" style={styles.container}>
-			<View style={styles.header}>
-				<Text style={[styles.dateText, { color: textColor }]}>{dateKey}</Text>
-			</View>
-
 			<AllDaySection events={layout.allDayEvents} textColor={textColor} />
 
 			<ScrollView
@@ -65,10 +60,6 @@ export function DailyCalendar({ dateKey, layout, textColor, currentTimeSlot }: D
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-	},
-	header: {
-		paddingHorizontal: parseNumeric(spacing["4"]),
-		paddingVertical: parseNumeric(spacing["2"]),
 	},
 	dateText: {
 		fontSize: parseNumeric(fontSize.sm),
