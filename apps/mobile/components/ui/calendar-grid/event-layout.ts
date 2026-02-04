@@ -8,6 +8,7 @@ export type CalendarEvent = {
 	endDate: string;
 	color: string;
 	type: "allDay" | "timed";
+	time?: { start: string; end?: string };
 };
 
 export type EventSlot = {
@@ -39,6 +40,7 @@ export function eventNotesToCalendarEvents(
 		endDate: note.end,
 		color: (note.category && registry?.getColor(note.category)) || DEFAULT_COLOR,
 		type: note.allDay ? "allDay" : "timed",
+		time: note.time,
 	}));
 }
 

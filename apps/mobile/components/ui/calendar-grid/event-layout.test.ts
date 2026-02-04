@@ -124,6 +124,45 @@ describe("eventNotesToCalendarEvents", () => {
 		const events = eventNotesToCalendarEvents(notes);
 		expect(events[0].color).toBe("#9B9B9B");
 	});
+
+	it("time フィールドがある EventNote は CalendarEvent に time が保持される", () => {
+		const notes: EventNote[] = [
+			{
+				title: "会議",
+				start: "2026-02-10",
+				end: "2026-02-10",
+				time: { start: "10:00", end: "12:00" },
+			},
+		];
+		const events = eventNotesToCalendarEvents(notes);
+		expect(events[0].time).toEqual({ start: "10:00", end: "12:00" });
+	});
+
+	it("time.end がない EventNote でも time.start は保持される", () => {
+		const notes: EventNote[] = [
+			{
+				title: "朝会",
+				start: "2026-02-10",
+				end: "2026-02-10",
+				time: { start: "09:00" },
+			},
+		];
+		const events = eventNotesToCalendarEvents(notes);
+		expect(events[0].time).toEqual({ start: "09:00" });
+	});
+
+	it("time がない EventNote は CalendarEvent の time が undefined", () => {
+		const notes: EventNote[] = [
+			{
+				title: "終日",
+				start: "2026-02-10",
+				end: "2026-02-10",
+				allDay: true,
+			},
+		];
+		const events = eventNotesToCalendarEvents(notes);
+		expect(events[0].time).toBeUndefined();
+	});
 });
 
 describe("computeMonthEventLayout", () => {

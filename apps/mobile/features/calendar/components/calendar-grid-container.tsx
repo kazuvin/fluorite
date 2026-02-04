@@ -1,6 +1,6 @@
 import { colors } from "@fluorite/design-tokens";
 import { useEffect } from "react";
-import { View, useColorScheme } from "react-native";
+import { StyleSheet, View, useColorScheme } from "react-native";
 import Animated, {
 	Easing,
 	useAnimatedStyle,
@@ -8,13 +8,16 @@ import Animated, {
 	withTiming,
 } from "react-native-reanimated";
 import { FlatListCalendar } from "../../../components/ui/calendar-grid";
-import { DailyCalendarPlaceholder } from "../../../components/ui/calendar-grid/daily-calendar-placeholder";
+import { DailyCalendar } from "../../../components/ui/calendar-grid/daily-calendar";
 import { useCalendarGrid } from "../hooks/use-calendar-grid";
+import { useDailyCalendarData } from "../hooks/use-daily-calendar-data";
 import { useSelectedDate } from "../hooks/use-selected-date";
 import { CategoryFilterBar } from "./category-filter-bar";
 
 const DAILY_SLIDE_OFFSET = 20;
 const TIMING_CONFIG = { duration: 300, easing: Easing.out(Easing.cubic) };
+
+const DAILY_CALENDAR_HEIGHT = 400;
 
 export function CalendarGridContainer() {
 	const scheme = useColorScheme() ?? "light";
@@ -34,6 +37,8 @@ export function CalendarGridContainer() {
 		viewingYear,
 		viewingMonth,
 	);
+
+	const { layout, currentTimeSlot } = useDailyCalendarData(selectedDateKey, filteredCalendarEvents);
 
 	const isSelected = selectedDateKey != null;
 
@@ -76,15 +81,22 @@ export function CalendarGridContainer() {
 				onSelectDate={handleSelectDate}
 			/>
 			<CategoryFilterBar />
-			{isSelected && (
-				<Animated.View style={dailyCalendarStyle}>
-					<DailyCalendarPlaceholder
-						isVisible={true}
-						dateKey={selectedDateKey ?? null}
+			{isSelected && selectedDateKey && (
+				<Animated.View style={[styles.dailyCalendarContainer, dailyCalendarStyle]}>
+					<DailyCalendar
+						dateKey={selectedDateKey}
+						layout={layout}
 						textColor={theme.text}
+						currentTimeSlot={currentTimeSlot}
 					/>
 				</Animated.View>
 			)}
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	dailyCalendarContainer: {
+		height: DAILY_CALENDAR_HEIGHT,
+	},
+});
