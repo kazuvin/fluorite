@@ -1,5 +1,5 @@
 import { fontSize, fontWeight, parseNumeric, spacing } from "@fluorite/design-tokens";
-import { useWindowDimensions , ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View, useWindowDimensions } from "react-native";
 import type { DailyEventLayout } from "../daily-event-layout";
 import { AllDaySection } from "./all-day-section";
 import { CurrentTimeIndicator } from "./current-time-indicator";

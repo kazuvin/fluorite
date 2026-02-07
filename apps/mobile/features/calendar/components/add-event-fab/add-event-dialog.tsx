@@ -1,17 +1,12 @@
 import { colors, fontSize, parseNumeric, radius, spacing } from "@fluorite/design-tokens";
 import { Pressable, StyleSheet, Text, View, useColorScheme } from "react-native";
-import Animated, {
-	Easing,
-	FadeIn,
-	FadeOut,
-	Keyframe,
-	LinearTransition,
-} from "react-native-reanimated";
+import Animated, { FadeIn, FadeOut, Keyframe, LinearTransition } from "react-native-reanimated";
 import { Button, ButtonText } from "../../../../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../../components/ui/dialog";
 import { IconSymbol } from "../../../../components/ui/icon-symbol";
 import { Input } from "../../../../components/ui/input";
 import { Switch } from "../../../../components/ui/switch";
+import { ANIMATION } from "../../../../constants/animation";
 import type {
 	AddEventFormActions,
 	AddEventFormState,
@@ -21,13 +16,13 @@ import { DateRangePickerInline } from "./date-range-picker-inline";
 
 const titleEntering = new Keyframe({
 	0: { opacity: 0, transform: [{ translateX: 20 }] },
-	100: { opacity: 1, transform: [{ translateX: 0 }], easing: Easing.out(Easing.ease) },
-}).duration(100);
+	100: { opacity: 1, transform: [{ translateX: 0 }], easing: ANIMATION.entering.easing },
+}).duration(ANIMATION.entering.duration);
 
 const titleExiting = new Keyframe({
 	0: { opacity: 1, transform: [{ translateX: 0 }] },
-	100: { opacity: 0, transform: [{ translateX: -20 }], easing: Easing.in(Easing.ease) },
-}).duration(80);
+	100: { opacity: 0, transform: [{ translateX: -20 }], easing: ANIMATION.exiting.easing },
+}).duration(ANIMATION.exiting.duration);
 
 export type AddEventDialogProps = {
 	visible: boolean;
@@ -98,8 +93,10 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 				{!isDatePickerMode && (
 					<Animated.View
 						key="form-fields"
-						entering={FadeIn.duration(100).easing(Easing.out(Easing.ease))}
-						exiting={FadeOut.duration(80).easing(Easing.in(Easing.ease))}
+						entering={FadeIn.duration(ANIMATION.entering.duration).easing(
+							ANIMATION.entering.easing,
+						)}
+						exiting={FadeOut.duration(ANIMATION.exiting.duration).easing(ANIMATION.exiting.easing)}
 						style={styles.formFieldsAboveDate}
 					>
 						<Input placeholder="タイトル" value={title} onChangeText={setTitle} />
@@ -108,12 +105,16 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 
 				<Animated.View
 					testID="date-row"
-					layout={LinearTransition.duration(100).easing(Easing.inOut(Easing.ease))}
+					layout={LinearTransition.duration(ANIMATION.layout.duration).easing(
+						ANIMATION.layout.easing,
+					)}
 					style={styles.dateRow}
 				>
 					<Animated.View
 						style={styles.dateFlex}
-						layout={LinearTransition.duration(100).easing(Easing.inOut(Easing.ease))}
+						layout={LinearTransition.duration(ANIMATION.layout.duration).easing(
+							ANIMATION.layout.easing,
+						)}
 					>
 						<Pressable
 							testID="date-trigger-start"
@@ -139,7 +140,9 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 					</Animated.View>
 					<Animated.View
 						style={styles.dateFlex}
-						layout={LinearTransition.duration(100).easing(Easing.inOut(Easing.ease))}
+						layout={LinearTransition.duration(ANIMATION.layout.duration).easing(
+							ANIMATION.layout.easing,
+						)}
 					>
 						<Pressable
 							testID="date-trigger-end"
@@ -168,8 +171,10 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 				{isDatePickerMode && (
 					<Animated.View
 						key="calendar-mode"
-						entering={FadeIn.duration(100).easing(Easing.out(Easing.ease))}
-						exiting={FadeOut.duration(80).easing(Easing.in(Easing.ease))}
+						entering={FadeIn.duration(ANIMATION.entering.duration).easing(
+							ANIMATION.entering.easing,
+						)}
+						exiting={FadeOut.duration(ANIMATION.exiting.duration).easing(ANIMATION.exiting.easing)}
 					>
 						<DateRangePickerInline
 							displayYear={displayYear}
@@ -188,8 +193,10 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 				{!isDatePickerMode && (
 					<Animated.View
 						key="switch-all-day"
-						entering={FadeIn.duration(100).easing(Easing.out(Easing.ease))}
-						exiting={FadeOut.duration(80).easing(Easing.in(Easing.ease))}
+						entering={FadeIn.duration(ANIMATION.entering.duration).easing(
+							ANIMATION.entering.easing,
+						)}
+						exiting={FadeOut.duration(ANIMATION.exiting.duration).easing(ANIMATION.exiting.easing)}
 						style={styles.formFieldsAboveDate}
 					>
 						<Switch label="終日" value={allDay} onValueChange={setAllDay} />
@@ -199,8 +206,10 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 				{!isDatePickerMode && (
 					<Animated.View
 						key="add-button"
-						entering={FadeIn.duration(100).easing(Easing.out(Easing.ease))}
-						exiting={FadeOut.duration(80).easing(Easing.in(Easing.ease))}
+						entering={FadeIn.duration(ANIMATION.entering.duration).easing(
+							ANIMATION.entering.easing,
+						)}
+						exiting={FadeOut.duration(ANIMATION.exiting.duration).easing(ANIMATION.exiting.easing)}
 					>
 						<Button>
 							<ButtonText>追加する</ButtonText>

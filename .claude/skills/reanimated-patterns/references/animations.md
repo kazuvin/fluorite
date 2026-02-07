@@ -9,8 +9,8 @@ import Animated, { Easing, FadeIn, FadeOut } from "react-native-reanimated";
 
 {visible && (
   <Animated.View
-    entering={FadeIn.duration(100).easing(Easing.out(Easing.ease))}
-    exiting={FadeOut.duration(80).easing(Easing.in(Easing.ease))}
+    entering={FadeIn.duration(100).easing(Easing.ease)}
+    exiting={FadeOut.duration(80).easing(Easing.ease)}
   >
     <Text>コンテンツ</Text>
   </Animated.View>
@@ -27,13 +27,13 @@ import { Easing, Keyframe } from "react-native-reanimated";
 // 右からスライドイン + フェードイン
 const entering = new Keyframe({
   0: { opacity: 0, transform: [{ translateX: 20 }] },
-  100: { opacity: 1, transform: [{ translateX: 0 }], easing: Easing.out(Easing.ease) },
+  100: { opacity: 1, transform: [{ translateX: 0 }], easing: Easing.ease },
 }).duration(100);
 
 // 左へスライドアウト + フェードアウト
 const exiting = new Keyframe({
   0: { opacity: 1, transform: [{ translateX: 0 }] },
-  100: { opacity: 0, transform: [{ translateX: -20 }], easing: Easing.in(Easing.ease) },
+  100: { opacity: 0, transform: [{ translateX: -20 }], easing: Easing.ease },
 }).duration(80);
 ```
 
@@ -46,7 +46,7 @@ const exiting = new Keyframe({
 ```tsx
 import Animated, { Easing, LinearTransition } from "react-native-reanimated";
 
-<Animated.View layout={LinearTransition.duration(100).easing(Easing.inOut(Easing.ease))}>
+<Animated.View layout={LinearTransition.duration(100).easing(Easing.ease)}>
   {children}
 </Animated.View>
 ```
@@ -59,8 +59,8 @@ import Animated, { Easing, LinearTransition } from "react-native-reanimated";
 import Animated, { Easing, SlideInDown, SlideOutDown } from "react-native-reanimated";
 
 <Animated.View
-  entering={SlideInDown.duration(100).easing(Easing.out(Easing.ease))}
-  exiting={SlideOutDown.duration(80).easing(Easing.in(Easing.ease))}
+  entering={SlideInDown.duration(100).easing(Easing.ease)}
+  exiting={SlideOutDown.duration(80).easing(Easing.ease)}
 >
   <DialogCard />
 </Animated.View>
@@ -73,12 +73,12 @@ import Animated, { Easing, SlideInDown, SlideOutDown } from "react-native-reanim
 ```tsx
 const titleEntering = new Keyframe({
   0: { opacity: 0, transform: [{ translateX: 20 }] },
-  100: { opacity: 1, transform: [{ translateX: 0 }], easing: Easing.out(Easing.ease) },
+  100: { opacity: 1, transform: [{ translateX: 0 }], easing: Easing.ease },
 }).duration(100);
 
 const titleExiting = new Keyframe({
   0: { opacity: 1, transform: [{ translateX: 0 }] },
-  100: { opacity: 0, transform: [{ translateX: -20 }], easing: Easing.in(Easing.ease) },
+  100: { opacity: 0, transform: [{ translateX: -20 }], easing: Easing.ease },
 }).duration(80);
 
 // key を変えることで React が要素を入れ替え、entering/exiting が発火する
@@ -101,15 +101,15 @@ const titleExiting = new Keyframe({
 
 ```tsx
 {/* この要素は常に表示。子が消えると位置が変わるので layout で滑らかに移動 */}
-<Animated.View layout={LinearTransition.duration(100).easing(Easing.inOut(Easing.ease))}>
+<Animated.View layout={LinearTransition.duration(100).easing(Easing.ease)}>
   <DateTrigger />
 </Animated.View>
 
 {/* 条件付きで表示/非表示。FadeIn/FadeOut で切り替え */}
 {showCalendar && (
   <Animated.View
-    entering={FadeIn.duration(100).easing(Easing.out(Easing.ease))}
-    exiting={FadeOut.duration(80).easing(Easing.in(Easing.ease))}
+    entering={FadeIn.duration(100).easing(Easing.ease)}
+    exiting={FadeOut.duration(80).easing(Easing.ease)}
   >
     <Calendar />
   </Animated.View>
