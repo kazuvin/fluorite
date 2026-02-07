@@ -13,7 +13,7 @@ description: react-native-reanimated のアニメーションパターン。Mobi
 
 1. **速く、邪魔にならない**: アニメーションは UI の応答性を高めるためのもの。遅いと逆効果
 2. **Easing は必ず指定**: `linear` (デフォルト) は機械的。`ease` 系を使って自然な動きに
-3. **すべてのアニメーションで `Easing.ease` を使う**: 統一された自然な動き
+3. **すべてのアニメーションで統一された easing を使う**: `cubic-bezier(0.25, 0.46, 0.45, 0.94)`
 
 ## Duration ガイドライン
 
@@ -25,19 +25,9 @@ description: react-native-reanimated のアニメーションパターン。Mobi
 
 退場は表示より短くする (体感的に「サッと消える」)。`ANIMATION` 定数 (`constants/animation.ts`) を必ず使い、ハードコードしないこと。
 
-## Easing 選択ルール
+## Easing
 
-```tsx
-import { Easing } from "react-native-reanimated";
-```
-
-すべてのアニメーションで **`Easing.ease`** を使用する。
-
-| 用途 | Easing |
-|------|--------|
-| **entering** (登場) | `Easing.ease` |
-| **exiting** (退場) | `Easing.ease` |
-| **layout** (移動) | `Easing.ease` |
+すべてのアニメーションで **`Easing.bezier(0.25, 0.46, 0.45, 0.94)`** を使用する。`ANIMATION` 定数 (`constants/animation.ts`) に定義済み。
 
 ## リファレンス
 

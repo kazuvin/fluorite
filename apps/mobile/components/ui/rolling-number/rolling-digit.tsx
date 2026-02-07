@@ -35,11 +35,15 @@ export const RollingDigit = memo(function RollingDigit({
 
 			isAnimating.value = true;
 			translateY.value = direction === 1 ? charHeight : -charHeight;
-			translateY.value = withTiming(0, { duration, easing: Easing.out(Easing.ease) }, (finished) => {
-				if (finished) {
-					isAnimating.value = false;
-				}
-			});
+			translateY.value = withTiming(
+				0,
+				{ duration, easing: Easing.bezier(0.25, 0.46, 0.45, 0.94) },
+				(finished) => {
+					if (finished) {
+						isAnimating.value = false;
+					}
+				},
+			);
 		}
 	}, [char, direction, duration, charHeight, translateY, isAnimating]);
 

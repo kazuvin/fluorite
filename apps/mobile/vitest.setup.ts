@@ -24,6 +24,7 @@ vi.mock("react-native-reanimated", () => {
 		fn.out = createEasingFn;
 		fn.in = createEasingFn;
 		fn.inOut = createEasingFn;
+		fn.bezier = () => fn;
 		fn.ease = fn;
 		return fn;
 	};
