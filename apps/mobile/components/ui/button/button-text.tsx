@@ -23,13 +23,13 @@ function getTextColor(
 ): string {
 	switch (variant) {
 		case "primary":
-			return "#fff";
+			return theme.textOnPrimary;
 		case "secondary":
-			return "#fff";
+			return theme.textOnPrimary;
 		case "outline":
-			return theme.tint;
+			return theme.primary;
 		case "ghost":
-			return theme.tint;
+			return theme.primary;
 	}
 }
 

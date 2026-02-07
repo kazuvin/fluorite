@@ -64,7 +64,7 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 							testID="date-picker-back"
 							accessibilityRole="button"
 							onPress={handleDatePickerBack}
-							style={styles.backButton}
+							style={[styles.backButton, { backgroundColor: `${theme.icon}1F` }]}
 						>
 							<IconSymbol name="chevron.left" size={20} color={theme.text} />
 						</Pressable>
@@ -82,9 +82,9 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 							testID="dialog-close"
 							accessibilityRole="button"
 							onPress={onClose}
-							style={styles.closeButton}
+							style={[styles.closeButton, { backgroundColor: `${theme.icon}1F` }]}
 						>
-							<IconSymbol name="xmark" size={16} color={colors.light.icon} />
+							<IconSymbol name="xmark" size={16} color={theme.icon} />
 						</Pressable>
 					</Animated.View>
 				)}
@@ -121,16 +121,16 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 							onPress={() => handleDateTriggerPress("start")}
 							style={[
 								styles.dateTrigger,
-								{ backgroundColor: theme.muted },
+								{ backgroundColor: theme.surface },
 								datePickerTarget === "start" && {
 									...styles.dateTriggerFocused,
-									borderColor: theme.tint,
+									borderColor: theme.primary,
 								},
 							]}
 						>
 							<Text
 								style={{
-									color: getDateTriggerHasValue("start") ? theme.text : theme.icon,
+									color: getDateTriggerHasValue("start") ? theme.text : theme.textMuted,
 									fontSize: parseNumeric(fontSize.xs),
 								}}
 							>
@@ -149,16 +149,16 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 							onPress={() => handleDateTriggerPress("end")}
 							style={[
 								styles.dateTrigger,
-								{ backgroundColor: theme.muted },
+								{ backgroundColor: theme.surface },
 								datePickerTarget === "end" && {
 									...styles.dateTriggerFocused,
-									borderColor: theme.tint,
+									borderColor: theme.primary,
 								},
 							]}
 						>
 							<Text
 								style={{
-									color: getDateTriggerHasValue("end") ? theme.text : theme.icon,
+									color: getDateTriggerHasValue("end") ? theme.text : theme.textMuted,
 									fontSize: parseNumeric(fontSize.xs),
 								}}
 							>
@@ -247,7 +247,6 @@ const styles = StyleSheet.create({
 		width: 32,
 		height: 32,
 		borderRadius: 16,
-		backgroundColor: "rgba(104, 112, 118, 0.12)",
 		alignItems: "center",
 		justifyContent: "center",
 	},
@@ -255,7 +254,6 @@ const styles = StyleSheet.create({
 		width: 32,
 		height: 32,
 		borderRadius: 16,
-		backgroundColor: "rgba(104, 112, 118, 0.12)",
 		alignItems: "center",
 		justifyContent: "center",
 	},

@@ -9,6 +9,7 @@ import {
 	useDailyCalendarAnimation,
 } from "../hooks/use-daily-calendar-animation";
 import { useDailyCalendarData } from "../hooks/use-daily-calendar-data";
+import { useDateChangeAnimation } from "../hooks/use-date-change-animation";
 import { useSelectedDate } from "../hooks/use-selected-date";
 import { CategoryFilterBar } from "./category-filter-bar";
 
@@ -35,6 +36,7 @@ export function CalendarGridContainer() {
 
 	const isSelected = selectedDateKey != null;
 	const { animatedStyle: dailyCalendarStyle } = useDailyCalendarAnimation(isSelected);
+	const { animatedStyle: dateChangeStyle } = useDateChangeAnimation(selectedDateKey);
 
 	return (
 		<View>
@@ -47,7 +49,7 @@ export function CalendarGridContainer() {
 				colors={{
 					text: theme.text,
 					background: theme.background,
-					tint: theme.tint,
+					primary: theme.primary,
 					muted: theme.icon,
 				}}
 				events={filteredCalendarEvents}
@@ -59,12 +61,14 @@ export function CalendarGridContainer() {
 			<CategoryFilterBar />
 			{isSelected && selectedDateKey && (
 				<Animated.View style={[styles.dailyCalendarContainer, dailyCalendarStyle]}>
-					<DailyCalendar
-						dateKey={selectedDateKey}
-						layout={layout}
-						textColor={theme.text}
-						currentTimeSlot={currentTimeSlot}
-					/>
+					<Animated.View style={[styles.dateChangeContainer, dateChangeStyle]}>
+						<DailyCalendar
+							dateKey={selectedDateKey}
+							layout={layout}
+							textColor={theme.text}
+							currentTimeSlot={currentTimeSlot}
+						/>
+					</Animated.View>
 				</Animated.View>
 			)}
 		</View>
@@ -74,5 +78,8 @@ export function CalendarGridContainer() {
 const styles = StyleSheet.create({
 	dailyCalendarContainer: {
 		height: DAILY_CALENDAR_HEIGHT,
+	},
+	dateChangeContainer: {
+		flex: 1,
 	},
 });

@@ -8,6 +8,11 @@ describe("tokens", () => {
 		expect(Object.keys(colors.light)).toEqual(Object.keys(colors.dark));
 	});
 
+	it("colors.light/dark のキーが 23 個で一致する", () => {
+		expect(Object.keys(colors.light)).toHaveLength(23);
+		expect(Object.keys(colors.dark)).toHaveLength(23);
+	});
+
 	it("colors の値はすべて文字列", () => {
 		for (const value of Object.values(colors.light)) {
 			expect(typeof value).toBe("string");
@@ -15,6 +20,13 @@ describe("tokens", () => {
 		for (const value of Object.values(colors.dark)) {
 			expect(typeof value).toBe("string");
 		}
+	});
+
+	it("tabIconDefault, tabIconSelected が存在しない", () => {
+		expect(colors.light).not.toHaveProperty("tabIconDefault");
+		expect(colors.light).not.toHaveProperty("tabIconSelected");
+		expect(colors.dark).not.toHaveProperty("tabIconDefault");
+		expect(colors.dark).not.toHaveProperty("tabIconSelected");
 	});
 
 	it("spacing の値はすべて px 単位", () => {
@@ -91,13 +103,13 @@ describe("generateThemeCSS", () => {
 		expect(css).toContain("--spacing-4: 16px;");
 		expect(css).toContain("--font-size-base: 16px;");
 		expect(css).toContain("--radius-md: 8px;");
-		expect(css).toContain("--color-text: #11181c;");
+		expect(css).toContain("--color-primary:");
 	});
 
 	it("ダークモードの @media ブロックを含む", () => {
 		const css = generateThemeCSS();
 		expect(css).toContain("@media (prefers-color-scheme: dark)");
-		expect(css).toContain("--color-text: #ecedee;");
-		expect(css).toContain("--color-background: #151718;");
+		expect(css).toContain("--color-background:");
+		expect(css).toContain("--color-text:");
 	});
 });

@@ -17,11 +17,11 @@ export function AddEventFabButton({ onPress }: AddEventFabButtonProps) {
 			onPress={onPress}
 			style={({ pressed }) => [
 				styles.fab,
-				{ backgroundColor: theme.tint },
+				{ backgroundColor: theme.primary },
 				pressed && styles.pressed,
 			]}
 		>
-			<IconSymbol name="plus" size={28} color="#fff" />
+			<IconSymbol name="plus" size={28} color={theme.textOnPrimary} />
 		</Pressable>
 	);
 }

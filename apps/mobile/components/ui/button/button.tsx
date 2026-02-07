@@ -76,14 +76,14 @@ export function Button({
 function getVariantStyle(variant: Variant, theme: (typeof colors)["light"]): ViewStyle {
 	switch (variant) {
 		case "primary":
-			return { backgroundColor: theme.tint };
+			return { backgroundColor: theme.primary };
 		case "secondary":
-			return { backgroundColor: theme.icon };
+			return { backgroundColor: theme.secondary };
 		case "outline":
 			return {
 				backgroundColor: "transparent",
 				borderWidth: 1,
-				borderColor: theme.tint,
+				borderColor: theme.primary,
 				borderCurve: "continuous",
 			};
 		case "ghost":
@@ -95,10 +95,10 @@ function getSpinnerColor(variant: Variant, theme: (typeof colors)["light"]): str
 	switch (variant) {
 		case "primary":
 		case "secondary":
-			return "#fff";
+			return theme.textOnPrimary;
 		case "outline":
 		case "ghost":
-			return theme.tint;
+			return theme.primary;
 	}
 }
 

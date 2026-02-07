@@ -18,7 +18,7 @@ const SELECTION_BORDER_RADIUS = parseNumeric(radius.xl);
 export type CalendarGridColors = {
 	text: string;
 	background: string;
-	tint: string;
+	primary: string;
 	muted: string;
 };
 
@@ -119,7 +119,9 @@ export const CalendarMonthPage = memo(function CalendarMonthPage({
 								style={styles.dayNumberCell}
 								onPress={() => onSelectDate?.(day.dateKey)}
 							>
-								<View style={[styles.dayCircle, day.isToday && { backgroundColor: colors.tint }]}>
+								<View
+									style={[styles.dayCircle, day.isToday && { backgroundColor: colors.primary }]}
+								>
 									<Text
 										style={[
 											styles.dayText,
@@ -128,7 +130,7 @@ export const CalendarMonthPage = memo(function CalendarMonthPage({
 											},
 											isSelected &&
 												!day.isToday && {
-													color: colors.tint,
+													color: colors.primary,
 													fontWeight: fontWeight.bold,
 												},
 											day.isToday && {

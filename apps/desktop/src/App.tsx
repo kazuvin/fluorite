@@ -31,18 +31,18 @@ function App() {
 			<section className="mb-5">
 				<h2 className="text-xl font-semibold mb-2">{eventNote.title}</h2>
 				<div className="flex items-center flex-wrap gap-2 py-1">
-					<span className="text-sm text-muted">
+					<span className="text-sm text-textMuted">
 						{eventNote.start}
 						{eventNote.start !== eventNote.end && ` - ${eventNote.end}`}
 					</span>
 					{eventNote.time && (
-						<span className="font-semibold text-tint">
+						<span className="font-semibold text-primary">
 							{eventNote.time.start}
 							{eventNote.time.end && `-${eventNote.time.end}`}
 						</span>
 					)}
 					{eventNote.tags?.map((tag: string) => (
-						<span key={tag} className="px-2 py-0.5 bg-tint/15 text-tint rounded-sm text-sm">
+						<span key={tag} className="px-2 py-0.5 bg-primary/15 text-primary rounded-sm text-sm">
 							#{tag}
 						</span>
 					))}

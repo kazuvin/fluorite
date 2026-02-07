@@ -48,14 +48,14 @@ export function Select({
 			<Pressable
 				testID={testID}
 				onPress={handleTriggerPress}
-				style={[styles.trigger, { backgroundColor: theme.muted }]}
+				style={[styles.trigger, { backgroundColor: theme.surface }]}
 				disabled={disabled}
 			>
 				<Text
 					style={[
 						styles.triggerText,
 						{
-							color: selectedOption ? theme.text : theme.icon,
+							color: selectedOption ? theme.text : theme.textMuted,
 						},
 					]}
 				>
@@ -65,7 +65,7 @@ export function Select({
 			</Pressable>
 
 			{isOpen && (
-				<View testID="select-options" style={[styles.options, { backgroundColor: theme.muted }]}>
+				<View testID="select-options" style={[styles.options, { backgroundColor: theme.surface }]}>
 					{options.map((option) => (
 						<Pressable
 							key={option.value}

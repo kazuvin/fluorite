@@ -21,7 +21,7 @@ export function Switch({ value, onValueChange, disabled = false, label, testID }
 				onValueChange={onValueChange}
 				disabled={disabled}
 				aria-disabled={disabled}
-				trackColor={{ false: theme.muted, true: theme.tint }}
+				trackColor={{ false: theme.surface, true: theme.primary }}
 				testID={testID}
 			/>
 		</View>

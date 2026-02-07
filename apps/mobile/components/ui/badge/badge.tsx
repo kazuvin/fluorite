@@ -21,7 +21,7 @@ export function Badge({
 	const scheme = useColorScheme() ?? "light";
 	const theme = colors[scheme];
 
-	const activeColor = selectedColor ?? color ?? theme.tint;
+	const activeColor = selectedColor ?? color ?? theme.primary;
 
 	return (
 		<Pressable
@@ -31,16 +31,18 @@ export function Badge({
 			onPress={onPress}
 			style={[
 				styles.badge,
-				selected ? { backgroundColor: activeColor } : { backgroundColor: theme.muted },
+				selected ? { backgroundColor: activeColor } : { backgroundColor: theme.surface },
 			]}
 		>
 			{color != null && (
 				<View
 					testID={testID ? `${testID}-dot` : "badge-dot"}
-					style={[styles.dot, { backgroundColor: selected ? "#fff" : color }]}
+					style={[styles.dot, { backgroundColor: selected ? theme.textOnPrimary : color }]}
 				/>
 			)}
-			<Text style={[styles.label, selected ? { color: "#fff" } : { color: theme.text }]}>
+			<Text
+				style={[styles.label, selected ? { color: theme.textOnPrimary } : { color: theme.text }]}
+			>
 				{label}
 			</Text>
 		</Pressable>

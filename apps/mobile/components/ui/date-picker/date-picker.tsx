@@ -62,10 +62,13 @@ export function DatePicker({
 			<Pressable
 				testID={testID}
 				onPress={() => setIsOpen((v) => !v)}
-				style={[styles.trigger, { backgroundColor: theme.muted, color: theme.text }]}
+				style={[styles.trigger, { backgroundColor: theme.surface, color: theme.text }]}
 			>
 				<Text
-					style={{ color: value ? theme.text : theme.icon, fontSize: parseNumeric(fontSize.base) }}
+					style={{
+						color: value ? theme.text : theme.textMuted,
+						fontSize: parseNumeric(fontSize.base),
+					}}
 				>
 					{value ? formatDateLabel(value) : placeholder}
 				</Text>
@@ -110,13 +113,13 @@ export function DatePicker({
 										key={day.dateKey}
 										style={[
 											styles.dayCell,
-											isSelected && { backgroundColor: theme.tint, borderRadius: 999 },
+											isSelected && { backgroundColor: theme.primary, borderRadius: 999 },
 										]}
 										onPress={() => handleDayPress(day.dateKey)}
 									>
 										<Text
 											style={{
-												color: isSelected ? "#ffffff" : theme.text,
+												color: isSelected ? theme.textOnPrimary : theme.text,
 												opacity: day.isCurrentMonth ? 1 : 0.3,
 												fontSize: parseNumeric(fontSize.base),
 											}}

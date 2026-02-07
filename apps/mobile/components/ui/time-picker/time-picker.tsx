@@ -66,14 +66,14 @@ export function TimePicker({ value, onValueChange, placeholder, testID }: TimePi
 					borderCurve: "continuous",
 					padding: parseNumeric(spacing[4]),
 					fontSize: parseNumeric(fontSize.base),
-					backgroundColor: theme.muted,
+					backgroundColor: theme.surface,
 					color: theme.text,
 				}}
 			>
 				<Text
 					style={{
 						fontSize: parseNumeric(fontSize.base),
-						color: value ? theme.text : theme.icon,
+						color: value ? theme.text : theme.textMuted,
 					}}
 				>
 					{value ?? placeholder}
@@ -114,12 +114,12 @@ export function TimePicker({ value, onValueChange, placeholder, testID }: TimePi
 											padding: parseNumeric(spacing[2]),
 											borderRadius: parseNumeric(radius.md),
 											alignItems: "center",
-											backgroundColor: isSelected ? theme.tint : undefined,
+											backgroundColor: isSelected ? theme.primary : undefined,
 										}}
 									>
 										<Text
 											style={{
-												color: isSelected ? "#fff" : theme.text,
+												color: isSelected ? theme.textOnPrimary : theme.text,
 											}}
 										>
 											{hh}
@@ -155,12 +155,12 @@ export function TimePicker({ value, onValueChange, placeholder, testID }: TimePi
 											padding: parseNumeric(spacing[2]),
 											borderRadius: parseNumeric(radius.md),
 											alignItems: "center",
-											backgroundColor: isSelected ? theme.tint : undefined,
+											backgroundColor: isSelected ? theme.primary : undefined,
 										}}
 									>
 										<Text
 											style={{
-												color: isSelected ? "#fff" : theme.text,
+												color: isSelected ? theme.textOnPrimary : theme.text,
 											}}
 										>
 											{mm}

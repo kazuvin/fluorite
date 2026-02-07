@@ -83,11 +83,11 @@ export function DateRangePickerInline({
 									styles.dayCell,
 									hasRange &&
 										isInRange && {
-											backgroundColor: `${theme.tint}26`,
+											backgroundColor: `${theme.primary}26`,
 										},
 									hasRange &&
 										isStart && {
-											backgroundColor: `${theme.tint}26`,
+											backgroundColor: `${theme.primary}26`,
 											borderTopLeftRadius: 999,
 											borderBottomLeftRadius: 999,
 											borderTopRightRadius: 0,
@@ -95,7 +95,7 @@ export function DateRangePickerInline({
 										},
 									hasRange &&
 										isEnd && {
-											backgroundColor: `${theme.tint}26`,
+											backgroundColor: `${theme.primary}26`,
 											borderTopRightRadius: 999,
 											borderBottomRightRadius: 999,
 											borderTopLeftRadius: 0,
@@ -108,18 +108,18 @@ export function DateRangePickerInline({
 									style={[
 										styles.dayInner,
 										isEndpoint && {
-											backgroundColor: theme.tint,
+											backgroundColor: theme.primary,
 											borderRadius: 999,
 										},
 										isSingleOnly && {
-											backgroundColor: theme.tint,
+											backgroundColor: theme.primary,
 											borderRadius: 999,
 										},
 									]}
 								>
 									<Text
 										style={{
-											color: isEndpoint || isSingleOnly ? "#ffffff" : theme.text,
+											color: isEndpoint || isSingleOnly ? theme.textOnPrimary : theme.text,
 											opacity: day.isCurrentMonth ? 1 : 0.3,
 											fontSize: parseNumeric(fontSize.sm),
 										}}
