@@ -37,8 +37,7 @@ export function WeekEventBars({
 
 			const top = eventAreaTop + slotIndex * (EVENT_BAR_HEIGHT + EVENT_BAR_GAP);
 			const left = col * cellWidth + (slot.isStart ? 1 : 0);
-			const barWidth =
-				cellWidth * slot.spanInWeek - (slot.isStart ? 1 : 0) - (slot.isEnd ? 1 : 0);
+			const barWidth = cellWidth * slot.spanInWeek - (slot.isStart ? 1 : 0) - (slot.isEnd ? 1 : 0);
 
 			bars.push(
 				<View

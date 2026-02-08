@@ -4,8 +4,6 @@ import { ANIMATION } from "../../../constants/animation";
 
 const DAILY_SLIDE_OFFSET = 20;
 
-export const DAILY_CALENDAR_HEIGHT = 400;
-
 export function useDailyCalendarAnimation(isSelected: boolean) {
 	const dailyCalendarOpacity = useSharedValue(isSelected ? 1 : 0);
 	const dailyCalendarTranslateY = useSharedValue(isSelected ? 0 : DAILY_SLIDE_OFFSET);
@@ -27,6 +25,5 @@ export function useDailyCalendarAnimation(isSelected: boolean) {
 
 	return {
 		animatedStyle,
-		DAILY_CALENDAR_HEIGHT,
 	};
 }

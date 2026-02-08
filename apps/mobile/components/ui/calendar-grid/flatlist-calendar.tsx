@@ -9,7 +9,8 @@ import {
 	View,
 	useWindowDimensions,
 } from "react-native";
-import Animated, { useAnimatedStyle } from "react-native-reanimated";
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { ANIMATION } from "../../../constants/animation";
 import { useCalendarTransition } from "../../../features/calendar/hooks/use-calendar-transition";
 import { RollingNumber } from "../rolling-number";
 import { CELL_HEIGHT, type CalendarGridColors, CalendarMonthPage } from "./calendar-month-page";
@@ -19,6 +20,7 @@ import {
 	findWeekIndexForDateKey,
 	generateCalendarGrid,
 	generateOffsets,
+	isSameWeek,
 	offsetToYearMonth,
 	parseDateKey,
 } from "./utils";
@@ -163,13 +165,31 @@ export function FlatListCalendar({
 
 	// --- Week anchor: 週モード突入時の日付を固定基準点として保持 ---
 	const weekAnchorRef = useRef<string | null>(null);
+	const prevWeekAnchorRef = useRef<string | null>(null);
+	const weekSlideX = useSharedValue(0);
+
 	if (transition.showWeekCalendar && selectedDateKey) {
 		if (!weekAnchorRef.current) {
+			weekAnchorRef.current = selectedDateKey;
+		} else if (!isSameWeek(weekAnchorRef.current, selectedDateKey)) {
 			weekAnchorRef.current = selectedDateKey;
 		}
 	} else {
 		weekAnchorRef.current = null;
 	}
+
+	// 週アンカー変更時にスライドアニメーションを発火
+	const currentAnchor = weekAnchorRef.current;
+	if (currentAnchor && prevWeekAnchorRef.current && currentAnchor !== prevWeekAnchorRef.current) {
+		const slideDirection = currentAnchor > prevWeekAnchorRef.current ? 1 : -1;
+		weekSlideX.value = slideDirection * width;
+		weekSlideX.value = withTiming(0, ANIMATION.entering);
+	}
+	prevWeekAnchorRef.current = currentAnchor;
+
+	const weekSlideStyle = useAnimatedStyle(() => ({
+		transform: [{ translateX: weekSlideX.value }],
+	}));
 
 	return (
 		<View>
@@ -299,9 +319,11 @@ export function FlatListCalendar({
 						style={[
 							{ position: "absolute", top: 0, left: 0, right: 0 },
 							transition.weekCalendarStyle,
+							weekSlideStyle,
 						]}
 					>
 						<FlatListWeekCalendar
+							key={weekAnchorRef.current}
 							dateKey={weekAnchorRef.current}
 							colors={colors}
 							events={events}

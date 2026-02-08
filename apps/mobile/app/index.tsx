@@ -6,7 +6,7 @@ import { AddEventFab, CalendarGridContainer } from "../features/calendar";
 export default function HomeScreen() {
 	return (
 		<ThemedView style={styles.container}>
-			<SafeAreaView>
+			<SafeAreaView style={styles.safeArea}>
 				<CalendarGridContainer />
 			</SafeAreaView>
 			<AddEventFab />
@@ -16,6 +16,9 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
 	container: {
+		flex: 1,
+	},
+	safeArea: {
 		flex: 1,
 	},
 });

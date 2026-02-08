@@ -28,11 +28,6 @@ describe("useDailyCalendarAnimation", () => {
 		expect(result.current.animatedStyle).toBeDefined();
 	});
 
-	it("returns DAILY_CALENDAR_HEIGHT constant", () => {
-		const { result } = renderHook(() => useDailyCalendarAnimation(false));
-		expect(result.current.DAILY_CALENDAR_HEIGHT).toBe(400);
-	});
-
 	it("has opacity 0 and translateY offset when not selected", () => {
 		const { result } = renderHook(() => useDailyCalendarAnimation(false));
 		expect(result.current.animatedStyle.opacity).toBe(0);

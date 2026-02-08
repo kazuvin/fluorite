@@ -5,6 +5,8 @@ import {
 	generateCalendarGrid,
 	generateOffsets,
 	generateWeekFromDate,
+	getAdjacentDateKey,
+	isSameWeek,
 	offsetToYearMonth,
 	parseDateKey,
 } from "./utils";
@@ -295,6 +297,67 @@ describe("computeSameWeekdayDateKey", () => {
 	it("水曜選択 → 水曜(center) → そのまま返す", () => {
 		// 2026-01-14 は水曜、center も 2026-01-14
 		expect(computeSameWeekdayDateKey("2026-01-14", "2026-01-14")).toBe("2026-01-14");
+	});
+});
+
+describe("getAdjacentDateKey", () => {
+	it("offset=1 で翌日の dateKey を返す", () => {
+		expect(getAdjacentDateKey("2026-01-15", 1)).toBe("2026-01-16");
+	});
+
+	it("offset=-1 で前日の dateKey を返す", () => {
+		expect(getAdjacentDateKey("2026-01-15", -1)).toBe("2026-01-14");
+	});
+
+	it("offset=0 で同じ dateKey を返す", () => {
+		expect(getAdjacentDateKey("2026-01-15", 0)).toBe("2026-01-15");
+	});
+
+	it("月末を跨ぐ（1月31日 → 2月1日）", () => {
+		expect(getAdjacentDateKey("2026-01-31", 1)).toBe("2026-02-01");
+	});
+
+	it("月初を跨ぐ（2月1日 → 1月31日）", () => {
+		expect(getAdjacentDateKey("2026-02-01", -1)).toBe("2026-01-31");
+	});
+
+	it("年末を跨ぐ（12月31日 → 1月1日）", () => {
+		expect(getAdjacentDateKey("2025-12-31", 1)).toBe("2026-01-01");
+	});
+
+	it("年初を跨ぐ（1月1日 → 前年12月31日）", () => {
+		expect(getAdjacentDateKey("2026-01-01", -1)).toBe("2025-12-31");
+	});
+
+	it("offset=7 で1週間後を返す", () => {
+		expect(getAdjacentDateKey("2026-01-15", 7)).toBe("2026-01-22");
+	});
+});
+
+describe("isSameWeek", () => {
+	it("同じ週の日曜と土曜は同じ週と判定する", () => {
+		// 2026-01-11(日) ~ 2026-01-17(土)
+		expect(isSameWeek("2026-01-11", "2026-01-17")).toBe(true);
+	});
+
+	it("同じ日は同じ週と判定する", () => {
+		expect(isSameWeek("2026-01-15", "2026-01-15")).toBe(true);
+	});
+
+	it("異なる週の日付は異なる週と判定する", () => {
+		// 2026-01-17(土) と 2026-01-18(日) は別の週
+		expect(isSameWeek("2026-01-17", "2026-01-18")).toBe(false);
+	});
+
+	it("月をまたぐ同じ週を正しく判定する", () => {
+		// 2026-02-01(日) ~ 2026-02-07(土)
+		// 2026-01-31 は土曜、2026-02-01 は日曜 → 別の週
+		expect(isSameWeek("2026-01-31", "2026-02-01")).toBe(false);
+	});
+
+	it("月をまたぐ同じ週のケース", () => {
+		// 2026-03-29(日) ~ 2026-04-04(土) — 3月と4月にまたがる同じ週
+		expect(isSameWeek("2026-03-29", "2026-04-04")).toBe(true);
 	});
 });
 

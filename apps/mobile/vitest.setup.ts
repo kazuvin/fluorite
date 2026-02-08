@@ -53,6 +53,23 @@ vi.mock("react-native-reanimated", () => {
 	};
 });
 
+vi.mock("react-native-gesture-handler", () => {
+	const { View } = require("react-native-web");
+	return {
+		GestureDetector: ({ children }: { children: unknown }) => children,
+		Gesture: {
+			Pan: () => ({
+				activeOffsetX: () => ({
+					failOffsetY: () => ({
+						onEnd: () => ({}),
+					}),
+				}),
+			}),
+		},
+		GestureHandlerRootView: View,
+	};
+});
+
 vi.mock("react-native-keyboard-controller", () => ({
 	useReanimatedKeyboardAnimation: () => ({
 		height: { value: 0 },

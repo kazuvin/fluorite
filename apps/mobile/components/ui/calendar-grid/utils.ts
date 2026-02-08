@@ -143,6 +143,26 @@ export function computeSameWeekdayDateKey(selectedDateKey: string, centerDateKey
 
 const WEEKDAY_NAMES = ["日", "月", "火", "水", "木", "金", "土"] as const;
 
+export function getAdjacentDateKey(dateKey: string, offset: number): string {
+	const [y, m, d] = dateKey.split("-").map(Number);
+	const date = new Date(y, m - 1, d + offset);
+	const yy = date.getFullYear();
+	const mm = String(date.getMonth() + 1).padStart(2, "0");
+	const dd = String(date.getDate()).padStart(2, "0");
+	return `${yy}-${mm}-${dd}`;
+}
+
+export function isSameWeek(dateKeyA: string, dateKeyB: string): boolean {
+	const [yA, mA, dA] = dateKeyA.split("-").map(Number);
+	const [yB, mB, dB] = dateKeyB.split("-").map(Number);
+	const a = new Date(yA, mA - 1, dA);
+	const b = new Date(yB, mB - 1, dB);
+	// 日曜始まり: 日曜日の日付を求めて比較
+	const sundayA = new Date(a.getFullYear(), a.getMonth(), a.getDate() - a.getDay());
+	const sundayB = new Date(b.getFullYear(), b.getMonth(), b.getDate() - b.getDay());
+	return sundayA.getTime() === sundayB.getTime();
+}
+
 export function parseDateKey(dateKey: string): {
 	year: number;
 	month: number;

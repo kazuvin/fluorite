@@ -18,6 +18,7 @@ type SelectedDateState = {
 	handleSelectDate: (dateKey: string) => void;
 	handleClearDate: () => void;
 	handleWeekChange: (centerDateKey: string) => void;
+	handleNavigateToDate: (dateKey: string) => void;
 };
 
 export function useSelectedDate(viewingYear: number, viewingMonth: number): SelectedDateState {
@@ -45,11 +46,14 @@ export function useSelectedDate(viewingYear: number, viewingMonth: number): Sele
 		[selectedDateKey, setDate],
 	);
 
+	const handleNavigateToDate = useCallback((dateKey: string) => setDate(dateKey), [setDate]);
+
 	return {
 		selectedDateKey,
 		selectedWeekIndex,
 		handleSelectDate,
 		handleClearDate,
 		handleWeekChange,
+		handleNavigateToDate,
 	};
 }

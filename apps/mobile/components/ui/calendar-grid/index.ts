@@ -6,6 +6,7 @@ export { FlatListWeekCalendar } from "./flatlist-week-calendar";
 export type { CalendarEvent, GlobalEventSlotMap } from "./event-layout";
 export { computeGlobalEventSlots, eventNotesToCalendarEvents } from "./event-layout";
 export { FlatListCalendar } from "./flatlist-calendar";
+export { FlatListDailyCalendar } from "./flatlist-daily-calendar";
 export { DailyCalendar } from "./daily-calendar";
 export type { DailyEventLayout, DailyEventPosition } from "./daily-event-layout";
 export { computeDailyEventLayout, timeToSlot } from "./daily-event-layout";
