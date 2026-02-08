@@ -120,19 +120,6 @@ export function FlatListCalendar({
 
 	const keyExtractor = useCallback((item: number) => String(item), []);
 
-	// --- Scroll to the selected date's month if it differs from the current view ---
-	useEffect(() => {
-		if (!selectedDateKey) return;
-		const parsed = parseDateKey(selectedDateKey);
-		const dateMonth = parsed.month - 1; // 0-indexed
-		if (parsed.year === viewingYear && dateMonth === viewingMonth) return;
-		const offset = parsed.year * 12 + dateMonth - (baseYear * 12 + baseMonth);
-		const targetIndex = INITIAL_INDEX + offset;
-		flatListRef.current?.scrollToIndex({ index: targetIndex, animated: false });
-		// scrollToIndex は onScroll を確実にトリガーしないため、viewingMonth を明示的に更新する
-		onMonthChange(parsed.year, dateMonth);
-	}, [selectedDateKey, viewingYear, viewingMonth, baseYear, baseMonth, onMonthChange]);
-
 	const dayInfoStyle = useAnimatedStyle(() => ({
 		opacity: transition.dayInfoOpacity.value,
 	}));
@@ -156,15 +143,6 @@ export function FlatListCalendar({
 	} else {
 		weekAnchorRef.current = null;
 	}
-
-	// --- Week change handler ---
-	const handleWeekChange = useCallback(
-		(weekDateKey: string) => {
-			const parsed = parseDateKey(weekDateKey);
-			onMonthChange(parsed.year, parsed.month - 1);
-		},
-		[onMonthChange],
-	);
 
 	return (
 		<View>
@@ -303,7 +281,7 @@ export function FlatListCalendar({
 							width={width}
 							selectedDateKey={selectedDateKey}
 							onSelectDate={onSelectDate}
-							onWeekChange={handleWeekChange}
+							onWeekChange={undefined}
 							today={today}
 						/>
 					</Animated.View>

@@ -22,8 +22,8 @@ const defaultProps = {
 };
 
 describe("FlatListCalendar", () => {
-	describe("他月の日付を選択した場合のviewingMonth同期", () => {
-		it("12月表示中に1月の日付を選択すると onMonthChange が呼ばれる", () => {
+	describe("他月の日付を選択した場合", () => {
+		it("12月表示中に1月の日付を選択しても月カレンダーは移動しない", () => {
 			const onMonthChange = vi.fn();
 
 			const { rerender } = render(
@@ -45,8 +45,8 @@ describe("FlatListCalendar", () => {
 				/>,
 			);
 
-			// onMonthChange が 2026年1月 (0-indexed: month=0) で呼ばれるべき
-			expect(onMonthChange).toHaveBeenCalledWith(2026, 0);
+			// 週カレンダーに切り替わるため、月カレンダーの月移動は不要
+			expect(onMonthChange).not.toHaveBeenCalled();
 		});
 	});
 });
