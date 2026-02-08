@@ -129,7 +129,9 @@ export function FlatListCalendar({
 		const offset = parsed.year * 12 + dateMonth - (baseYear * 12 + baseMonth);
 		const targetIndex = INITIAL_INDEX + offset;
 		flatListRef.current?.scrollToIndex({ index: targetIndex, animated: false });
-	}, [selectedDateKey, viewingYear, viewingMonth, baseYear, baseMonth]);
+		// scrollToIndex は onScroll を確実にトリガーしないため、viewingMonth を明示的に更新する
+		onMonthChange(parsed.year, dateMonth);
+	}, [selectedDateKey, viewingYear, viewingMonth, baseYear, baseMonth, onMonthChange]);
 
 	const dayInfoStyle = useAnimatedStyle(() => ({
 		opacity: transition.dayInfoOpacity.value,
