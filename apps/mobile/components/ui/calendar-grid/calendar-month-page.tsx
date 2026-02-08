@@ -1,10 +1,16 @@
-import { fontSize, fontWeight, parseNumeric, radius, spacing } from "@fluorite/design-tokens";
+import { parseNumeric, radius, spacing } from "@fluorite/design-tokens";
 import { memo, useEffect, useMemo } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { StyleSheet, View } from "react-native";
+import Animated, {
+	type SharedValue,
+	useAnimatedStyle,
+	useSharedValue,
+	withTiming,
+} from "react-native-reanimated";
 import { ANIMATION } from "../../../constants/animation";
+import { CalendarDayCell } from "./calendar-day-cell";
 import type { CalendarEvent } from "./event-layout";
-import { computeMonthEventLayout } from "./event-layout";
+import { computeGlobalEventSlots, computeMonthEventLayout } from "./event-layout";
 import { generateCalendarGrid } from "./utils";
 import { WeekEventBars } from "./week-event-bars";
 
@@ -31,6 +37,7 @@ type CalendarMonthPageProps = {
 	width: number;
 	selectedDateKey?: string | null;
 	onSelectDate?: (dateKey: string) => void;
+	nonSelectedRowOpacity?: SharedValue<number>;
 };
 
 export const CalendarMonthPage = memo(function CalendarMonthPage({
@@ -42,9 +49,23 @@ export const CalendarMonthPage = memo(function CalendarMonthPage({
 	width,
 	selectedDateKey,
 	onSelectDate,
+	nonSelectedRowOpacity,
 }: CalendarMonthPageProps) {
+	const selectedWeekIndex = useMemo(() => {
+		if (!selectedDateKey) return -1;
+		const grid = generateCalendarGrid(year, month, today);
+		for (let row = 0; row < grid.length; row++) {
+			if (grid[row].some((d) => d.dateKey === selectedDateKey)) return row;
+		}
+		return -1;
+	}, [selectedDateKey, year, month, today]);
+
 	const grid = useMemo(() => generateCalendarGrid(year, month, today), [year, month, today]);
-	const layout = useMemo(() => computeMonthEventLayout(events, grid), [events, grid]);
+	const globalSlots = useMemo(() => computeGlobalEventSlots(events), [events]);
+	const layout = useMemo(
+		() => computeMonthEventLayout(events, grid, globalSlots),
+		[events, grid, globalSlots],
+	);
 
 	const cellWidth = width / 7;
 
@@ -109,76 +130,65 @@ export const CalendarMonthPage = memo(function CalendarMonthPage({
 				pointerEvents="none"
 			/>
 
-			{grid.map((week) => (
-				<View key={`week-${week[0].year}-${week[0].month}-${week[0].date}`} style={styles.weekRow}>
-					{week.map((day) => {
-						const isSelected = selectedDateKey === day.dateKey;
-						return (
-							<Pressable
+			{grid.map((week, rowIndex) => {
+				const isSelectedRow = rowIndex === selectedWeekIndex;
+				const rowContent = (
+					<View
+						key={`week-${week[0].year}-${week[0].month}-${week[0].date}`}
+						style={styles.weekRow}
+					>
+						{week.map((day) => (
+							<CalendarDayCell
 								key={`${day.year}-${day.month}-${day.date}`}
-								style={styles.dayNumberCell}
-								onPress={() => onSelectDate?.(day.dateKey)}
-							>
-								<View
-									style={[styles.dayCircle, day.isToday && { backgroundColor: colors.primary }]}
-								>
-									<Text
-										style={[
-											styles.dayText,
-											{
-												color: day.isCurrentMonth ? colors.text : colors.muted,
-											},
-											isSelected &&
-												!day.isToday && {
-													color: colors.primary,
-													fontWeight: fontWeight.bold,
-												},
-											day.isToday && {
-												color: colors.background,
-												fontWeight: fontWeight.bold,
-											},
-										]}
-									>
-										{day.date}
-									</Text>
-								</View>
-							</Pressable>
-						);
-					})}
-					<WeekEventBars
-						week={week}
-						layout={layout}
-						cellWidth={cellWidth}
-						eventAreaTop={EVENT_AREA_TOP}
-						mutedColor={colors.muted}
-					/>
-				</View>
-			))}
+								day={day}
+								colors={colors}
+								isSelected={selectedDateKey === day.dateKey}
+								onPress={onSelectDate}
+							/>
+						))}
+						<WeekEventBars
+							week={week}
+							layout={layout}
+							cellWidth={cellWidth}
+							eventAreaTop={EVENT_AREA_TOP}
+							mutedColor={colors.muted}
+						/>
+					</View>
+				);
+
+				if (nonSelectedRowOpacity && !isSelectedRow) {
+					return (
+						<NonSelectedRow
+							key={`fade-${week[0].year}-${week[0].month}-${week[0].date}`}
+							opacity={nonSelectedRowOpacity}
+						>
+							{rowContent}
+						</NonSelectedRow>
+					);
+				}
+				return rowContent;
+			})}
 		</View>
 	);
 });
+
+function NonSelectedRow({
+	opacity,
+	children,
+}: {
+	opacity: SharedValue<number>;
+	children: React.ReactNode;
+}) {
+	const animatedStyle = useAnimatedStyle(() => ({
+		opacity: opacity.value,
+	}));
+	return <Animated.View style={animatedStyle}>{children}</Animated.View>;
+}
 
 const styles = StyleSheet.create({
 	weekRow: {
 		flexDirection: "row",
 		height: CELL_HEIGHT,
 		position: "relative",
-	},
-	dayNumberCell: {
-		flex: 1,
-		alignItems: "center",
-		justifyContent: "flex-start",
-		paddingTop: parseNumeric(spacing[1]),
-		zIndex: 1,
-	},
-	dayCircle: {
-		width: 20,
-		height: 20,
-		borderRadius: parseNumeric(radius.md),
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	dayText: {
-		fontSize: parseNumeric(fontSize.xs),
 	},
 });

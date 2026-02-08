@@ -9,11 +9,12 @@ import {
 	View,
 	useWindowDimensions,
 } from "react-native";
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
-import { ANIMATION } from "../../../constants/animation";
+import Animated, { useAnimatedStyle } from "react-native-reanimated";
+import { useCalendarTransition } from "../../../features/calendar/hooks/use-calendar-transition";
 import { RollingNumber } from "../rolling-number";
 import { CELL_HEIGHT, type CalendarGridColors, CalendarMonthPage } from "./calendar-month-page";
 import type { CalendarEvent } from "./event-layout";
+import { FlatListWeekCalendar } from "./flatlist-week-calendar";
 import { generateOffsets, offsetToYearMonth, parseDateKey } from "./utils";
 
 const WEEKDAY_LABELS = ["日", "月", "火", "水", "木", "金", "土"];
@@ -21,7 +22,6 @@ const OFFSET_RANGE = 120;
 const INITIAL_INDEX = OFFSET_RANGE;
 
 const MONTH_HEIGHT = CELL_HEIGHT * 6;
-const WEEK_HEIGHT = CELL_HEIGHT;
 
 type FlatListCalendarProps = {
 	baseYear: number;
@@ -56,6 +56,12 @@ export function FlatListCalendar({
 	const offsets = useMemo(() => generateOffsets(OFFSET_RANGE), []);
 
 	const today = useMemo(() => new Date(), []);
+
+	// --- Transition hook ---
+	const transition = useCalendarTransition({
+		selectedDateKey: selectedDateKey ?? null,
+		selectedWeekIndex: selectedWeekIndex ?? -1,
+	});
 
 	// --- Month FlatList handlers ---
 	const getItemLayout = useCallback(
@@ -95,10 +101,21 @@ export function FlatListCalendar({
 					width={width}
 					selectedDateKey={selectedDateKey}
 					onSelectDate={onSelectDate}
+					nonSelectedRowOpacity={transition.nonSelectedRowOpacity}
 				/>
 			);
 		},
-		[baseYear, baseMonth, today, colors, events, width, selectedDateKey, onSelectDate],
+		[
+			baseYear,
+			baseMonth,
+			today,
+			colors,
+			events,
+			width,
+			selectedDateKey,
+			onSelectDate,
+			transition.nonSelectedRowOpacity,
+		],
 	);
 
 	const keyExtractor = useCallback((item: number) => String(item), []);
@@ -114,34 +131,8 @@ export function FlatListCalendar({
 		flatListRef.current?.scrollToIndex({ index: targetIndex, animated: false });
 	}, [selectedDateKey, viewingYear, viewingMonth, baseYear, baseMonth]);
 
-	// --- Animation shared values ---
-	const isSelected = selectedDateKey != null;
-	const calendarHeight = useSharedValue(MONTH_HEIGHT);
-	const calendarTranslateY = useSharedValue(0);
-	const dayInfoOpacity = useSharedValue(0);
-
-	useEffect(() => {
-		if (isSelected && selectedWeekIndex != null && selectedWeekIndex >= 0) {
-			calendarHeight.value = withTiming(WEEK_HEIGHT, ANIMATION.layout);
-			calendarTranslateY.value = withTiming(-CELL_HEIGHT * selectedWeekIndex, ANIMATION.layout);
-			dayInfoOpacity.value = withTiming(1, ANIMATION.entering);
-		} else {
-			calendarHeight.value = withTiming(MONTH_HEIGHT, ANIMATION.layout);
-			calendarTranslateY.value = withTiming(0, ANIMATION.layout);
-			dayInfoOpacity.value = withTiming(0, ANIMATION.exiting);
-		}
-	}, [isSelected, selectedWeekIndex, calendarHeight, calendarTranslateY, dayInfoOpacity]);
-
-	const calendarContainerStyle = useAnimatedStyle(() => ({
-		height: calendarHeight.value,
-	}));
-
-	const calendarInnerStyle = useAnimatedStyle(() => ({
-		transform: [{ translateY: calendarTranslateY.value }],
-	}));
-
 	const dayInfoStyle = useAnimatedStyle(() => ({
-		opacity: dayInfoOpacity.value,
+		opacity: transition.dayInfoOpacity.value,
 	}));
 
 	// Parse selected date for header display
@@ -153,6 +144,25 @@ export function FlatListCalendar({
 	// In week mode, use selectedDateInfo's year/month for header
 	const headerYear = selectedDateInfo ? selectedDateInfo.year : viewingYear;
 	const headerMonth = selectedDateInfo ? selectedDateInfo.month - 1 : viewingMonth; // 0-indexed
+
+	// --- Week anchor: 週モード突入時の日付を固定基準点として保持 ---
+	const weekAnchorRef = useRef<string | null>(null);
+	if (transition.showWeekCalendar && selectedDateKey) {
+		if (!weekAnchorRef.current) {
+			weekAnchorRef.current = selectedDateKey;
+		}
+	} else {
+		weekAnchorRef.current = null;
+	}
+
+	// --- Week change handler ---
+	const handleWeekChange = useCallback(
+		(weekDateKey: string) => {
+			const parsed = parseDateKey(weekDateKey);
+			onMonthChange(parsed.year, parsed.month - 1);
+		},
+		[onMonthChange],
+	);
 
 	return (
 		<View>
@@ -254,8 +264,11 @@ export function FlatListCalendar({
 				))}
 			</View>
 
-			<Animated.View style={[styles.calendarContainer, calendarContainerStyle]}>
-				<Animated.View style={calendarInnerStyle}>
+			<Animated.View style={[styles.calendarContainer, transition.calendarContainerStyle]}>
+				{/* Month calendar - always mounted for state preservation */}
+				<Animated.View
+					style={[transition.monthInnerStyle, { pointerEvents: transition.monthPointerEvents }]}
+				>
 					<FlatList
 						ref={flatListRef}
 						data={offsets}
@@ -268,10 +281,31 @@ export function FlatListCalendar({
 						keyExtractor={keyExtractor}
 						onScroll={handleScroll}
 						scrollEventThrottle={16}
-						scrollEnabled={!isSelected}
+						scrollEnabled={transition.monthScrollEnabled}
 						style={{ height: MONTH_HEIGHT }}
 					/>
 				</Animated.View>
+
+				{/* Week calendar - shown after collapse animation */}
+				{transition.showWeekCalendar && selectedDateKey && weekAnchorRef.current && (
+					<Animated.View
+						style={[
+							{ position: "absolute", top: 0, left: 0, right: 0 },
+							transition.weekCalendarStyle,
+						]}
+					>
+						<FlatListWeekCalendar
+							dateKey={weekAnchorRef.current}
+							colors={colors}
+							events={events}
+							width={width}
+							selectedDateKey={selectedDateKey}
+							onSelectDate={onSelectDate}
+							onWeekChange={handleWeekChange}
+							today={today}
+						/>
+					</Animated.View>
+				)}
 			</Animated.View>
 		</View>
 	);

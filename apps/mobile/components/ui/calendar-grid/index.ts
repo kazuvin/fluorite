@@ -1,7 +1,10 @@
 export { CalendarMonthPage, CELL_HEIGHT } from "./calendar-month-page";
 export type { CalendarGridColors } from "./calendar-month-page";
-export type { CalendarEvent } from "./event-layout";
-export { eventNotesToCalendarEvents } from "./event-layout";
+export { CalendarDayCell } from "./calendar-day-cell";
+export { CalendarWeekPage } from "./calendar-week-page";
+export { FlatListWeekCalendar } from "./flatlist-week-calendar";
+export type { CalendarEvent, GlobalEventSlotMap } from "./event-layout";
+export { computeGlobalEventSlots, eventNotesToCalendarEvents } from "./event-layout";
 export { FlatListCalendar } from "./flatlist-calendar";
 export { DailyCalendar } from "./daily-calendar";
 export type { DailyEventLayout, DailyEventPosition } from "./daily-event-layout";

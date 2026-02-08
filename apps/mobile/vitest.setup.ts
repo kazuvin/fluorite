@@ -43,6 +43,13 @@ vi.mock("react-native-reanimated", () => {
 			}
 		},
 		useAnimatedStyle: (fn: () => unknown) => fn(),
+		useSharedValue: (initial: unknown) => {
+			const { useRef } = require("react");
+			const ref = useRef({ value: initial });
+			return ref.current;
+		},
+		withTiming: (toValue: unknown) => toValue,
+		runOnJS: (fn: unknown) => fn,
 	};
 });
 

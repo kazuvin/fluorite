@@ -36,8 +36,9 @@ export function WeekEventBars({
 			if (!slot) continue;
 
 			const top = eventAreaTop + slotIndex * (EVENT_BAR_HEIGHT + EVENT_BAR_GAP);
-			const left = col * cellWidth + 1;
-			const barWidth = cellWidth * slot.spanInWeek - 2;
+			const left = col * cellWidth + (slot.isStart ? 1 : 0);
+			const barWidth =
+				cellWidth * slot.spanInWeek - (slot.isStart ? 1 : 0) - (slot.isEnd ? 1 : 0);
 
 			bars.push(
 				<View
@@ -54,15 +55,13 @@ export function WeekEventBars({
 						borderTopRightRadius: slot.isEnd ? EVENT_BAR_RADIUS : 0,
 						borderBottomRightRadius: slot.isEnd ? EVENT_BAR_RADIUS : 0,
 						borderCurve: "continuous",
-						paddingHorizontal: slot.isStart ? 3 : 0,
+						paddingHorizontal: 3,
 						justifyContent: "center",
 					}}
 				>
-					{slot.isStart && (
-						<Text style={styles.eventText} numberOfLines={1}>
-							{slot.event.title}
-						</Text>
-					)}
+					<Text style={styles.eventText} numberOfLines={1}>
+						{slot.event.title}
+					</Text>
 				</View>,
 			);
 		}

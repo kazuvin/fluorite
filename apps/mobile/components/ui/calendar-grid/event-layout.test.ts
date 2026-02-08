@@ -1,11 +1,18 @@
 import { CategoryRegistry, type EventNote } from "@fluorite/core";
 import { describe, expect, it } from "vitest";
 import {
+	computeGlobalEventSlots,
 	computeMonthEventLayout,
 	computeWeekEventLayout,
 	eventNotesToCalendarEvents,
 } from "./event-layout";
-import type { CalendarEvent, DayCellLayout, EventSlot, MonthEventLayout } from "./event-layout";
+import type {
+	CalendarEvent,
+	DayCellLayout,
+	EventSlot,
+	GlobalEventSlotMap,
+	MonthEventLayout,
+} from "./event-layout";
 import { generateCalendarGrid, generateWeekFromDate } from "./utils";
 import type { CalendarDay } from "./utils";
 
@@ -668,5 +675,310 @@ describe("computeWeekEventLayout", () => {
 			const cell = getCell(layout, day.dateKey);
 			expect(cell.slots.every((s) => s === null)).toBe(true);
 		}
+	});
+});
+
+describe("computeGlobalEventSlots", () => {
+	it("単一イベント → slot 0", () => {
+		const events: CalendarEvent[] = [
+			{
+				id: "a",
+				title: "A",
+				startDate: "2026-02-10",
+				endDate: "2026-02-12",
+				color: "#4A90D9",
+				type: "allDay",
+			},
+		];
+		const slots = computeGlobalEventSlots(events);
+		expect(slots.get("a")).toBe(0);
+	});
+
+	it("重ならない2イベント → 両方 slot 0", () => {
+		const events: CalendarEvent[] = [
+			{
+				id: "a",
+				title: "A",
+				startDate: "2026-02-10",
+				endDate: "2026-02-12",
+				color: "#4A90D9",
+				type: "allDay",
+			},
+			{
+				id: "b",
+				title: "B",
+				startDate: "2026-02-15",
+				endDate: "2026-02-16",
+				color: "#50C878",
+				type: "allDay",
+			},
+		];
+		const slots = computeGlobalEventSlots(events);
+		expect(slots.get("a")).toBe(0);
+		expect(slots.get("b")).toBe(0);
+	});
+
+	it("重なる2イベント → slot 0 と slot 1", () => {
+		const events: CalendarEvent[] = [
+			{
+				id: "a",
+				title: "A",
+				startDate: "2026-02-10",
+				endDate: "2026-02-14",
+				color: "#4A90D9",
+				type: "allDay",
+			},
+			{
+				id: "b",
+				title: "B",
+				startDate: "2026-02-12",
+				endDate: "2026-02-16",
+				color: "#50C878",
+				type: "allDay",
+			},
+		];
+		const slots = computeGlobalEventSlots(events);
+		expect(slots.get("a")).toBe(0);
+		expect(slots.get("b")).toBe(1);
+	});
+
+	it("3つ以上重なり → sortEvents順(span長い順)でスロット割り当て", () => {
+		// a: span=4, c: span=3, b: span=2 → sortEventsでa,c,bの順に処理される
+		const events: CalendarEvent[] = [
+			{
+				id: "a",
+				title: "A",
+				startDate: "2026-02-10",
+				endDate: "2026-02-14",
+				color: "#4A90D9",
+				type: "allDay",
+			},
+			{
+				id: "b",
+				title: "B",
+				startDate: "2026-02-11",
+				endDate: "2026-02-13",
+				color: "#50C878",
+				type: "allDay",
+			},
+			{
+				id: "c",
+				title: "C",
+				startDate: "2026-02-12",
+				endDate: "2026-02-15",
+				color: "#FF6B6B",
+				type: "allDay",
+			},
+		];
+		const slots = computeGlobalEventSlots(events);
+		expect(slots.get("a")).toBe(0); // span最長 → slot 0
+		expect(slots.get("c")).toBe(1); // 次にspan長い → slot 1
+		expect(slots.get("b")).toBe(2); // span最短 → slot 2
+	});
+
+	it("週をまたぐイベントが一貫したスロットを持つ", () => {
+		// イベントAが2/7(土)〜2/9(月): 週をまたぐ
+		// イベントBが2/8(日)〜2/10(火): Aと重なる
+		const events: CalendarEvent[] = [
+			{
+				id: "a",
+				title: "A",
+				startDate: "2026-02-07",
+				endDate: "2026-02-09",
+				color: "#4A90D9",
+				type: "allDay",
+			},
+			{
+				id: "b",
+				title: "B",
+				startDate: "2026-02-08",
+				endDate: "2026-02-10",
+				color: "#50C878",
+				type: "allDay",
+			},
+		];
+		const slots = computeGlobalEventSlots(events);
+		// Aはspan長い or 開始が早いので slot 0、Bは slot 1
+		expect(slots.get("a")).toBe(0);
+		expect(slots.get("b")).toBe(1);
+	});
+
+	it("空のイベント配列 → 空のMap", () => {
+		const slots = computeGlobalEventSlots([]);
+		expect(slots.size).toBe(0);
+	});
+
+	it("allDay イベントが timed イベントより先にスロット割り当てされる", () => {
+		const events: CalendarEvent[] = [
+			{
+				id: "timed",
+				title: "会議",
+				startDate: "2026-02-10",
+				endDate: "2026-02-10",
+				color: "#4A90D9",
+				type: "timed",
+			},
+			{
+				id: "allday",
+				title: "終日",
+				startDate: "2026-02-10",
+				endDate: "2026-02-10",
+				color: "#50C878",
+				type: "allDay",
+			},
+		];
+		const slots = computeGlobalEventSlots(events);
+		expect(slots.get("allday")).toBe(0);
+		expect(slots.get("timed")).toBe(1);
+	});
+});
+
+describe("computeWeekEventLayout with globalSlots", () => {
+	it("globalSlots 指定時にスロット位置がマップ通りになる", () => {
+		const week = generateWeekFromDate("2026-02-10", 0);
+		// 2つのイベントが同じ日にある
+		const events: CalendarEvent[] = [
+			{
+				id: "a",
+				title: "A",
+				startDate: "2026-02-10",
+				endDate: "2026-02-10",
+				color: "#4A90D9",
+				type: "allDay",
+			},
+			{
+				id: "b",
+				title: "B",
+				startDate: "2026-02-10",
+				endDate: "2026-02-10",
+				color: "#50C878",
+				type: "timed",
+			},
+		];
+		// globalSlots で b を slot 0、a を slot 2 に強制指定
+		const globalSlots: GlobalEventSlotMap = new Map([
+			["a", 2],
+			["b", 0],
+		]);
+		const layout = computeWeekEventLayout(events, week, globalSlots);
+		const cell = getCell(layout, "2026-02-10");
+		expect(cell.slots[0]?.event.id).toBe("b");
+		expect(cell.slots[1]).toBeNull();
+		expect(cell.slots[2]?.event.id).toBe("a");
+	});
+
+	it("週をまたぐイベントが隣接週で同じスロットに配置される", () => {
+		// イベントA: 2/7(土)〜2/10(火) - 週をまたぐ
+		// イベントB: 2/8(日)〜2/9(月) - Aと重なる
+		const events: CalendarEvent[] = [
+			{
+				id: "a",
+				title: "A",
+				startDate: "2026-02-07",
+				endDate: "2026-02-10",
+				color: "#4A90D9",
+				type: "allDay",
+			},
+			{
+				id: "b",
+				title: "B",
+				startDate: "2026-02-08",
+				endDate: "2026-02-09",
+				color: "#50C878",
+				type: "allDay",
+			},
+		];
+		const globalSlots = computeGlobalEventSlots(events);
+		const slotA = globalSlots.get("a") ?? -1;
+		const slotB = globalSlots.get("b") ?? -1;
+		expect(slotA).toBeGreaterThanOrEqual(0);
+		expect(slotB).toBeGreaterThanOrEqual(0);
+
+		// Week1: 2/1(日)〜2/7(土) - Aは2/7のみ
+		const week1 = generateWeekFromDate("2026-02-04", 0);
+		const layout1 = computeWeekEventLayout(events, week1, globalSlots);
+		const week1Cell = getCell(layout1, "2026-02-07");
+		const week1Slot = getSlot(week1Cell, slotA);
+		expect(week1Slot.event.id).toBe("a");
+
+		// Week2: 2/8(日)〜2/14(土) - AもBも表示
+		const week2 = generateWeekFromDate("2026-02-11", 0);
+		const layout2 = computeWeekEventLayout(events, week2, globalSlots);
+		const week2Cell = getCell(layout2, "2026-02-08");
+		expect(week2Cell.slots[slotA]?.event.id).toBe("a");
+		expect(week2Cell.slots[slotB]?.event.id).toBe("b");
+	});
+
+	it("globalSlots で slot >= MAX_VISIBLE_SLOTS のイベントが overflow にカウントされる", () => {
+		const week = generateWeekFromDate("2026-02-10", 0);
+		const events: CalendarEvent[] = [
+			{
+				id: "a",
+				title: "A",
+				startDate: "2026-02-10",
+				endDate: "2026-02-10",
+				color: "#4A90D9",
+				type: "allDay",
+			},
+		];
+		// slot 3 を指定（MAX_VISIBLE_SLOTS=3 なので超過）
+		const globalSlots: GlobalEventSlotMap = new Map([["a", 3]]);
+		const layout = computeWeekEventLayout(events, week, globalSlots);
+		const cell = getCell(layout, "2026-02-10");
+		expect(cell.slots.every((s) => s === null)).toBe(true);
+		expect(cell.overflowCount).toBe(1);
+	});
+
+	it("globalSlots なしの場合は既存の動作と同じ", () => {
+		const week = generateWeekFromDate("2026-02-10", 0);
+		const events: CalendarEvent[] = [
+			{
+				id: "a",
+				title: "A",
+				startDate: "2026-02-10",
+				endDate: "2026-02-10",
+				color: "#4A90D9",
+				type: "allDay",
+			},
+		];
+		const layoutWithout = computeWeekEventLayout(events, week);
+		const layoutWith = computeWeekEventLayout(events, week, undefined);
+		const cellWithout = getCell(layoutWithout, "2026-02-10");
+		const cellWith = getCell(layoutWith, "2026-02-10");
+		expect(cellWithout.slots[0]?.event.id).toBe("a");
+		expect(cellWith.slots[0]?.event.id).toBe("a");
+	});
+});
+
+describe("computeMonthEventLayout with globalSlots", () => {
+	it("globalSlots 指定時にスロット位置がマップ通りになる", () => {
+		const grid = makeGrid(2026, 1);
+		const events: CalendarEvent[] = [
+			{
+				id: "a",
+				title: "A",
+				startDate: "2026-02-10",
+				endDate: "2026-02-10",
+				color: "#4A90D9",
+				type: "allDay",
+			},
+			{
+				id: "b",
+				title: "B",
+				startDate: "2026-02-10",
+				endDate: "2026-02-10",
+				color: "#50C878",
+				type: "timed",
+			},
+		];
+		const globalSlots: GlobalEventSlotMap = new Map([
+			["a", 2],
+			["b", 0],
+		]);
+		const layout = computeMonthEventLayout(events, grid, globalSlots);
+		const cell = getCell(layout, "2026-02-10");
+		expect(cell.slots[0]?.event.id).toBe("b");
+		expect(cell.slots[1]).toBeNull();
+		expect(cell.slots[2]?.event.id).toBe("a");
 	});
 });

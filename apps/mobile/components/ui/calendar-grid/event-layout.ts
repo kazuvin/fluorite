@@ -25,7 +25,9 @@ export type DayCellLayout = {
 
 export type MonthEventLayout = Map<string, DayCellLayout>;
 
-const MAX_VISIBLE_SLOTS = 3;
+export const MAX_VISIBLE_SLOTS = 3;
+
+export type GlobalEventSlotMap = Map<string, number>;
 
 const DEFAULT_COLOR = "#9B9B9B";
 
@@ -65,6 +67,43 @@ function sortEvents(events: CalendarEvent[]): CalendarEvent[] {
 
 		return dateToNum(a.startDate) - dateToNum(b.startDate);
 	});
+}
+
+/**
+ * 全イベントに対してグローバルに安定したスロット番号を割り当てる。
+ * 同じイベントはどの週に表示されても同じスロット位置になる。
+ */
+export function computeGlobalEventSlots(events: CalendarEvent[]): GlobalEventSlotMap {
+	const result: GlobalEventSlotMap = new Map();
+	if (events.length === 0) return result;
+
+	const sorted = sortEvents(events);
+
+	const assigned: { startNum: number; endNum: number; slot: number }[] = [];
+
+	for (const event of sorted) {
+		const eStartNum = dateToNum(event.startDate);
+		const eEndNum = dateToNum(event.endDate);
+
+		// この日付範囲と重なる既割当イベントのスロットを集める
+		const usedSlots = new Set<number>();
+		for (const a of assigned) {
+			if (a.startNum <= eEndNum && a.endNum >= eStartNum) {
+				usedSlots.add(a.slot);
+			}
+		}
+
+		// 最小空きスロットを見つける
+		let slot = 0;
+		while (usedSlots.has(slot)) {
+			slot++;
+		}
+
+		result.set(event.id, slot);
+		assigned.push({ startNum: eStartNum, endNum: eEndNum, slot });
+	}
+
+	return result;
 }
 
 function emptyDayCellLayout(): DayCellLayout {
@@ -110,10 +149,12 @@ function findFreeRow(reserved: Set<number>[], startCol: number, endCol: number):
 /**
  * 単一週に対するイベントレイアウト計算。
  * isCurrentMonth フィルタを使わず、全日をレイアウト対象とする。
+ * globalSlots が渡された場合、各イベントのスロットをグローバルマップから取得して配置する。
  */
 export function computeWeekEventLayout(
 	events: CalendarEvent[],
 	week: CalendarDay[],
+	globalSlots?: GlobalEventSlotMap,
 ): MonthEventLayout {
 	const layout: MonthEventLayout = new Map();
 
@@ -138,16 +179,18 @@ export function computeWeekEventLayout(
 		const eStartNum = dateToNum(event.startDate);
 		const eEndNum = dateToNum(event.endDate);
 
-		// findEffectiveColumns without isCurrentMonth filter
 		const rawStart = week.findIndex((d) => dateToNum(d.dateKey) >= eStartNum);
 		const rawEnd = week.findLastIndex((d) => dateToNum(d.dateKey) <= eEndNum);
 		if (rawStart === -1 || rawEnd === -1 || rawStart > rawEnd) continue;
 
 		const startCol = rawStart;
 		const endCol = rawEnd;
-		const assignedRow = findFreeRow(reserved, startCol, endCol);
 
-		if (assignedRow === -1) {
+		const assignedRow = globalSlots
+			? (globalSlots.get(event.id) ?? -1)
+			: findFreeRow(reserved, startCol, endCol);
+
+		if (assignedRow === -1 || assignedRow >= MAX_VISIBLE_SLOTS) {
 			for (let col = startCol; col <= endCol; col++) {
 				const cell = layout.get(week[col].dateKey);
 				if (cell) cell.overflowCount++;
@@ -175,6 +218,7 @@ export function computeWeekEventLayout(
 export function computeMonthEventLayout(
 	events: CalendarEvent[],
 	grid: CalendarDay[][],
+	globalSlots?: GlobalEventSlotMap,
 ): MonthEventLayout {
 	const layout: MonthEventLayout = new Map();
 
@@ -206,9 +250,12 @@ export function computeMonthEventLayout(
 			if (!cols) continue;
 
 			const { startCol, endCol } = cols;
-			const assignedRow = findFreeRow(reserved, startCol, endCol);
 
-			if (assignedRow === -1) {
+			const assignedRow = globalSlots
+				? (globalSlots.get(event.id) ?? -1)
+				: findFreeRow(reserved, startCol, endCol);
+
+			if (assignedRow === -1 || assignedRow >= MAX_VISIBLE_SLOTS) {
 				for (let col = startCol; col <= endCol; col++) {
 					const cell = layout.get(week[col].dateKey);
 					if (cell) cell.overflowCount++;
