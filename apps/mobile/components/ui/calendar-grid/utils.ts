@@ -141,6 +141,18 @@ export function computeSameWeekdayDateKey(selectedDateKey: string, centerDateKey
 	return `${y}-${m}-${d}`;
 }
 
+export function getWeekCenterDateKey(dateKey: string): string {
+	const [y, m, d] = dateKey.split("-").map(Number);
+	const date = new Date(y, m - 1, d);
+	const dayOfWeek = date.getDay(); // 0=Sun
+	// 水曜日 = 3
+	const centerDate = new Date(y, m - 1, d - dayOfWeek + 3);
+	const cy = centerDate.getFullYear();
+	const cm = String(centerDate.getMonth() + 1).padStart(2, "0");
+	const cd = String(centerDate.getDate()).padStart(2, "0");
+	return `${cy}-${cm}-${cd}`;
+}
+
 const WEEKDAY_NAMES = ["日", "月", "火", "水", "木", "金", "土"] as const;
 
 export function getAdjacentDateKey(dateKey: string, offset: number): string {

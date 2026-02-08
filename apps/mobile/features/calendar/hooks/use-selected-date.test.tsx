@@ -120,6 +120,57 @@ describe("useSelectedDate", () => {
 		expect(result.current.selectedDateKey).toBeNull();
 	});
 
+	it("handleNavigateToDate で同じ週内の日付はそのまま設定される", () => {
+		const store = createStore();
+		const { result } = renderHook(() => useSelectedDate(2026, 0), {
+			wrapper: createWrapper(store),
+		});
+
+		// 木曜日(2026-01-15)を選択
+		act(() => {
+			result.current.handleSelectDate("2026-01-15");
+		});
+		expect(result.current.selectedDateKey).toBe("2026-01-15");
+
+		// 同じ週内の水曜日に移動 → そのまま設定
+		act(() => {
+			result.current.handleNavigateToDate("2026-01-14");
+		});
+		expect(result.current.selectedDateKey).toBe("2026-01-14");
+	});
+
+	it("handleNavigateToDate で週境界を越えた場合もそのまま設定される", () => {
+		const store = createStore();
+		const { result } = renderHook(() => useSelectedDate(2026, 0), {
+			wrapper: createWrapper(store),
+		});
+
+		act(() => {
+			result.current.handleSelectDate("2026-01-15");
+		});
+		expect(result.current.selectedDateKey).toBe("2026-01-15");
+
+		// 翌週の日曜に移動 → そのまま設定
+		act(() => {
+			result.current.handleNavigateToDate("2026-01-18");
+		});
+		expect(result.current.selectedDateKey).toBe("2026-01-18");
+	});
+
+	it("handleNavigateToDate で選択がない場合はそのまま設定される", () => {
+		const store = createStore();
+		const { result } = renderHook(() => useSelectedDate(2026, 0), {
+			wrapper: createWrapper(store),
+		});
+
+		expect(result.current.selectedDateKey).toBeNull();
+
+		act(() => {
+			result.current.handleNavigateToDate("2026-01-18");
+		});
+		expect(result.current.selectedDateKey).toBe("2026-01-18");
+	});
+
 	it("handleWeekChange はトグルせず強制セットする", () => {
 		const store = createStore();
 		const { result } = renderHook(() => useSelectedDate(2026, 0), {

@@ -1,5 +1,5 @@
 import { parseNumeric, radius, spacing } from "@fluorite/design-tokens";
-import { memo, useEffect, useMemo } from "react";
+import { memo, useEffect, useMemo, useRef } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { ANIMATION } from "../../../constants/animation";
@@ -61,22 +61,33 @@ export const CalendarWeekPage = memo(function CalendarWeekPage({
 	const indicatorX = useSharedValue(selectedCol != null ? selectedCol * cellWidth : 0);
 	const indicatorOpacity = useSharedValue(selectedCol != null ? 1 : 0);
 
+	const lastEffectWeekRef = useRef({ dateKey, weekOffset });
+
 	useEffect(() => {
+		const isWeekChange =
+			dateKey !== lastEffectWeekRef.current.dateKey ||
+			weekOffset !== lastEffectWeekRef.current.weekOffset;
+		lastEffectWeekRef.current = { dateKey, weekOffset };
+
 		if (selectedCol != null) {
 			const targetX = selectedCol * cellWidth;
-
-			if (indicatorOpacity.value === 0) {
+			if (isWeekChange) {
+				// Week changed: snap position, fade in
+				indicatorX.value = targetX;
+				indicatorOpacity.value = 0;
+				indicatorOpacity.value = withTiming(1, ANIMATION.entering);
+			} else if (indicatorOpacity.value === 0) {
 				// First selection: snap position, then fade in
 				indicatorX.value = targetX;
 				indicatorOpacity.value = withTiming(1, ANIMATION.entering);
 			} else {
-				// Subsequent selection: animate position
+				// Subsequent selection within same week: animate position
 				indicatorX.value = withTiming(targetX, ANIMATION.layout);
 			}
 		} else {
 			indicatorOpacity.value = withTiming(0, ANIMATION.exiting);
 		}
-	}, [selectedCol, cellWidth, indicatorX, indicatorOpacity]);
+	}, [selectedCol, cellWidth, dateKey, weekOffset, indicatorX, indicatorOpacity]);
 
 	const indicatorStyle = useAnimatedStyle(() => ({
 		transform: [{ translateX: indicatorX.value }],

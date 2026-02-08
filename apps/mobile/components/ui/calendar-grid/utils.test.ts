@@ -6,6 +6,7 @@ import {
 	generateOffsets,
 	generateWeekFromDate,
 	getAdjacentDateKey,
+	getWeekCenterDateKey,
 	isSameWeek,
 	offsetToYearMonth,
 	parseDateKey,
@@ -358,6 +359,33 @@ describe("isSameWeek", () => {
 	it("月をまたぐ同じ週のケース", () => {
 		// 2026-03-29(日) ~ 2026-04-04(土) — 3月と4月にまたがる同じ週
 		expect(isSameWeek("2026-03-29", "2026-04-04")).toBe(true);
+	});
+});
+
+describe("getWeekCenterDateKey", () => {
+	it("水曜日を渡すとそのまま返す", () => {
+		// 2026-01-14 は水曜日
+		expect(getWeekCenterDateKey("2026-01-14")).toBe("2026-01-14");
+	});
+
+	it("日曜日を渡すとその週の水曜日を返す", () => {
+		// 2026-02-01 は日曜 → 水曜は 2026-02-04
+		expect(getWeekCenterDateKey("2026-02-01")).toBe("2026-02-04");
+	});
+
+	it("土曜日を渡すとその週の水曜日を返す", () => {
+		// 2026-01-17 は土曜 → 水曜は 2026-01-14
+		expect(getWeekCenterDateKey("2026-01-17")).toBe("2026-01-14");
+	});
+
+	it("月をまたぐケース", () => {
+		// 2026-03-01 は日曜 → 水曜は 2026-03-04
+		expect(getWeekCenterDateKey("2026-03-01")).toBe("2026-03-04");
+	});
+
+	it("木曜日を渡すとその週の水曜日を返す", () => {
+		// 2026-01-15 は木曜 → 水曜は 2026-01-14
+		expect(getWeekCenterDateKey("2026-01-15")).toBe("2026-01-14");
 	});
 });
 

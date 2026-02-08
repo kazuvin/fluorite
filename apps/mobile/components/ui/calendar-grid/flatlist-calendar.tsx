@@ -167,6 +167,7 @@ export function FlatListCalendar({
 	const weekAnchorRef = useRef<string | null>(null);
 	const prevWeekAnchorRef = useRef<string | null>(null);
 	const weekSlideX = useSharedValue(0);
+	const weekSwipedRef = useRef(false);
 
 	if (transition.showWeekCalendar && selectedDateKey) {
 		if (!weekAnchorRef.current) {
@@ -178,14 +179,25 @@ export function FlatListCalendar({
 		weekAnchorRef.current = null;
 	}
 
-	// 週アンカー変更時にスライドアニメーションを発火
+	// 週アンカー変更時にスライドアニメーションを発火（週スワイプ由来の場合はスキップ）
 	const currentAnchor = weekAnchorRef.current;
 	if (currentAnchor && prevWeekAnchorRef.current && currentAnchor !== prevWeekAnchorRef.current) {
-		const slideDirection = currentAnchor > prevWeekAnchorRef.current ? 1 : -1;
-		weekSlideX.value = slideDirection * width;
-		weekSlideX.value = withTiming(0, ANIMATION.entering);
+		if (!weekSwipedRef.current) {
+			const slideDirection = currentAnchor > prevWeekAnchorRef.current ? 1 : -1;
+			weekSlideX.value = slideDirection * width;
+			weekSlideX.value = withTiming(0, ANIMATION.entering);
+		}
 	}
+	weekSwipedRef.current = false;
 	prevWeekAnchorRef.current = currentAnchor;
+
+	const handleWeekSwipeChange = useCallback(
+		(dateKey: string) => {
+			weekSwipedRef.current = true;
+			onWeekChange?.(dateKey);
+		},
+		[onWeekChange],
+	);
 
 	const weekSlideStyle = useAnimatedStyle(() => ({
 		transform: [{ translateX: weekSlideX.value }],
@@ -323,14 +335,13 @@ export function FlatListCalendar({
 						]}
 					>
 						<FlatListWeekCalendar
-							key={weekAnchorRef.current}
 							dateKey={weekAnchorRef.current}
 							colors={colors}
 							events={events}
 							width={width}
 							selectedDateKey={selectedDateKey}
 							onSelectDate={onSelectDate}
-							onWeekChange={onWeekChange}
+							onWeekChange={handleWeekSwipeChange}
 							today={today}
 						/>
 					</Animated.View>

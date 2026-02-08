@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useRef } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, type NativeScrollEvent, type NativeSyntheticEvent, View } from "react-native";
 import type { CalendarGridColors } from "./calendar-month-page";
 import { CELL_HEIGHT, CalendarWeekPage } from "./calendar-week-page";
@@ -39,16 +39,41 @@ export const FlatListWeekCalendar = memo(function FlatListWeekCalendar({
 		[],
 	);
 
-	const lastReportedOffset = useRef<number | undefined>(undefined);
+	// アンカー日付: スワイプの基準点。スワイプでは変わらず、外部変更時のみ更新。
+	const [anchorDateKey, setAnchorDateKey] = useState(dateKey);
+	const lastReportedOffset = useRef(0);
+	const internalChangeRef = useRef(false);
+	const prevDateKeyRef = useRef(dateKey);
+	const needsScrollReset = useRef(false);
 
-	const handleScroll = useCallback(
+	// rendering 中の state 同期パターン: 中間描画を排除する
+	if (dateKey !== prevDateKeyRef.current) {
+		prevDateKeyRef.current = dateKey;
+		if (internalChangeRef.current) {
+			internalChangeRef.current = false;
+		} else {
+			setAnchorDateKey(dateKey);
+			lastReportedOffset.current = 0;
+			needsScrollReset.current = true;
+		}
+	}
+
+	// scrollToIndex は DOM commit 後に遅延実行
+	useEffect(() => {
+		if (needsScrollReset.current) {
+			needsScrollReset.current = false;
+			flatListRef.current?.scrollToIndex({ index: INITIAL_INDEX, animated: false });
+		}
+	});
+
+	const handleMomentumScrollEnd = useCallback(
 		(event: NativeSyntheticEvent<NativeScrollEvent>) => {
 			const pageIndex = Math.round(event.nativeEvent.contentOffset.x / width);
 			const offset = offsets[pageIndex];
 			if (offset !== undefined && offset !== lastReportedOffset.current) {
 				lastReportedOffset.current = offset;
 				// 週の中心日を計算してコールバック
-				const parsed = parseDateKey(dateKey);
+				const parsed = parseDateKey(anchorDateKey);
 				const baseDate = new Date(parsed.year, parsed.month - 1, parsed.day);
 				const baseDayOfWeek = baseDate.getDay();
 				// Sunday of the base week + offset * 7 + 3 (center of week = Wednesday)
@@ -60,10 +85,11 @@ export const FlatListWeekCalendar = memo(function FlatListWeekCalendar({
 				const y = centerDate.getFullYear();
 				const m = String(centerDate.getMonth() + 1).padStart(2, "0");
 				const d = String(centerDate.getDate()).padStart(2, "0");
+				internalChangeRef.current = true;
 				onWeekChange?.(`${y}-${m}-${d}`);
 			}
 		},
-		[width, offsets, dateKey, onWeekChange],
+		[width, offsets, anchorDateKey, onWeekChange],
 	);
 
 	const getItemLayout = useCallback(
@@ -78,7 +104,7 @@ export const FlatListWeekCalendar = memo(function FlatListWeekCalendar({
 	const renderWeekItem = useCallback(
 		({ item: offset }: { item: number }) => (
 			<CalendarWeekPage
-				dateKey={dateKey}
+				dateKey={anchorDateKey}
 				weekOffset={offset}
 				colors={colors}
 				events={events}
@@ -89,7 +115,7 @@ export const FlatListWeekCalendar = memo(function FlatListWeekCalendar({
 				globalSlots={globalSlots}
 			/>
 		),
-		[dateKey, colors, events, width, selectedDateKey, onSelectDate, today, globalSlots],
+		[anchorDateKey, colors, events, width, selectedDateKey, onSelectDate, today, globalSlots],
 	);
 
 	const keyExtractor = useCallback((item: number) => `week-${item}`, []);
@@ -107,8 +133,7 @@ export const FlatListWeekCalendar = memo(function FlatListWeekCalendar({
 				getItemLayout={getItemLayout}
 				renderItem={renderWeekItem}
 				keyExtractor={keyExtractor}
-				onScroll={handleScroll}
-				scrollEventThrottle={16}
+				onMomentumScrollEnd={handleMomentumScrollEnd}
 				style={{ height: CELL_HEIGHT }}
 			/>
 		</View>

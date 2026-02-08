@@ -1,16 +1,19 @@
 import { colors } from "@fluorite/design-tokens";
-import { StyleSheet, View, useColorScheme } from "react-native";
+import { useCallback, useRef } from "react";
+import { StyleSheet, View, useColorScheme, useWindowDimensions } from "react-native";
 import Animated from "react-native-reanimated";
 import { FlatListCalendar } from "../../../components/ui/calendar-grid";
 import { FlatListDailyCalendar } from "../../../components/ui/calendar-grid/flatlist-daily-calendar";
 import { useCalendarGrid } from "../hooks/use-calendar-grid";
 import { useDailyCalendarAnimation } from "../hooks/use-daily-calendar-animation";
+import { useDailySlideAnimation } from "../hooks/use-daily-slide-animation";
 import { useSelectedDate } from "../hooks/use-selected-date";
 import { CategoryFilterBar } from "./category-filter-bar";
 
 export function CalendarGridContainer() {
 	const scheme = useColorScheme() ?? "light";
 	const theme = colors[scheme];
+	const { width } = useWindowDimensions();
 
 	const {
 		baseYear,
@@ -32,6 +35,22 @@ export function CalendarGridContainer() {
 
 	const isSelected = selectedDateKey != null;
 	const { animatedStyle: dailyCalendarStyle } = useDailyCalendarAnimation(isSelected);
+	const { slideStyle, markWeekSwipe, onDateKeyChange } = useDailySlideAnimation(width);
+
+	const handleWeekChangeWithSlide = useCallback(
+		(centerDateKey: string) => {
+			markWeekSwipe();
+			handleWeekChange(centerDateKey);
+		},
+		[markWeekSwipe, handleWeekChange],
+	);
+
+	// 日付変更時にスライドアニメーションを通知
+	const prevSelectedRef = useRef(selectedDateKey);
+	if (selectedDateKey !== prevSelectedRef.current) {
+		onDateKeyChange(selectedDateKey);
+		prevSelectedRef.current = selectedDateKey;
+	}
 
 	return (
 		<View style={styles.root}>
@@ -52,19 +71,21 @@ export function CalendarGridContainer() {
 				selectedDateKey={selectedDateKey}
 				selectedWeekIndex={selectedWeekIndex}
 				onSelectDate={handleSelectDate}
-				onWeekChange={handleWeekChange}
+				onWeekChange={handleWeekChangeWithSlide}
 			/>
 			<View style={styles.filterBarContainer}>
 				<CategoryFilterBar />
 			</View>
 			{isSelected && selectedDateKey && (
 				<Animated.View style={[styles.dailyCalendarContainer, dailyCalendarStyle]}>
-					<FlatListDailyCalendar
-						dateKey={selectedDateKey}
-						events={filteredCalendarEvents}
-						textColor={theme.text}
-						onDateChange={handleNavigateToDate}
-					/>
+					<Animated.View style={[styles.dailyCalendarInner, slideStyle]}>
+						<FlatListDailyCalendar
+							dateKey={selectedDateKey}
+							events={filteredCalendarEvents}
+							textColor={theme.text}
+							onDateChange={handleNavigateToDate}
+						/>
+					</Animated.View>
 				</Animated.View>
 			)}
 		</View>
@@ -79,6 +100,9 @@ const styles = StyleSheet.create({
 		flexShrink: 0,
 	},
 	dailyCalendarContainer: {
+		flex: 1,
+	},
+	dailyCalendarInner: {
 		flex: 1,
 	},
 });
