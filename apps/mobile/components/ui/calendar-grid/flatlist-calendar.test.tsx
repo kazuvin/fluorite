@@ -49,4 +49,60 @@ describe("FlatListCalendar", () => {
 			expect(onMonthChange).not.toHaveBeenCalled();
 		});
 	});
+
+	describe("週モードから月モードに戻る時の月移動", () => {
+		it("選択解除時、前の選択日が表示中の月グリッド内なら月移動しない", () => {
+			const onMonthChange = vi.fn();
+
+			// 12月表示中に1月1日を選択中（1月1日は12月グリッドの5行目にある）
+			const { rerender } = render(
+				<FlatListCalendar
+					{...defaultProps}
+					onMonthChange={onMonthChange}
+					selectedDateKey="2026-01-01"
+					selectedWeekIndex={4}
+				/>,
+			);
+
+			// 選択解除（週→月に戻る）
+			rerender(
+				<FlatListCalendar
+					{...defaultProps}
+					onMonthChange={onMonthChange}
+					selectedDateKey={null}
+					selectedWeekIndex={-1}
+				/>,
+			);
+
+			// 1月1日は12月グリッドに含まれるので月移動しない
+			expect(onMonthChange).not.toHaveBeenCalled();
+		});
+
+		it("選択解除時、前の選択日が表示中の月グリッド外なら選択日の月に移動する", () => {
+			const onMonthChange = vi.fn();
+
+			// 12月表示中に1月15日を選択中（1月15日は12月グリッドにない）
+			const { rerender } = render(
+				<FlatListCalendar
+					{...defaultProps}
+					onMonthChange={onMonthChange}
+					selectedDateKey="2026-01-15"
+					selectedWeekIndex={-1}
+				/>,
+			);
+
+			// 選択解除（週→月に戻る）
+			rerender(
+				<FlatListCalendar
+					{...defaultProps}
+					onMonthChange={onMonthChange}
+					selectedDateKey={null}
+					selectedWeekIndex={-1}
+				/>,
+			);
+
+			// 1月15日は12月グリッドにないので、1月(0-indexed: 0)に移動
+			expect(onMonthChange).toHaveBeenCalledWith(2026, 0);
+		});
+	});
 });

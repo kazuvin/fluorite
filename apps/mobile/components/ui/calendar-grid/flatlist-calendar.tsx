@@ -15,7 +15,13 @@ import { RollingNumber } from "../rolling-number";
 import { CELL_HEIGHT, type CalendarGridColors, CalendarMonthPage } from "./calendar-month-page";
 import type { CalendarEvent } from "./event-layout";
 import { FlatListWeekCalendar } from "./flatlist-week-calendar";
-import { generateOffsets, offsetToYearMonth, parseDateKey } from "./utils";
+import {
+	findWeekIndexForDateKey,
+	generateCalendarGrid,
+	generateOffsets,
+	offsetToYearMonth,
+	parseDateKey,
+} from "./utils";
 
 const WEEKDAY_LABELS = ["日", "月", "火", "水", "木", "金", "土"];
 const OFFSET_RANGE = 120;
@@ -119,6 +125,25 @@ export function FlatListCalendar({
 	);
 
 	const keyExtractor = useCallback((item: number) => String(item), []);
+
+	// --- 選択解除時、前の日付が表示中の月グリッドに無ければその月へスクロール ---
+	const prevSelectedDateKeyRef = useRef(selectedDateKey);
+	useEffect(() => {
+		const prev = prevSelectedDateKeyRef.current;
+		prevSelectedDateKeyRef.current = selectedDateKey;
+
+		if (prev == null || selectedDateKey != null) return;
+
+		const grid = generateCalendarGrid(viewingYear, viewingMonth);
+		if (findWeekIndexForDateKey(grid, prev) >= 0) return;
+
+		const parsed = parseDateKey(prev);
+		const dateMonth = parsed.month - 1;
+		const offset = parsed.year * 12 + dateMonth - (baseYear * 12 + baseMonth);
+		const targetIndex = INITIAL_INDEX + offset;
+		flatListRef.current?.scrollToIndex({ index: targetIndex, animated: false });
+		onMonthChange(parsed.year, dateMonth);
+	}, [selectedDateKey, viewingYear, viewingMonth, baseYear, baseMonth, onMonthChange]);
 
 	const dayInfoStyle = useAnimatedStyle(() => ({
 		opacity: transition.dayInfoOpacity.value,
