@@ -63,10 +63,11 @@ export function useCalendarTransition({
 			nonSelectedRowOpacity.value = withTiming(0, ANIMATION.exiting);
 			dayInfoOpacity.value = withTiming(1, ANIMATION.entering);
 
-			// 3. 折りたたみ完了後、月カレンダーをフェードアウトし週カレンダーをフェードインで表示
+			// 3. 折りたたみ完了後、月カレンダーを即時非表示にし週カレンダーを即時表示
+			//    折りたたみ完了時点では月カレンダーの選択行と週カレンダーの内容は同一なのでクロスフェード不要
 			const timer = setTimeout(() => {
-				monthOpacity.value = withTiming(0, ANIMATION.entering);
-				weekCalendarOpacity.value = withTiming(1, ANIMATION.entering);
+				monthOpacity.value = 0;
+				weekCalendarOpacity.value = 1;
 				setMode("week");
 			}, ANIMATION.layout.duration);
 

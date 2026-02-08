@@ -74,6 +74,20 @@ describe("CalendarWeekPage", () => {
 		expect(onSelectDate).toHaveBeenCalledWith("2026-01-15");
 	});
 
+	it("選択インジケーターは常にレンダリングされる（Animated.View）", () => {
+		render(
+			<CalendarWeekPage
+				dateKey="2026-01-15"
+				weekOffset={0}
+				colors={defaultColors}
+				events={[]}
+				width={375}
+			/>,
+		);
+		// Animated.View で常にマウントされている
+		expect(screen.getByTestId("week-selection-indicator")).toBeInTheDocument();
+	});
+
 	it("selectedDateKey に一致するセルが選択状態になる", () => {
 		render(
 			<CalendarWeekPage
@@ -85,21 +99,7 @@ describe("CalendarWeekPage", () => {
 				selectedDateKey="2026-01-15"
 			/>,
 		);
-		// 選択インジケーターが表示される
 		expect(screen.getByTestId("week-selection-indicator")).toBeInTheDocument();
-	});
-
-	it("selectedDateKey が null の場合、選択インジケーターは非表示", () => {
-		render(
-			<CalendarWeekPage
-				dateKey="2026-01-15"
-				weekOffset={0}
-				colors={defaultColors}
-				events={[]}
-				width={375}
-			/>,
-		);
-		expect(screen.queryByTestId("week-selection-indicator")).not.toBeInTheDocument();
 	});
 
 	it("イベントバーがレンダリングされる", () => {

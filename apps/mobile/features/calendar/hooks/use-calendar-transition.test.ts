@@ -149,6 +149,24 @@ describe("useCalendarTransition", () => {
 		expect(result.current.monthOpacity.value).toBe(1);
 	});
 
+	it("折りたたみ完了後 monthOpacity は即時 0 になる（withTiming なし）", async () => {
+		const { result, rerender } = renderHook((props) => useCalendarTransition(props), {
+			initialProps: { selectedDateKey: null as string | null, selectedWeekIndex: -1 },
+		});
+
+		rerender({ selectedDateKey: "2026-01-15", selectedWeekIndex: 2 });
+
+		// week モードに遷移するのを待つ
+		await waitFor(() => {
+			expect(result.current.mode).toBe("week");
+		});
+
+		// 折りたたみ完了後、monthOpacity は即時 0
+		expect(result.current.monthOpacity.value).toBe(0);
+		// weekCalendarOpacity は即時 1
+		expect(result.current.weekCalendarOpacity.value).toBe(1);
+	});
+
 	describe("週モードでの日付変更", () => {
 		it("週モードで別の週の日付を選択してもモードは week のまま（collapsing に戻らない）", async () => {
 			const { result, rerender } = renderHook((props) => useCalendarTransition(props), {
