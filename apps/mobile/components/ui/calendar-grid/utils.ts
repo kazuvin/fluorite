@@ -122,6 +122,25 @@ export function findWeekIndexForDateKey(grid: CalendarDay[][], dateKey: string):
 	return -1;
 }
 
+export function computeSameWeekdayDateKey(selectedDateKey: string, centerDateKey: string): string {
+	const selectedParsed = parseDateKey(selectedDateKey);
+	const selectedDayOfWeek = new Date(
+		selectedParsed.year,
+		selectedParsed.month - 1,
+		selectedParsed.day,
+	).getDay();
+	const centerParsed = parseDateKey(centerDateKey);
+	const targetDate = new Date(
+		centerParsed.year,
+		centerParsed.month - 1,
+		centerParsed.day - 3 + selectedDayOfWeek,
+	);
+	const y = targetDate.getFullYear();
+	const m = String(targetDate.getMonth() + 1).padStart(2, "0");
+	const d = String(targetDate.getDate()).padStart(2, "0");
+	return `${y}-${m}-${d}`;
+}
+
 const WEEKDAY_NAMES = ["日", "月", "火", "水", "木", "金", "土"] as const;
 
 export function parseDateKey(dateKey: string): {

@@ -99,6 +99,7 @@ export const FlatListWeekCalendar = memo(function FlatListWeekCalendar({
 			<FlatList
 				ref={flatListRef}
 				data={offsets}
+				extraData={selectedDateKey}
 				horizontal
 				pagingEnabled
 				showsHorizontalScrollIndicator={false}

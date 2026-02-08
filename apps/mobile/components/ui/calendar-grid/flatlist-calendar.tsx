@@ -41,6 +41,7 @@ type FlatListCalendarProps = {
 	selectedDateKey?: string | null;
 	selectedWeekIndex?: number;
 	onSelectDate?: (dateKey: string) => void;
+	onWeekChange?: (centerDateKey: string) => void;
 };
 
 export function FlatListCalendar({
@@ -55,6 +56,7 @@ export function FlatListCalendar({
 	selectedDateKey,
 	selectedWeekIndex,
 	onSelectDate,
+	onWeekChange,
 }: FlatListCalendarProps) {
 	const { width } = useWindowDimensions();
 	const flatListRef = useRef<FlatList<number>>(null);
@@ -306,7 +308,7 @@ export function FlatListCalendar({
 							width={width}
 							selectedDateKey={selectedDateKey}
 							onSelectDate={onSelectDate}
-							onWeekChange={undefined}
+							onWeekChange={onWeekChange}
 							today={today}
 						/>
 					</Animated.View>

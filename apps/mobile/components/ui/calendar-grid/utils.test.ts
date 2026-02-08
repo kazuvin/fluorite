@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+	computeSameWeekdayDateKey,
 	findWeekIndexForDateKey,
 	generateCalendarGrid,
 	generateOffsets,
@@ -257,6 +258,43 @@ describe("generateWeekFromDate", () => {
 		const week = generateWeekFromDate("2026-02-01", 0);
 		expect(week[0].dateKey).toBe("2026-02-01");
 		expect(week[6].dateKey).toBe("2026-02-07");
+	});
+});
+
+describe("computeSameWeekdayDateKey", () => {
+	it("木曜選択 → 次週の水曜(center) → 次週の木曜を返す", () => {
+		// 2026-01-15 は木曜、次週の center(水曜) は 2026-01-21
+		expect(computeSameWeekdayDateKey("2026-01-15", "2026-01-21")).toBe("2026-01-22");
+	});
+
+	it("日曜選択 → 次週の水曜(center) → 次週の日曜を返す", () => {
+		// 2026-02-01 は日曜、次週の center(水曜) は 2026-02-04
+		expect(computeSameWeekdayDateKey("2026-02-01", "2026-02-04")).toBe("2026-02-01");
+	});
+
+	it("土曜選択 → 次週の水曜(center) → 次週の土曜を返す", () => {
+		// 2026-01-17 は土曜、次週の center(水曜) は 2026-01-21
+		expect(computeSameWeekdayDateKey("2026-01-17", "2026-01-21")).toBe("2026-01-24");
+	});
+
+	it("月またぎ（1月末→2月）", () => {
+		// 2026-01-29 は木曜、次週の center(水曜) は 2026-02-04
+		expect(computeSameWeekdayDateKey("2026-01-29", "2026-02-04")).toBe("2026-02-05");
+	});
+
+	it("年またぎ（12月末→1月）", () => {
+		// 2025-12-31 は水曜、次週の center(水曜) は 2026-01-07
+		expect(computeSameWeekdayDateKey("2025-12-31", "2026-01-07")).toBe("2026-01-07");
+	});
+
+	it("前の週へのスワイプ", () => {
+		// 2026-01-15 は木曜、前週の center(水曜) は 2026-01-07
+		expect(computeSameWeekdayDateKey("2026-01-15", "2026-01-07")).toBe("2026-01-08");
+	});
+
+	it("水曜選択 → 水曜(center) → そのまま返す", () => {
+		// 2026-01-14 は水曜、center も 2026-01-14
+		expect(computeSameWeekdayDateKey("2026-01-14", "2026-01-14")).toBe("2026-01-14");
 	});
 });
 

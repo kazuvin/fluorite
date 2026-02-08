@@ -86,4 +86,56 @@ describe("useSelectedDate", () => {
 		});
 		expect(result.current.selectedWeekIndex).toBeGreaterThanOrEqual(0);
 	});
+
+	it("handleWeekChange で同じ曜日の日付に更新される", () => {
+		const store = createStore();
+		const { result } = renderHook(() => useSelectedDate(2026, 0), {
+			wrapper: createWrapper(store),
+		});
+
+		// 木曜日(2026-01-15)を選択
+		act(() => {
+			result.current.handleSelectDate("2026-01-15");
+		});
+		expect(result.current.selectedDateKey).toBe("2026-01-15");
+
+		// 次週の水曜(center)を渡す → 次週の木曜に更新される
+		act(() => {
+			result.current.handleWeekChange("2026-01-21");
+		});
+		expect(result.current.selectedDateKey).toBe("2026-01-22");
+	});
+
+	it("handleWeekChange は選択日が null の場合は何もしない", () => {
+		const store = createStore();
+		const { result } = renderHook(() => useSelectedDate(2026, 0), {
+			wrapper: createWrapper(store),
+		});
+
+		expect(result.current.selectedDateKey).toBeNull();
+
+		act(() => {
+			result.current.handleWeekChange("2026-01-21");
+		});
+		expect(result.current.selectedDateKey).toBeNull();
+	});
+
+	it("handleWeekChange はトグルせず強制セットする", () => {
+		const store = createStore();
+		const { result } = renderHook(() => useSelectedDate(2026, 0), {
+			wrapper: createWrapper(store),
+		});
+
+		// 水曜日(2026-01-14)を選択
+		act(() => {
+			result.current.handleSelectDate("2026-01-14");
+		});
+		expect(result.current.selectedDateKey).toBe("2026-01-14");
+
+		// 同じ水曜の center を渡す → 同じ日付が返るが、トグルではなく維持される
+		act(() => {
+			result.current.handleWeekChange("2026-01-14");
+		});
+		expect(result.current.selectedDateKey).toBe("2026-01-14");
+	});
 });

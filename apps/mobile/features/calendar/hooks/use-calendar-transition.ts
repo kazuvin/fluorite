@@ -17,7 +17,7 @@ export function useCalendarTransition({
 	selectedDateKey,
 	selectedWeekIndex,
 }: UseCalendarTransitionProps) {
-	const isSelected = selectedDateKey != null && selectedWeekIndex >= 0;
+	const isSelected = selectedDateKey != null;
 
 	const [mode, setMode] = useState<TransitionMode>("month");
 	const [showWeekCalendar, setShowWeekCalendar] = useState(false);
@@ -74,29 +74,25 @@ export function useCalendarTransition({
 			return () => clearTimeout(timer);
 		}
 
-		// Week → Month transition (expanding)
-		// 1. 週カレンダーをフェードアウト + ヘッダー日付をフェードアウト
+		// Week → Month transition (expanding) — collapsing の逆再生
+		// 1. 即時切り替え（フェード不要：折りたたまれた月カレンダーと週カレンダーは同一位置）
 		setMode("expanding");
-		weekCalendarOpacity.value = withTiming(0, ANIMATION.exiting);
-		dayInfoOpacity.value = withTiming(0, ANIMATION.exiting);
+		weekCalendarOpacity.value = 0;
+		monthOpacity.value = 1;
+		nonSelectedRowOpacity.value = 1;
+		dayInfoOpacity.value = 0;
 
-		// 2. フェードアウト完了後、週カレンダーをアンマウント→月カレンダーを展開
-		const fadeOutTimer = setTimeout(() => {
+		// 2. 高さと位置のみアニメーション
+		containerHeight.value = withTiming(MONTH_HEIGHT, ANIMATION.layout);
+		monthTranslateY.value = withTiming(0, ANIMATION.layout);
+
+		// 3. 展開完了後、週カレンダーをアンマウントし month モードに戻る
+		expandTimerRef.current = setTimeout(() => {
 			setShowWeekCalendar(false);
-
-			monthOpacity.value = withTiming(1, ANIMATION.entering);
-			containerHeight.value = withTiming(MONTH_HEIGHT, ANIMATION.layout);
-			monthTranslateY.value = withTiming(0, ANIMATION.layout);
-			nonSelectedRowOpacity.value = withTiming(1, ANIMATION.entering);
-
-			// 3. 展開完了後、month モードに戻る
-			expandTimerRef.current = setTimeout(() => {
-				setMode("month");
-			}, ANIMATION.layout.duration);
-		}, ANIMATION.exiting.duration);
+			setMode("month");
+		}, ANIMATION.layout.duration);
 
 		return () => {
-			clearTimeout(fadeOutTimer);
 			if (expandTimerRef.current) {
 				clearTimeout(expandTimerRef.current);
 			}

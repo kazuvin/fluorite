@@ -27,10 +27,8 @@ export function CalendarGridContainer() {
 		handleMonthChange,
 	} = useCalendarGrid();
 
-	const { selectedDateKey, selectedWeekIndex, handleSelectDate } = useSelectedDate(
-		viewingYear,
-		viewingMonth,
-	);
+	const { selectedDateKey, selectedWeekIndex, handleSelectDate, handleWeekChange } =
+		useSelectedDate(viewingYear, viewingMonth);
 
 	const { layout, currentTimeSlot } = useDailyCalendarData(selectedDateKey, filteredCalendarEvents);
 
@@ -57,6 +55,7 @@ export function CalendarGridContainer() {
 				selectedDateKey={selectedDateKey}
 				selectedWeekIndex={selectedWeekIndex}
 				onSelectDate={handleSelectDate}
+				onWeekChange={handleWeekChange}
 			/>
 			<CategoryFilterBar />
 			{isSelected && selectedDateKey && (
