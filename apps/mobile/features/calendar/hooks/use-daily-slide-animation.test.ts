@@ -2,12 +2,16 @@ import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { useDailySlideAnimation } from "./use-daily-slide-animation";
 
+const { withTimingMock } = vi.hoisted(() => ({
+	withTimingMock: vi.fn((_value: number, _config?: object) => _value),
+}));
+
 vi.mock("react-native-reanimated", () => {
 	const easingFn = vi.fn();
 	return {
 		useSharedValue: (initial: number) => ({ value: initial }),
 		useAnimatedStyle: (fn: () => object) => fn(),
-		withTiming: (_value: number, _config?: object) => _value,
+		withTiming: withTimingMock,
 		Easing: {
 			out: vi.fn(() => easingFn),
 			in: vi.fn(() => easingFn),
@@ -26,60 +30,81 @@ describe("useDailySlideAnimation", () => {
 		});
 	});
 
-	it("週スワイプなしで日付変更しても translateX は 0 のまま", () => {
+	it("同じ週内の日付タップでスライドアニメーションが発火する", () => {
 		const { result } = renderHook(() => useDailySlideAnimation(375));
 
 		act(() => {
 			result.current.onDateKeyChange("2026-01-15");
 		});
+		withTimingMock.mockClear();
+
+		// 同じ週内: 2026-01-15(木) → 2026-01-16(金) - 未来方向
 		act(() => {
 			result.current.onDateKeyChange("2026-01-16");
 		});
 
+		expect(withTimingMock).toHaveBeenCalledWith(0, expect.any(Object));
 		expect(result.current.slideStyle.transform).toContainEqual({
 			translateX: 0,
 		});
 	});
 
-	it("週スワイプ + 未来方向の日付変更で translateX が 0 になる（アニメーション後）", () => {
+	it("週境界越えの日付タップでスライドアニメーションが発火する", () => {
 		const { result } = renderHook(() => useDailySlideAnimation(375));
 
-		// 初回の日付セット
+		act(() => {
+			result.current.onDateKeyChange("2026-01-17");
+		});
+		withTimingMock.mockClear();
+
+		// 2026-01-17(土) → 2026-01-18(日) は週境界越え
+		act(() => {
+			result.current.onDateKeyChange("2026-01-18");
+		});
+
+		expect(withTimingMock).toHaveBeenCalledWith(0, expect.any(Object));
+		expect(result.current.slideStyle.transform).toContainEqual({
+			translateX: 0,
+		});
+	});
+
+	it("週スワイプ + 未来方向の日付変更でスライドアニメーションが発火する", () => {
+		const { result } = renderHook(() => useDailySlideAnimation(375));
+
 		act(() => {
 			result.current.onDateKeyChange("2026-01-15");
 		});
-
-		// 週スワイプをマーク
 		act(() => {
 			result.current.markWeekSwipe();
 		});
+		withTimingMock.mockClear();
 
-		// 未来方向の日付変更
 		act(() => {
 			result.current.onDateKeyChange("2026-01-22");
 		});
 
-		// withTiming mock は即座に最終値を返すため 0
+		expect(withTimingMock).toHaveBeenCalledWith(0, expect.any(Object));
 		expect(result.current.slideStyle.transform).toContainEqual({
 			translateX: 0,
 		});
 	});
 
-	it("週スワイプ + 過去方向の日付変更で translateX が 0 になる（アニメーション後）", () => {
+	it("週スワイプ + 過去方向の日付変更でスライドアニメーションが発火する", () => {
 		const { result } = renderHook(() => useDailySlideAnimation(375));
 
 		act(() => {
 			result.current.onDateKeyChange("2026-01-15");
 		});
-
 		act(() => {
 			result.current.markWeekSwipe();
 		});
+		withTimingMock.mockClear();
 
 		act(() => {
 			result.current.onDateKeyChange("2026-01-08");
 		});
 
+		expect(withTimingMock).toHaveBeenCalledWith(0, expect.any(Object));
 		expect(result.current.slideStyle.transform).toContainEqual({
 			translateX: 0,
 		});
@@ -91,103 +116,64 @@ describe("useDailySlideAnimation", () => {
 		act(() => {
 			result.current.onDateKeyChange("2026-01-15");
 		});
-
 		act(() => {
 			result.current.markWeekSwipe();
 		});
-
 		act(() => {
 			result.current.onDateKeyChange("2026-01-22");
 		});
 
-		// 2回目はスワイプフラグが消費済み
+		// 2回目はスワイプフラグが消費済み → タップ扱いでスライドが発火
+		withTimingMock.mockClear();
 		act(() => {
 			result.current.onDateKeyChange("2026-01-29");
 		});
 
+		expect(withTimingMock).toHaveBeenCalledWith(0, expect.any(Object));
 		expect(result.current.slideStyle.transform).toContainEqual({
 			translateX: 0,
 		});
 	});
 
-	it("デイリーで週境界を越えた場合フェードアニメーションが発火する（opacity が 0→1）", () => {
+	it("markDailySwipe + 週境界越えではアニメーションが発火しない", () => {
 		const { result } = renderHook(() => useDailySlideAnimation(375));
 
 		act(() => {
 			result.current.onDateKeyChange("2026-01-17");
 		});
+		act(() => {
+			result.current.markDailySwipe();
+		});
+		withTimingMock.mockClear();
 
-		// markWeekSwipe なし → デイリースワイプ扱い
 		// 2026-01-17(土) → 2026-01-18(日) は週境界越え
 		act(() => {
 			result.current.onDateKeyChange("2026-01-18");
 		});
 
-		// withTiming mock は即座に最終値を返すため opacity=1
-		expect(result.current.slideStyle.opacity).toBe(1);
-		// translateX は変わらない
+		expect(withTimingMock).not.toHaveBeenCalled();
 		expect(result.current.slideStyle.transform).toContainEqual({
 			translateX: 0,
 		});
 	});
 
-	it("デイリーで同じ週内の日付変更ではフェードしない", () => {
+	it("markDailySwipe + 同じ週内ではアニメーションが発火しない", () => {
 		const { result } = renderHook(() => useDailySlideAnimation(375));
 
 		act(() => {
 			result.current.onDateKeyChange("2026-01-15");
 		});
+		act(() => {
+			result.current.markDailySwipe();
+		});
+		withTimingMock.mockClear();
 
 		// 同じ週内: 2026-01-15(木) → 2026-01-16(金)
 		act(() => {
 			result.current.onDateKeyChange("2026-01-16");
 		});
 
-		expect(result.current.slideStyle.opacity).toBe(1);
-	});
-
-	it("週スワイプで週境界を越えた場合はスライドでありフェードではない", () => {
-		const { result } = renderHook(() => useDailySlideAnimation(375));
-
-		act(() => {
-			result.current.onDateKeyChange("2026-01-15");
-		});
-
-		act(() => {
-			result.current.markWeekSwipe();
-		});
-
-		act(() => {
-			result.current.onDateKeyChange("2026-01-22");
-		});
-
-		// スライド: translateX が最終値 0
-		expect(result.current.slideStyle.transform).toContainEqual({
-			translateX: 0,
-		});
-		// opacity は 1 のまま（フェードなし）
-		expect(result.current.slideStyle.opacity).toBe(1);
-	});
-
-	it("markDailySwipe + 週境界越えではアニメーションが発火しない（opacity=1, translateX=0）", () => {
-		const { result } = renderHook(() => useDailySlideAnimation(375));
-
-		act(() => {
-			result.current.onDateKeyChange("2026-01-17");
-		});
-
-		// デイリースワイプをマーク
-		act(() => {
-			result.current.markDailySwipe();
-		});
-
-		// 2026-01-17(土) → 2026-01-18(日) は週境界越え
-		act(() => {
-			result.current.onDateKeyChange("2026-01-18");
-		});
-
-		// アニメーション無し: opacity=1, translateX=0
-		expect(result.current.slideStyle.opacity).toBe(1);
+		expect(withTimingMock).not.toHaveBeenCalled();
 		expect(result.current.slideStyle.transform).toContainEqual({
 			translateX: 0,
 		});
@@ -199,7 +185,6 @@ describe("useDailySlideAnimation", () => {
 		act(() => {
 			result.current.onDateKeyChange("2026-01-17");
 		});
-
 		act(() => {
 			result.current.markDailySwipe();
 		});
@@ -209,21 +194,13 @@ describe("useDailySlideAnimation", () => {
 			result.current.onDateKeyChange("2026-01-18");
 		});
 
-		// 2回目: マークなし → フェードアニメーションが発火する
-		// 2026-01-18(日) → 2026-01-24(土) は同じ週内なのでフェードなし
-		// 2026-01-24(土) → 2026-01-25(日) で週境界越え
+		// 2回目: マークなし → タップ扱いでスライドアニメーションが発火
+		withTimingMock.mockClear();
 		act(() => {
 			result.current.onDateKeyChange("2026-01-24");
 		});
-		act(() => {
-			result.current.onDateKeyChange("2026-01-25");
-		});
 
-		// フェードアニメーション発火（withTiming mock で opacity=1 だが、発火自体は確認済み）
-		expect(result.current.slideStyle.opacity).toBe(1);
-		expect(result.current.slideStyle.transform).toContainEqual({
-			translateX: 0,
-		});
+		expect(withTimingMock).toHaveBeenCalledWith(0, expect.any(Object));
 	});
 
 	it("null の日付変更ではアニメーションが発火しない", () => {
@@ -232,15 +209,16 @@ describe("useDailySlideAnimation", () => {
 		act(() => {
 			result.current.onDateKeyChange("2026-01-15");
 		});
-
 		act(() => {
 			result.current.markWeekSwipe();
 		});
+		withTimingMock.mockClear();
 
 		act(() => {
 			result.current.onDateKeyChange(null);
 		});
 
+		expect(withTimingMock).not.toHaveBeenCalled();
 		expect(result.current.slideStyle.transform).toContainEqual({
 			translateX: 0,
 		});
