@@ -2,26 +2,26 @@ import { colors, parseNumeric, spacing } from "@fluorite/design-tokens";
 import { Pressable, StyleSheet, useColorScheme } from "react-native";
 import { IconSymbol } from "../../../../components/ui/icon-symbol";
 
-type AddEventFabButtonProps = {
+type DeselectDateFabButtonProps = {
 	onPress: () => void;
 };
 
-export function AddEventFabButton({ onPress }: AddEventFabButtonProps) {
+export function DeselectDateFabButton({ onPress }: DeselectDateFabButtonProps) {
 	const scheme = useColorScheme() ?? "light";
 	const theme = colors[scheme];
 
 	return (
 		<Pressable
-			testID="add-event-fab"
+			testID="deselect-date-fab"
 			accessibilityRole="button"
 			onPress={onPress}
 			style={({ pressed }) => [
 				styles.fab,
-				{ backgroundColor: theme.primary },
+				{ backgroundColor: theme.surfaceRaised },
 				pressed && styles.pressed,
 			]}
 		>
-			<IconSymbol name="plus" size={20} color={theme.textOnPrimary} />
+			<IconSymbol name="xmark" size={20} color={theme.icon} />
 		</Pressable>
 	);
 }
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
 	fab: {
 		position: "absolute",
 		bottom: parseNumeric(spacing[8]),
-		right: parseNumeric(spacing[5]),
+		alignSelf: "center",
 		width: 48,
 		height: 48,
 		borderRadius: 24,

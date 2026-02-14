@@ -1,27 +1,26 @@
 import { colors, parseNumeric, spacing } from "@fluorite/design-tokens";
-import { Pressable, StyleSheet, useColorScheme } from "react-native";
-import { IconSymbol } from "../../../../components/ui/icon-symbol";
+import { Pressable, StyleSheet, Text, useColorScheme } from "react-native";
 
-type AddEventFabButtonProps = {
+type TodayFabButtonProps = {
 	onPress: () => void;
 };
 
-export function AddEventFabButton({ onPress }: AddEventFabButtonProps) {
+export function TodayFabButton({ onPress }: TodayFabButtonProps) {
 	const scheme = useColorScheme() ?? "light";
 	const theme = colors[scheme];
 
 	return (
 		<Pressable
-			testID="add-event-fab"
+			testID="today-fab"
 			accessibilityRole="button"
 			onPress={onPress}
 			style={({ pressed }) => [
 				styles.fab,
-				{ backgroundColor: theme.primary },
+				{ backgroundColor: theme.surfaceRaised },
 				pressed && styles.pressed,
 			]}
 		>
-			<IconSymbol name="plus" size={20} color={theme.textOnPrimary} />
+			<Text style={[styles.label, { color: theme.text }]}>今日</Text>
 		</Pressable>
 	);
 }
@@ -30,10 +29,11 @@ const styles = StyleSheet.create({
 	fab: {
 		position: "absolute",
 		bottom: parseNumeric(spacing[8]),
-		right: parseNumeric(spacing[5]),
-		width: 48,
+		left: parseNumeric(spacing[5]),
 		height: 48,
-		borderRadius: 24,
+		paddingHorizontal: parseNumeric(spacing[3]),
+		borderRadius: 18,
+    borderCurve: 'continuous',
 		alignItems: "center",
 		justifyContent: "center",
 		elevation: 6,
@@ -41,6 +41,10 @@ const styles = StyleSheet.create({
 		shadowOffset: { width: 0, height: 2 },
 		shadowOpacity: 0.25,
 		shadowRadius: 4,
+	},
+	label: {
+		fontSize: 16,
+		fontWeight: "600",
 	},
 	pressed: {
 		opacity: 0.8,
