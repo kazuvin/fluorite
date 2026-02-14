@@ -103,6 +103,41 @@ describe("useDailyCalendarAnimation", () => {
 		});
 	});
 
+	describe("entering animation は次のイベントループまで遅延する", () => {
+		it("false → true 遷移直後はアニメーション値がまだ初期状態のまま", () => {
+			const { result, rerender } = renderHook(
+				({ isSelected }) => useDailyCalendarAnimation(isSelected),
+				{ initialProps: { isSelected: false } },
+			);
+
+			rerender({ isSelected: true });
+			// setTimeout(0) 前: アニメーション値はまだ更新されていない
+			expect(result.current.animatedStyle.opacity).toBe(0);
+			expect(result.current.animatedStyle.transform).toContainEqual({
+				translateY: 20,
+			});
+		});
+
+		it("false → true 遷移後、次のイベントループでアニメーション値が目標値に更新される", () => {
+			const { result, rerender } = renderHook(
+				({ isSelected }) => useDailyCalendarAnimation(isSelected),
+				{ initialProps: { isSelected: false } },
+			);
+
+			rerender({ isSelected: true });
+			// setTimeout(0) を発火
+			act(() => {
+				vi.advanceTimersByTime(1);
+			});
+			// shared value 更新は React state を変えないため、明示的にリレンダーして animatedStyle を再評価
+			rerender({ isSelected: true });
+			expect(result.current.animatedStyle.opacity).toBe(1);
+			expect(result.current.animatedStyle.transform).toContainEqual({
+				translateY: 0,
+			});
+		});
+	});
+
 	describe("showDailyCalendar", () => {
 		it("isSelected=false のとき showDailyCalendar は false", () => {
 			const { result } = renderHook(() => useDailyCalendarAnimation(false));

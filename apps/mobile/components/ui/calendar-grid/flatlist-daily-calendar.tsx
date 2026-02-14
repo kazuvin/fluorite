@@ -129,6 +129,11 @@ export const FlatListDailyCalendar = memo(function FlatListDailyCalendar({
 				onScroll={handleScroll}
 				scrollEventThrottle={16}
 				style={{ flex: 1 }}
+				// マウント時の初回レンダリングコストを削減してアニメーションのカクつきを防ぐ。
+				// ページングUIなので表示中の1ページ + 前後1ページで十分。
+				initialNumToRender={1}
+				windowSize={3}
+				maxToRenderPerBatch={1}
 			/>
 		</View>
 	);
