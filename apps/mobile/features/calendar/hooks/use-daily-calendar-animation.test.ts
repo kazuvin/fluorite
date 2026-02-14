@@ -87,20 +87,14 @@ describe("useDailyCalendarAnimation", () => {
 		expect(result.current.animatedStyle).toBeDefined();
 	});
 
-	it("has opacity 0 and translateY offset when not selected", () => {
+	it("has opacity 0 when not selected", () => {
 		const { result } = renderHook(() => useDailyCalendarAnimation(false));
 		expect(result.current.animatedStyle.opacity).toBe(0);
-		expect(result.current.animatedStyle.transform).toContainEqual({
-			translateY: 20,
-		});
 	});
 
-	it("has opacity 1 and translateY 0 when selected", () => {
+	it("has opacity 1 when selected", () => {
 		const { result } = renderHook(() => useDailyCalendarAnimation(true));
 		expect(result.current.animatedStyle.opacity).toBe(1);
-		expect(result.current.animatedStyle.transform).toContainEqual({
-			translateY: 0,
-		});
 	});
 
 	describe("entering animation は次のイベントループまで遅延する", () => {
@@ -113,9 +107,6 @@ describe("useDailyCalendarAnimation", () => {
 			rerender({ isSelected: true });
 			// setTimeout(0) 前: アニメーション値はまだ更新されていない
 			expect(result.current.animatedStyle.opacity).toBe(0);
-			expect(result.current.animatedStyle.transform).toContainEqual({
-				translateY: 20,
-			});
 		});
 
 		it("false → true 遷移後、次のイベントループでアニメーション値が目標値に更新される", () => {
@@ -132,9 +123,6 @@ describe("useDailyCalendarAnimation", () => {
 			// shared value 更新は React state を変えないため、明示的にリレンダーして animatedStyle を再評価
 			rerender({ isSelected: true });
 			expect(result.current.animatedStyle.opacity).toBe(1);
-			expect(result.current.animatedStyle.transform).toContainEqual({
-				translateY: 0,
-			});
 		});
 	});
 

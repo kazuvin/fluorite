@@ -2,11 +2,8 @@ import { useEffect, useState } from "react";
 import { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { ANIMATION } from "../../../constants/animation";
 
-const DAILY_SLIDE_OFFSET = 20;
-
 export function useDailyCalendarAnimation(isSelected: boolean) {
 	const dailyCalendarOpacity = useSharedValue(isSelected ? 1 : 0);
-	const dailyCalendarTranslateY = useSharedValue(isSelected ? 0 : DAILY_SLIDE_OFFSET);
 
 	const [showDailyCalendar, setShowDailyCalendar] = useState(isSelected);
 	useEffect(() => {
@@ -17,11 +14,9 @@ export function useDailyCalendarAnimation(isSelected: boolean) {
 			// 即座に withTiming を発火するとコンテンツ未描画の状態で透明度が上がってカクつく。
 			const timerId = setTimeout(() => {
 				dailyCalendarOpacity.value = withTiming(1, ANIMATION.entering);
-				dailyCalendarTranslateY.value = withTiming(0, ANIMATION.entering);
 			}, 0);
 			return () => clearTimeout(timerId);
 		}
-		dailyCalendarTranslateY.value = withTiming(DAILY_SLIDE_OFFSET, ANIMATION.exiting);
 		// setTimeout ではなく withTiming の完了コールバックで unmount する。
 		// useCalendarTransition の setTimeout(200ms) と同一マイクロタスクで発火して
 		// React バッチ処理されるタイマー競合を回避する。
@@ -31,11 +26,10 @@ export function useDailyCalendarAnimation(isSelected: boolean) {
 				runOnJS(setShowDailyCalendar)(false);
 			}
 		});
-	}, [isSelected, dailyCalendarOpacity, dailyCalendarTranslateY]);
+	}, [isSelected, dailyCalendarOpacity]);
 
 	const animatedStyle = useAnimatedStyle(() => ({
 		opacity: dailyCalendarOpacity.value,
-		transform: [{ translateY: dailyCalendarTranslateY.value }],
 	}));
 
 	return {
