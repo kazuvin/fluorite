@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { FlatList, type NativeScrollEvent, type NativeSyntheticEvent, View } from "react-native";
 import type { CalendarGridColors } from "./calendar-month-page";
 import { CalendarWeekPage } from "./calendar-week-page";
@@ -56,8 +56,8 @@ export const FlatListWeekCalendar = memo(function FlatListWeekCalendar({
 		}
 	}
 
-	// scrollToIndex は DOM commit 後に遅延実行
-	useEffect(() => {
+	// scrollToIndex は DOM commit 後、paint 前に実行して1フレームのズレを防止
+	useLayoutEffect(() => {
 		if (needsScrollReset.current) {
 			needsScrollReset.current = false;
 			flatListRef.current?.scrollToIndex({ index: INITIAL_INDEX, animated: false });

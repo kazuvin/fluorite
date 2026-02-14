@@ -35,7 +35,8 @@ export function CalendarGridContainer() {
 
 	const isSelected = selectedDateKey != null;
 	const { animatedStyle: dailyCalendarStyle } = useDailyCalendarAnimation(isSelected);
-	const { slideStyle, markWeekSwipe, onDateKeyChange } = useDailySlideAnimation(width);
+	const { slideStyle, markWeekSwipe, markDailySwipe, onDateKeyChange } =
+		useDailySlideAnimation(width);
 
 	const handleWeekChangeWithSlide = useCallback(
 		(centerDateKey: string) => {
@@ -43,6 +44,15 @@ export function CalendarGridContainer() {
 			handleWeekChange(centerDateKey);
 		},
 		[markWeekSwipe, handleWeekChange],
+	);
+
+	// デイリースワイプ時にマークしてから日付遷移
+	const handleNavigateToDateWithMark = useCallback(
+		(dateKey: string) => {
+			markDailySwipe();
+			handleNavigateToDate(dateKey);
+		},
+		[markDailySwipe, handleNavigateToDate],
 	);
 
 	// 日付変更時にスライドアニメーションを通知
@@ -83,7 +93,7 @@ export function CalendarGridContainer() {
 							dateKey={selectedDateKey}
 							events={filteredCalendarEvents}
 							textColor={theme.text}
-							onDateChange={handleNavigateToDate}
+							onDateChange={handleNavigateToDateWithMark}
 						/>
 					</Animated.View>
 				</Animated.View>

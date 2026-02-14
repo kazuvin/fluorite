@@ -7,10 +7,15 @@ export function useDailySlideAnimation(width: number) {
 	const dailySlideX = useSharedValue(0);
 	const dailyOpacity = useSharedValue(1);
 	const weekSwipeRef = useRef(false);
+	const dailySwipeRef = useRef(false);
 	const prevDateKeyRef = useRef<string | null>(null);
 
 	const markWeekSwipe = useCallback(() => {
 		weekSwipeRef.current = true;
+	}, []);
+
+	const markDailySwipe = useCallback(() => {
+		dailySwipeRef.current = true;
 	}, []);
 
 	const onDateKeyChange = useCallback(
@@ -26,12 +31,15 @@ export function useDailySlideAnimation(width: number) {
 						dailySlideX.value = direction * width;
 						dailySlideX.value = withTiming(0, ANIMATION.entering);
 					}
+				} else if (dailySwipeRef.current && weekChanged) {
+					// デイリーカレンダースワイプで週境界越え → アニメーション無し
 				} else if (weekChanged) {
-					// デイリーカレンダーで週境界越え → フェードアニメーション
+					// グリッドタップで週境界越え → フェードアニメーション
 					dailyOpacity.value = 0;
 					dailyOpacity.value = withTiming(1, ANIMATION.entering);
 				}
 				weekSwipeRef.current = false;
+				dailySwipeRef.current = false;
 			}
 			prevDateKeyRef.current = dateKey;
 		},
@@ -43,5 +51,5 @@ export function useDailySlideAnimation(width: number) {
 		opacity: dailyOpacity.value,
 	}));
 
-	return { slideStyle, markWeekSwipe, onDateKeyChange };
+	return { slideStyle, markWeekSwipe, markDailySwipe, onDateKeyChange };
 }

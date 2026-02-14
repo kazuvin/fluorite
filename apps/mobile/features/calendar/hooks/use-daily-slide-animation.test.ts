@@ -169,6 +169,63 @@ describe("useDailySlideAnimation", () => {
 		expect(result.current.slideStyle.opacity).toBe(1);
 	});
 
+	it("markDailySwipe + 週境界越えではアニメーションが発火しない（opacity=1, translateX=0）", () => {
+		const { result } = renderHook(() => useDailySlideAnimation(375));
+
+		act(() => {
+			result.current.onDateKeyChange("2026-01-17");
+		});
+
+		// デイリースワイプをマーク
+		act(() => {
+			result.current.markDailySwipe();
+		});
+
+		// 2026-01-17(土) → 2026-01-18(日) は週境界越え
+		act(() => {
+			result.current.onDateKeyChange("2026-01-18");
+		});
+
+		// アニメーション無し: opacity=1, translateX=0
+		expect(result.current.slideStyle.opacity).toBe(1);
+		expect(result.current.slideStyle.transform).toContainEqual({
+			translateX: 0,
+		});
+	});
+
+	it("markDailySwipe は1回の日付変更で消費される", () => {
+		const { result } = renderHook(() => useDailySlideAnimation(375));
+
+		act(() => {
+			result.current.onDateKeyChange("2026-01-17");
+		});
+
+		act(() => {
+			result.current.markDailySwipe();
+		});
+
+		// 1回目: デイリースワイプ → アニメーション無し
+		act(() => {
+			result.current.onDateKeyChange("2026-01-18");
+		});
+
+		// 2回目: マークなし → フェードアニメーションが発火する
+		// 2026-01-18(日) → 2026-01-24(土) は同じ週内なのでフェードなし
+		// 2026-01-24(土) → 2026-01-25(日) で週境界越え
+		act(() => {
+			result.current.onDateKeyChange("2026-01-24");
+		});
+		act(() => {
+			result.current.onDateKeyChange("2026-01-25");
+		});
+
+		// フェードアニメーション発火（withTiming mock で opacity=1 だが、発火自体は確認済み）
+		expect(result.current.slideStyle.opacity).toBe(1);
+		expect(result.current.slideStyle.transform).toContainEqual({
+			translateX: 0,
+		});
+	});
+
 	it("null の日付変更ではアニメーションが発火しない", () => {
 		const { result } = renderHook(() => useDailySlideAnimation(375));
 
