@@ -34,7 +34,15 @@ export function CalendarGridContainer() {
 	} = useSelectedDate(viewingYear, viewingMonth);
 
 	const isSelected = selectedDateKey != null;
-	const { animatedStyle: dailyCalendarStyle } = useDailyCalendarAnimation(isSelected);
+	const { animatedStyle: dailyCalendarStyle, showDailyCalendar } =
+		useDailyCalendarAnimation(isSelected);
+
+	// 退場アニメーション中も最後の dateKey を保持する
+	const dailyDateKeyRef = useRef(selectedDateKey);
+	if (selectedDateKey != null) {
+		dailyDateKeyRef.current = selectedDateKey;
+	}
+	const dailyDateKey = selectedDateKey ?? dailyDateKeyRef.current;
 	const { slideStyle, markWeekSwipe, markDailySwipe, onDateKeyChange } =
 		useDailySlideAnimation(width);
 
@@ -86,11 +94,11 @@ export function CalendarGridContainer() {
 			<View style={styles.filterBarContainer}>
 				<CategoryFilterBar />
 			</View>
-			{isSelected && selectedDateKey && (
+			{(isSelected || showDailyCalendar) && dailyDateKey && (
 				<Animated.View style={[styles.dailyCalendarContainer, dailyCalendarStyle]}>
 					<Animated.View style={[styles.dailyCalendarInner, slideStyle]}>
 						<FlatListDailyCalendar
-							dateKey={selectedDateKey}
+							dateKey={dailyDateKey}
 							events={filteredCalendarEvents}
 							textColor={theme.text}
 							onDateChange={handleNavigateToDateWithMark}

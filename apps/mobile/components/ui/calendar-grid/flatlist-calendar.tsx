@@ -172,12 +172,18 @@ export function FlatListCalendar({
 	const weekSlideOutOpacity = useSharedValue(0);
 	const globalSlots = useMemo(() => computeGlobalEventSlots(events), [events]);
 
-	if (transition.showWeekCalendar && selectedDateKey) {
-		if (!weekAnchorRef.current) {
-			weekAnchorRef.current = selectedDateKey;
-		} else if (!isSameWeek(weekAnchorRef.current, selectedDateKey)) {
-			weekAnchorRef.current = selectedDateKey;
+	if (transition.showWeekCalendar) {
+		if (selectedDateKey) {
+			if (!weekAnchorRef.current) {
+				weekAnchorRef.current = selectedDateKey;
+			} else if (!isSameWeek(weekAnchorRef.current, selectedDateKey)) {
+				weekAnchorRef.current = selectedDateKey;
+			}
 		}
+		// expanding 中（selectedDateKey=null だが showWeekCalendar=true）は
+		// weekAnchorRef を保持して週カレンダーの即時アンマウントを防ぐ。
+		// useEffect で monthOpacity=1 が反映される前にアンマウントすると
+		// 両カレンダーが非表示になり1フレーム空白（チラつき）が発生する。
 	} else {
 		weekAnchorRef.current = null;
 	}
@@ -193,15 +199,11 @@ export function FlatListCalendar({
 			slidingOutAnchorRef.current = prevWeekAnchorRef.current;
 			weekSlideOutOpacity.value = 1;
 			weekSlideOutX.value = 0;
-			weekSlideOutX.value = withTiming(
-				-slideDirection * width,
-				ANIMATION.entering,
-				(finished) => {
-					if (finished) {
-						weekSlideOutOpacity.value = 0;
-					}
-				},
-			);
+			weekSlideOutX.value = withTiming(-slideDirection * width, ANIMATION.entering, (finished) => {
+				if (finished) {
+					weekSlideOutOpacity.value = 0;
+				}
+			});
 
 			// 入場: 新週の FlatListWeekCalendar をスライドイン
 			weekSlideX.value = slideDirection * width;
@@ -351,18 +353,11 @@ export function FlatListCalendar({
 				</Animated.View>
 
 				{/* Week calendar - shown after collapse animation */}
-				{transition.showWeekCalendar && selectedDateKey && weekAnchorRef.current && (
-					<Animated.View
-						style={[
-							styles.weekCalendarWrapper,
-							transition.weekCalendarStyle,
-						]}
-					>
+				{transition.showWeekCalendar && weekAnchorRef.current && (
+					<Animated.View style={[styles.weekCalendarWrapper, transition.weekCalendarStyle]}>
 						{/* 退場する旧週（スライドアウト） */}
 						{slidingOutAnchorRef.current && (
-							<Animated.View
-								style={[styles.weekCalendarSliding, weekSlideOutStyle]}
-							>
+							<Animated.View style={[styles.weekCalendarSliding, weekSlideOutStyle]}>
 								<CalendarWeekPage
 									dateKey={slidingOutAnchorRef.current}
 									weekOffset={0}
