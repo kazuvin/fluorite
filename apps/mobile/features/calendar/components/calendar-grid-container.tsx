@@ -46,7 +46,7 @@ export function CalendarGridContainer() {
 		[markWeekSwipe, handleWeekChange],
 	);
 
-	// デイリースワイプ時にマークしてから日付遷移
+	// デイリースワイプ時にマークしてから日付遷移（DailyCalendar のフェードをスキップ）
 	const handleNavigateToDateWithMark = useCallback(
 		(dateKey: string) => {
 			markDailySwipe();

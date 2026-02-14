@@ -14,8 +14,10 @@ import { ANIMATION } from "../../../constants/animation";
 import { useCalendarTransition } from "../../../features/calendar/hooks/use-calendar-transition";
 import { RollingNumber } from "../rolling-number";
 import { type CalendarGridColors, CalendarMonthPage } from "./calendar-month-page";
+import { CalendarWeekPage } from "./calendar-week-page";
 import { INITIAL_INDEX, MONTH_HEIGHT, OFFSET_RANGE, WEEKDAY_LABELS } from "./constants";
 import type { CalendarEvent } from "./event-layout";
+import { computeGlobalEventSlots } from "./event-layout";
 import { FlatListWeekCalendar } from "./flatlist-week-calendar";
 import {
 	findWeekIndexForDateKey,
@@ -164,6 +166,12 @@ export function FlatListCalendar({
 	const weekSlideX = useSharedValue(0);
 	const weekSwipedRef = useRef(false);
 
+	// 退場する旧週のスライドアニメーション用
+	const slidingOutAnchorRef = useRef<string | null>(null);
+	const weekSlideOutX = useSharedValue(0);
+	const weekSlideOutOpacity = useSharedValue(0);
+	const globalSlots = useMemo(() => computeGlobalEventSlots(events), [events]);
+
 	if (transition.showWeekCalendar && selectedDateKey) {
 		if (!weekAnchorRef.current) {
 			weekAnchorRef.current = selectedDateKey;
@@ -175,10 +183,27 @@ export function FlatListCalendar({
 	}
 
 	// 週アンカー変更時にスライドアニメーションを発火（週スワイプ由来の場合はスキップ）
+	// 退場する旧週を CalendarWeekPage でプリレンダリングし、チラつきを防止
 	const currentAnchor = weekAnchorRef.current;
 	if (currentAnchor && prevWeekAnchorRef.current && currentAnchor !== prevWeekAnchorRef.current) {
 		if (!weekSwipedRef.current) {
 			const slideDirection = currentAnchor > prevWeekAnchorRef.current ? 1 : -1;
+
+			// 退場: 旧週を CalendarWeekPage でレンダリングし、スライドアウト
+			slidingOutAnchorRef.current = prevWeekAnchorRef.current;
+			weekSlideOutOpacity.value = 1;
+			weekSlideOutX.value = 0;
+			weekSlideOutX.value = withTiming(
+				-slideDirection * width,
+				ANIMATION.entering,
+				(finished) => {
+					if (finished) {
+						weekSlideOutOpacity.value = 0;
+					}
+				},
+			);
+
+			// 入場: 新週の FlatListWeekCalendar をスライドイン
 			weekSlideX.value = slideDirection * width;
 			weekSlideX.value = withTiming(0, ANIMATION.entering);
 		}
@@ -196,6 +221,11 @@ export function FlatListCalendar({
 
 	const weekSlideStyle = useAnimatedStyle(() => ({
 		transform: [{ translateX: weekSlideX.value }],
+	}));
+
+	const weekSlideOutStyle = useAnimatedStyle(() => ({
+		transform: [{ translateX: weekSlideOutX.value }],
+		opacity: weekSlideOutOpacity.value,
 	}));
 
 	return (
@@ -324,21 +354,41 @@ export function FlatListCalendar({
 				{transition.showWeekCalendar && selectedDateKey && weekAnchorRef.current && (
 					<Animated.View
 						style={[
-							{ position: "absolute", top: 0, left: 0, right: 0 },
+							styles.weekCalendarWrapper,
 							transition.weekCalendarStyle,
-							weekSlideStyle,
 						]}
 					>
-						<FlatListWeekCalendar
-							dateKey={weekAnchorRef.current}
-							colors={colors}
-							events={events}
-							width={width}
-							selectedDateKey={selectedDateKey}
-							onSelectDate={onSelectDate}
-							onWeekChange={handleWeekSwipeChange}
-							today={today}
-						/>
+						{/* 退場する旧週（スライドアウト） */}
+						{slidingOutAnchorRef.current && (
+							<Animated.View
+								style={[styles.weekCalendarSliding, weekSlideOutStyle]}
+							>
+								<CalendarWeekPage
+									dateKey={slidingOutAnchorRef.current}
+									weekOffset={0}
+									colors={colors}
+									events={events}
+									width={width}
+									selectedDateKey={selectedDateKey}
+									today={today}
+									globalSlots={globalSlots}
+								/>
+							</Animated.View>
+						)}
+
+						{/* 入場する新週 / 通常表示 */}
+						<Animated.View style={weekSlideStyle}>
+							<FlatListWeekCalendar
+								dateKey={weekAnchorRef.current}
+								colors={colors}
+								events={events}
+								width={width}
+								selectedDateKey={selectedDateKey}
+								onSelectDate={onSelectDate}
+								onWeekChange={handleWeekSwipeChange}
+								today={today}
+							/>
+						</Animated.View>
 					</Animated.View>
 				)}
 			</Animated.View>
@@ -378,5 +428,18 @@ const styles = StyleSheet.create({
 	},
 	calendarContainer: {
 		overflow: "hidden" as const,
+	},
+	weekCalendarWrapper: {
+		position: "absolute" as const,
+		top: 0,
+		left: 0,
+		right: 0,
+		overflow: "hidden" as const,
+	},
+	weekCalendarSliding: {
+		position: "absolute" as const,
+		top: 0,
+		left: 0,
+		right: 0,
 	},
 });
