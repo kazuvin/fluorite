@@ -6,13 +6,11 @@ import {
 	View,
 	useWindowDimensions,
 } from "react-native";
+import { INITIAL_INDEX, OFFSET_RANGE } from "./constants";
 import { DailyCalendar } from "./daily-calendar";
 import { computeDailyEventLayout, timeToSlot } from "./daily-event-layout";
 import type { CalendarEvent } from "./event-layout";
 import { generateOffsets, getAdjacentDateKey } from "./utils";
-
-const OFFSET_RANGE = 120;
-const INITIAL_INDEX = OFFSET_RANGE;
 
 type FlatListDailyCalendarProps = {
 	dateKey: string;

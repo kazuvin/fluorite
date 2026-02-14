@@ -13,7 +13,8 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-na
 import { ANIMATION } from "../../../constants/animation";
 import { useCalendarTransition } from "../../../features/calendar/hooks/use-calendar-transition";
 import { RollingNumber } from "../rolling-number";
-import { CELL_HEIGHT, type CalendarGridColors, CalendarMonthPage } from "./calendar-month-page";
+import { type CalendarGridColors, CalendarMonthPage } from "./calendar-month-page";
+import { INITIAL_INDEX, MONTH_HEIGHT, OFFSET_RANGE, WEEKDAY_LABELS } from "./constants";
 import type { CalendarEvent } from "./event-layout";
 import { FlatListWeekCalendar } from "./flatlist-week-calendar";
 import {
@@ -24,12 +25,6 @@ import {
 	offsetToYearMonth,
 	parseDateKey,
 } from "./utils";
-
-const WEEKDAY_LABELS = ["日", "月", "火", "水", "木", "金", "土"];
-const OFFSET_RANGE = 120;
-const INITIAL_INDEX = OFFSET_RANGE;
-
-const MONTH_HEIGHT = CELL_HEIGHT * 6;
 
 type FlatListCalendarProps = {
 	baseYear: number;

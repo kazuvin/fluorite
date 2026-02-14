@@ -1,13 +1,11 @@
 import { fontWeight, parseNumeric, radius } from "@fluorite/design-tokens";
 import { StyleSheet, Text, View } from "react-native";
+import { EVENT_BAR_GAP, EVENT_BAR_HEIGHT, MAX_VISIBLE_SLOTS } from "./constants";
 import type { MonthEventLayout } from "./event-layout";
 import type { CalendarDay } from "./utils";
 
-const EVENT_BAR_HEIGHT = 14;
-const EVENT_BAR_GAP = 1;
 const EVENT_BAR_RADIUS = parseNumeric(radius.md);
 const EVENT_BAR_FONT_SIZE = 9;
-const MAX_VISIBLE_SLOTS = 3;
 
 type WeekEventBarsProps = {
 	week: CalendarDay[];

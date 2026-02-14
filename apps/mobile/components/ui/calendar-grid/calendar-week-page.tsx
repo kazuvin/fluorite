@@ -5,12 +5,11 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-na
 import { ANIMATION } from "../../../constants/animation";
 import { CalendarDayCell } from "./calendar-day-cell";
 import type { CalendarGridColors } from "./calendar-month-page";
+import { CELL_HEIGHT } from "./constants";
 import type { CalendarEvent, GlobalEventSlotMap } from "./event-layout";
 import { computeWeekEventLayout } from "./event-layout";
 import { generateWeekFromDate } from "./utils";
 import { WeekEventBars } from "./week-event-bars";
-
-export const CELL_HEIGHT = 80;
 
 const DAY_NUMBER_HEIGHT = parseNumeric(spacing[6]);
 const EVENT_AREA_TOP = DAY_NUMBER_HEIGHT - 2;

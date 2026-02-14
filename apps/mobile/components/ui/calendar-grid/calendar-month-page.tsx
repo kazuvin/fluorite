@@ -9,12 +9,11 @@ import Animated, {
 } from "react-native-reanimated";
 import { ANIMATION } from "../../../constants/animation";
 import { CalendarDayCell } from "./calendar-day-cell";
+import { CELL_HEIGHT } from "./constants";
 import type { CalendarEvent } from "./event-layout";
 import { computeGlobalEventSlots, computeMonthEventLayout } from "./event-layout";
 import { generateCalendarGrid } from "./utils";
 import { WeekEventBars } from "./week-event-bars";
-
-export const CELL_HEIGHT = 80;
 
 const DAY_NUMBER_HEIGHT = parseNumeric(spacing[6]);
 const EVENT_AREA_TOP = DAY_NUMBER_HEIGHT - 2;

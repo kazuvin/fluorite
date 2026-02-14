@@ -1,5 +1,5 @@
-import type { CalendarDay } from "../../../components/ui/calendar-grid/utils";
 import { toDateString } from "../../../components/ui/date-picker/utils";
+import type { CalendarDay } from "./calendar-grid-utils";
 
 const MAX_GRID_ROWS = 6;
 const DAYS_PER_WEEK = 7;

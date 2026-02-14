@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
-import { CELL_HEIGHT } from "../../../components/ui/calendar-grid/calendar-month-page";
+import {
+	CELL_HEIGHT,
+	MONTH_HEIGHT,
+	WEEK_HEIGHT,
+} from "../../../components/ui/calendar-grid/constants";
 import { ANIMATION } from "../../../constants/animation";
-
-const MONTH_HEIGHT = CELL_HEIGHT * 6;
-const WEEK_HEIGHT = CELL_HEIGHT;
 
 type TransitionMode = "month" | "collapsing" | "week" | "expanding";
 

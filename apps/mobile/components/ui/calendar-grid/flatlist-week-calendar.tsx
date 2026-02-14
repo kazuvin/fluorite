@@ -1,13 +1,11 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, type NativeScrollEvent, type NativeSyntheticEvent, View } from "react-native";
 import type { CalendarGridColors } from "./calendar-month-page";
-import { CELL_HEIGHT, CalendarWeekPage } from "./calendar-week-page";
+import { CalendarWeekPage } from "./calendar-week-page";
+import { CELL_HEIGHT, INITIAL_INDEX, OFFSET_RANGE } from "./constants";
 import type { CalendarEvent } from "./event-layout";
 import { computeGlobalEventSlots } from "./event-layout";
 import { parseDateKey } from "./utils";
-
-const OFFSET_RANGE = 120;
-const INITIAL_INDEX = OFFSET_RANGE;
 
 type FlatListWeekCalendarProps = {
 	dateKey: string;
