@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
 		height: 48,
 		paddingHorizontal: parseNumeric(spacing[3]),
 		borderRadius: 18,
-    borderCurve: 'continuous',
+		borderCurve: "continuous",
 		alignItems: "center",
 		justifyContent: "center",
 		elevation: 6,

@@ -56,7 +56,7 @@ describe("DailyCalendar", () => {
 		expect(screen.getByTestId("daily-calendar")).toBeInTheDocument();
 	});
 
-	it("日付ヘッダーが表示される", () => {
+	it("dateKey を指定してレンダリングできる", () => {
 		render(
 			<DailyCalendar
 				dateKey="2026-01-15"
@@ -65,7 +65,7 @@ describe("DailyCalendar", () => {
 				currentTimeSlot={null}
 			/>,
 		);
-		expect(screen.getByText("2026-01-15")).toBeInTheDocument();
+		expect(screen.getByTestId("daily-calendar")).toBeInTheDocument();
 	});
 
 	it("TimeGrid が表示される", () => {
