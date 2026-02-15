@@ -8,6 +8,7 @@ import {
 	datePickerTargetValueAtom,
 	displayMonthValueAtom,
 	displayYearValueAtom,
+	endTimeValueAtom,
 	endValueAtom,
 	enterDatePickerModeAtom,
 	exitDatePickerModeAtom,
@@ -19,7 +20,10 @@ import {
 	prevMonthAtom,
 	selectDayAtom,
 	setAllDayAtom,
+	setEndTimeAtom,
+	setStartTimeAtom,
 	setTitleAtom,
+	startTimeValueAtom,
 	startValueAtom,
 	switchDatePickerTargetAtom,
 	titleValueAtom,
@@ -34,6 +38,8 @@ export type AddEventFormState = {
 	start: string;
 	end: string;
 	allDay: boolean;
+	startTime: string;
+	endTime: string;
 };
 
 export type AddEventFormUI = {
@@ -51,6 +57,8 @@ export type AddEventFormActions = {
 	handleClose: () => void;
 	setTitle: (text: string) => void;
 	setAllDay: (value: boolean) => void;
+	setStartTime: (value: string) => void;
+	setEndTime: (value: string) => void;
 	handleDateTriggerPress: (target: "start" | "end") => void;
 	handleDayPress: (dateKey: string) => void;
 	handleDatePickerBack: () => void;
@@ -72,6 +80,8 @@ export function useAddEventForm() {
 	const start = useAtomValue(startValueAtom);
 	const end = useAtomValue(endValueAtom);
 	const allDay = useAtomValue(allDayValueAtom);
+	const startTime = useAtomValue(startTimeValueAtom);
+	const endTime = useAtomValue(endTimeValueAtom);
 	const visible = useAtomValue(visibleValueAtom);
 	const datePickerTarget = useAtomValue(datePickerTargetValueAtom);
 	const displayYear = useAtomValue(displayYearValueAtom);
@@ -85,6 +95,8 @@ export function useAddEventForm() {
 	const closeForm = useSetAtom(closeFormAtom);
 	const setTitle = useSetAtom(setTitleAtom);
 	const setAllDay = useSetAtom(setAllDayAtom);
+	const setStartTime = useSetAtom(setStartTimeAtom);
+	const setEndTime = useSetAtom(setEndTimeAtom);
 	const enterDatePickerMode = useSetAtom(enterDatePickerModeAtom);
 	const switchDatePickerTarget = useSetAtom(switchDatePickerTargetAtom);
 	const exitDatePickerMode = useSetAtom(exitDatePickerModeAtom);
@@ -146,6 +158,8 @@ export function useAddEventForm() {
 			start,
 			end,
 			allDay,
+			startTime,
+			endTime,
 		},
 		ui: {
 			visible,
@@ -161,6 +175,8 @@ export function useAddEventForm() {
 			handleClose,
 			setTitle,
 			setAllDay,
+			setStartTime,
+			setEndTime,
 			handleDateTriggerPress,
 			handleDayPress,
 			handleDatePickerBack,

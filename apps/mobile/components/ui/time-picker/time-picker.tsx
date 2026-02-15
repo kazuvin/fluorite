@@ -1,6 +1,6 @@
 import { colors, fontSize, parseNumeric, radius, spacing } from "@fluorite/design-tokens";
 import { useState } from "react";
-import { Pressable, ScrollView, Text, View, useColorScheme } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View, useColorScheme } from "react-native";
 
 export type TimePickerProps = {
 	value?: string;
@@ -61,20 +61,13 @@ export function TimePicker({ value, onValueChange, placeholder, testID }: TimePi
 			<Pressable
 				testID={testID ?? "time-picker-trigger"}
 				onPress={handleToggle}
-				style={{
-					borderRadius: parseNumeric(radius.xl),
-					borderCurve: "continuous",
-					padding: parseNumeric(spacing[4]),
-					fontSize: parseNumeric(fontSize.base),
-					backgroundColor: theme.surface,
-					color: theme.text,
-				}}
+				style={[styles.trigger, { backgroundColor: theme.surface }]}
 			>
 				<Text
-					style={{
-						fontSize: parseNumeric(fontSize.base),
-						color: value ? theme.text : theme.textMuted,
-					}}
+					style={[
+						styles.triggerText,
+						{ color: value ? theme.text : theme.textMuted },
+					]}
 				>
 					{value ?? placeholder}
 				</Text>
@@ -175,3 +168,16 @@ export function TimePicker({ value, onValueChange, placeholder, testID }: TimePi
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	trigger: {
+		borderRadius: parseNumeric(radius.xl),
+		borderCurve: "continuous",
+		padding: parseNumeric(spacing[4]),
+		borderWidth: 2,
+		borderColor: "transparent",
+	},
+	triggerText: {
+		fontSize: parseNumeric(fontSize.base),
+	},
+});

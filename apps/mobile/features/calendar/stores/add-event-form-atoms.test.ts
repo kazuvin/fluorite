@@ -6,6 +6,7 @@ import {
 	datePickerTargetValueAtom,
 	displayMonthValueAtom,
 	displayYearValueAtom,
+	endTimeValueAtom,
 	endValueAtom,
 	enterDatePickerModeAtom,
 	exitDatePickerModeAtom,
@@ -18,7 +19,10 @@ import {
 	resetFormAtom,
 	selectDayAtom,
 	setAllDayAtom,
+	setEndTimeAtom,
+	setStartTimeAtom,
 	setTitleAtom,
+	startTimeValueAtom,
 	startValueAtom,
 	switchDatePickerTargetAtom,
 	titleValueAtom,
@@ -81,6 +85,16 @@ describe("add-event-form-atoms", () => {
 			const store = createResetStore();
 			expect(store.get(displayMonthValueAtom)).toBe(0);
 		});
+
+		it("startTimeValueAtom が空文字を返す", () => {
+			const store = createResetStore();
+			expect(store.get(startTimeValueAtom)).toBe("");
+		});
+
+		it("endTimeValueAtom が空文字を返す", () => {
+			const store = createResetStore();
+			expect(store.get(endTimeValueAtom)).toBe("");
+		});
 	});
 
 	describe("派生状態", () => {
@@ -133,6 +147,8 @@ describe("add-event-form-atoms", () => {
 			const store = createResetStore();
 			store.set(openFormAtom);
 			store.set(setTitleAtom, "テスト");
+			store.set(setStartTimeAtom, "09:00");
+			store.set(setEndTimeAtom, "17:00");
 			store.set(closeFormAtom);
 
 			expect(store.get(visibleValueAtom)).toBe(false);
@@ -141,6 +157,8 @@ describe("add-event-form-atoms", () => {
 			expect(store.get(endValueAtom)).toBe("");
 			expect(store.get(allDayValueAtom)).toBe(true);
 			expect(store.get(datePickerTargetValueAtom)).toBeNull();
+			expect(store.get(startTimeValueAtom)).toBe("");
+			expect(store.get(endTimeValueAtom)).toBe("");
 		});
 	});
 
@@ -155,6 +173,18 @@ describe("add-event-form-atoms", () => {
 			const store = createResetStore();
 			store.set(setAllDayAtom, false);
 			expect(store.get(allDayValueAtom)).toBe(false);
+		});
+
+		it("setStartTimeAtom で開始時刻を更新", () => {
+			const store = createResetStore();
+			store.set(setStartTimeAtom, "09:00");
+			expect(store.get(startTimeValueAtom)).toBe("09:00");
+		});
+
+		it("setEndTimeAtom で終了時刻を更新", () => {
+			const store = createResetStore();
+			store.set(setEndTimeAtom, "17:00");
+			expect(store.get(endTimeValueAtom)).toBe("17:00");
 		});
 	});
 

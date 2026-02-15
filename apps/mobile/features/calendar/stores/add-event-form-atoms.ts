@@ -10,6 +10,8 @@ const titleAtom = atom("");
 const startAtom = atom(getTodayString());
 const endAtom = atom("");
 const allDayAtom = atom(true);
+const startTimeAtom = atom("");
+const endTimeAtom = atom("");
 const visibleAtom = atom(false);
 const datePickerTargetAtom = atom<DatePickerTarget>(null);
 const displayYearAtom = atom(new Date().getFullYear());
@@ -21,6 +23,8 @@ export const resetFormAtom = atom(null, (_get, set) => {
 	set(startAtom, getTodayString());
 	set(endAtom, "");
 	set(allDayAtom, true);
+	set(startTimeAtom, "");
+	set(endTimeAtom, "");
 	set(visibleAtom, false);
 	set(datePickerTargetAtom, null);
 	set(displayYearAtom, new Date().getFullYear());
@@ -32,6 +36,8 @@ export const titleValueAtom = atom((get) => get(titleAtom));
 export const startValueAtom = atom((get) => get(startAtom));
 export const endValueAtom = atom((get) => get(endAtom));
 export const allDayValueAtom = atom((get) => get(allDayAtom));
+export const startTimeValueAtom = atom((get) => get(startTimeAtom));
+export const endTimeValueAtom = atom((get) => get(endTimeAtom));
 export const visibleValueAtom = atom((get) => get(visibleAtom));
 export const datePickerTargetValueAtom = atom((get) => get(datePickerTargetAtom));
 export const displayYearValueAtom = atom((get) => get(displayYearAtom));
@@ -64,6 +70,8 @@ export const closeFormAtom = atom(null, (_get, set) => {
 	set(startAtom, getTodayString());
 	set(endAtom, "");
 	set(allDayAtom, true);
+	set(startTimeAtom, "");
+	set(endTimeAtom, "");
 	set(datePickerTargetAtom, null);
 });
 
@@ -73,6 +81,14 @@ export const setTitleAtom = atom(null, (_get, set, title: string) => {
 
 export const setAllDayAtom = atom(null, (_get, set, value: boolean) => {
 	set(allDayAtom, value);
+});
+
+export const setStartTimeAtom = atom(null, (_get, set, value: string) => {
+	set(startTimeAtom, value);
+});
+
+export const setEndTimeAtom = atom(null, (_get, set, value: string) => {
+	set(endTimeAtom, value);
 });
 
 export const enterDatePickerModeAtom = atom(null, (get, set, target: "start" | "end") => {

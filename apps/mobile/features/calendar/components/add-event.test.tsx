@@ -252,12 +252,12 @@ describe("AddEvent", () => {
 				expect(screen.getByText("終了日")).toBeInTheDocument();
 			});
 
-			it("開始日と終了日が横並びで表示される", () => {
+			it("開始日行と終了日行がそれぞれ表示される", () => {
 				openDialog();
-				const row = screen.getByTestId("date-row");
-				expect(row).toBeInTheDocument();
-				expect(row).toContainElement(screen.getByTestId("date-trigger-start"));
-				expect(row).toContainElement(screen.getByTestId("date-trigger-end"));
+				const startRow = screen.getByTestId("date-row-start");
+				const endRow = screen.getByTestId("date-row-end");
+				expect(startRow).toContainElement(screen.getByTestId("date-trigger-start"));
+				expect(endRow).toContainElement(screen.getByTestId("date-trigger-end"));
 			});
 		});
 
@@ -271,6 +271,34 @@ describe("AddEvent", () => {
 				openDialog();
 				const switchControl = screen.getByRole("checkbox");
 				expect(switchControl).toBeChecked();
+			});
+		});
+
+		describe("時刻表示", () => {
+			it("終日がONの時、時刻ピッカーが表示されない", () => {
+				openDialog();
+				expect(screen.queryByTestId("time-picker-start")).toBeNull();
+				expect(screen.queryByTestId("time-picker-end")).toBeNull();
+			});
+
+			it("終日をOFFにすると開始時刻・終了時刻ピッカーが表示される", () => {
+				openDialog();
+				const switchControl = screen.getByRole("checkbox");
+				fireEvent.click(switchControl);
+				expect(screen.getByTestId("time-picker-start")).toBeInTheDocument();
+				expect(screen.getByTestId("time-picker-end")).toBeInTheDocument();
+			});
+
+			it("終日をOFFからONに戻すと時刻ピッカーが非表示になる", () => {
+				openDialog();
+				const switchControl = screen.getByRole("checkbox");
+				// OFF にする
+				fireEvent.click(switchControl);
+				expect(screen.getByTestId("time-picker-start")).toBeInTheDocument();
+				// ON に戻す
+				fireEvent.click(switchControl);
+				expect(screen.queryByTestId("time-picker-start")).toBeNull();
+				expect(screen.queryByTestId("time-picker-end")).toBeNull();
 			});
 		});
 	});

@@ -44,6 +44,16 @@ describe("useAddEventForm", () => {
 			expect(result.current.formState.allDay).toBe(true);
 		});
 
+		it("initializes startTime to empty", () => {
+			const { result } = renderHook(() => useAddEventForm(), { wrapper });
+			expect(result.current.formState.startTime).toBe("");
+		});
+
+		it("initializes endTime to empty", () => {
+			const { result } = renderHook(() => useAddEventForm(), { wrapper });
+			expect(result.current.formState.endTime).toBe("");
+		});
+
 		it("initializes title to empty", () => {
 			const { result } = renderHook(() => useAddEventForm(), { wrapper });
 			expect(result.current.formState.title).toBe("");
@@ -80,6 +90,18 @@ describe("useAddEventForm", () => {
 			const { result } = renderHook(() => useAddEventForm(), { wrapper });
 			act(() => result.current.actions.setAllDay(false));
 			expect(result.current.formState.allDay).toBe(false);
+		});
+
+		it("updates startTime", () => {
+			const { result } = renderHook(() => useAddEventForm(), { wrapper });
+			act(() => result.current.actions.setStartTime("09:00"));
+			expect(result.current.formState.startTime).toBe("09:00");
+		});
+
+		it("updates endTime", () => {
+			const { result } = renderHook(() => useAddEventForm(), { wrapper });
+			act(() => result.current.actions.setEndTime("17:00"));
+			expect(result.current.formState.endTime).toBe("17:00");
 		});
 	});
 

@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../../co
 import { IconSymbol } from "../../../../components/ui/icon-symbol";
 import { Input } from "../../../../components/ui/input";
 import { Switch } from "../../../../components/ui/switch";
+import { TimePicker } from "../../../../components/ui/time-picker";
 import { ANIMATION } from "../../../../constants/animation";
 import type {
 	AddEventFormActions,
@@ -36,11 +37,13 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 	const scheme = useColorScheme() ?? "light";
 	const theme = colors[scheme];
 
-	const { title, start, end, allDay } = formState;
+	const { title, start, end, allDay, startTime, endTime } = formState;
 	const { isDatePickerMode, datePickerTarget, displayYear, displayMonth, grid, hasRange } = ui;
 	const {
 		setTitle,
 		setAllDay,
+		setStartTime,
+		setEndTime,
 		handleDateTriggerPress,
 		handleDatePickerBack,
 		handlePrevMonth,
@@ -104,7 +107,7 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 				)}
 
 				<Animated.View
-					testID="date-row"
+					testID="date-row-start"
 					layout={LinearTransition.duration(ANIMATION.layout.duration).easing(
 						ANIMATION.layout.easing,
 					)}
@@ -131,13 +134,30 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 							<Text
 								style={{
 									color: getDateTriggerHasValue("start") ? theme.text : theme.textMuted,
-									fontSize: parseNumeric(fontSize.sm),
+									fontSize: parseNumeric(fontSize.base),
 								}}
 							>
 								{getDateTriggerDisplayValue("start")}
 							</Text>
 						</Pressable>
 					</Animated.View>
+					{!allDay && (
+						<TimePicker
+							testID="time-picker-start"
+							placeholder="時刻"
+							value={startTime || undefined}
+							onValueChange={setStartTime}
+						/>
+					)}
+				</Animated.View>
+
+				<Animated.View
+					testID="date-row-end"
+					layout={LinearTransition.duration(ANIMATION.layout.duration).easing(
+						ANIMATION.layout.easing,
+					)}
+					style={styles.dateRow}
+				>
 					<Animated.View
 						style={styles.dateFlex}
 						layout={LinearTransition.duration(ANIMATION.layout.duration).easing(
@@ -159,13 +179,21 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 							<Text
 								style={{
 									color: getDateTriggerHasValue("end") ? theme.text : theme.textMuted,
-									fontSize: parseNumeric(fontSize.sm),
+									fontSize: parseNumeric(fontSize.base),
 								}}
 							>
 								{getDateTriggerDisplayValue("end")}
 							</Text>
 						</Pressable>
 					</Animated.View>
+					{!allDay && (
+						<TimePicker
+							testID="time-picker-end"
+							placeholder="時刻"
+							value={endTime || undefined}
+							onValueChange={setEndTime}
+						/>
+					)}
 				</Animated.View>
 
 				{isDatePickerMode && (
@@ -227,6 +255,7 @@ const OUTLINE_WIDTH = 2;
 const styles = StyleSheet.create({
 	dateRow: {
 		flexDirection: "row",
+		alignItems: "center",
 		gap: parseNumeric(spacing[2]),
 	},
 	dateFlex: {
@@ -258,9 +287,9 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 	dateTrigger: {
-		borderRadius: parseNumeric(radius.lg),
+		borderRadius: parseNumeric(radius.xl),
 		borderCurve: "continuous",
-		padding: parseNumeric(spacing[3]),
+		padding: parseNumeric(spacing[4]),
 		borderWidth: OUTLINE_WIDTH,
 		borderColor: "transparent",
 		margin: OUTLINE_OFFSET,
