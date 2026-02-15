@@ -1,6 +1,6 @@
 import { fontSize, fontWeight, parseNumeric, spacing } from "@fluorite/design-tokens";
 import { StyleSheet, Text, View } from "react-native";
-import type { DailyEventPosition } from "../daily-event-layout";
+import type { DailyEventPosition } from "../../../../features/calendar/utils/daily-event-layout";
 
 type TimedEventBlockProps = {
 	position: DailyEventPosition;

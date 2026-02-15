@@ -8,11 +8,15 @@ import Animated, {
 	withTiming,
 } from "react-native-reanimated";
 import { ANIMATION } from "../../../constants/animation";
+import { generateCalendarGrid } from "../../../features/calendar/utils/calendar-grid-utils";
+import type { CalendarEvent } from "../../../features/calendar/utils/event-layout";
+import {
+	computeEventCellLayoutMap,
+	computeGlobalEventSlots,
+} from "../../../features/calendar/utils/event-layout";
 import { CalendarDayCell } from "./calendar-day-cell";
 import { CELL_HEIGHT } from "./constants";
-import type { CalendarEvent } from "./event-layout";
-import { computeGlobalEventSlots, computeMonthEventLayout } from "./event-layout";
-import { generateCalendarGrid } from "./utils";
+import type { CalendarGridColors } from "./types";
 import { WeekEventBars } from "./week-event-bars";
 
 const DAY_NUMBER_HEIGHT = parseNumeric(spacing[6]);
@@ -20,14 +24,7 @@ const EVENT_AREA_TOP = DAY_NUMBER_HEIGHT - 2;
 
 const SELECTION_BORDER_RADIUS = parseNumeric(radius.xl);
 
-export type CalendarGridColors = {
-	text: string;
-	background: string;
-	primary: string;
-	muted: string;
-};
-
-type CalendarMonthPageProps = {
+type MonthGridProps = {
 	year: number;
 	month: number;
 	today: Date;
@@ -39,7 +36,7 @@ type CalendarMonthPageProps = {
 	nonSelectedRowOpacity?: SharedValue<number>;
 };
 
-export const CalendarMonthPage = memo(function CalendarMonthPage({
+export const MonthGrid = memo(function MonthGrid({
 	year,
 	month,
 	today,
@@ -49,7 +46,7 @@ export const CalendarMonthPage = memo(function CalendarMonthPage({
 	selectedDateKey,
 	onSelectDate,
 	nonSelectedRowOpacity,
-}: CalendarMonthPageProps) {
+}: MonthGridProps) {
 	const selectedWeekIndex = useMemo(() => {
 		if (!selectedDateKey) return -1;
 		const grid = generateCalendarGrid(year, month, today);
@@ -62,7 +59,7 @@ export const CalendarMonthPage = memo(function CalendarMonthPage({
 	const grid = useMemo(() => generateCalendarGrid(year, month, today), [year, month, today]);
 	const globalSlots = useMemo(() => computeGlobalEventSlots(events), [events]);
 	const layout = useMemo(
-		() => computeMonthEventLayout(events, grid, globalSlots),
+		() => computeEventCellLayoutMap(events, grid, globalSlots),
 		[events, grid, globalSlots],
 	);
 

@@ -1,6 +1,6 @@
 import { fontSize, fontWeight, parseNumeric, spacing } from "@fluorite/design-tokens";
 import { StyleSheet, Text, View } from "react-native";
-import type { CalendarEvent } from "../event-layout";
+import type { CalendarEvent } from "../../../../features/calendar/utils/event-layout";
 
 type AllDaySectionProps = {
 	events: CalendarEvent[];

@@ -10,7 +10,7 @@ import {
 	isSameWeek,
 	offsetToYearMonth,
 	parseDateKey,
-} from "./utils";
+} from "../../../features/calendar/utils/calendar-grid-utils";
 
 describe("generateCalendarGrid", () => {
 	it("すべての月で常に6行のグリッドを返す", () => {

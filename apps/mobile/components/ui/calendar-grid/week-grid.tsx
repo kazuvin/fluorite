@@ -3,12 +3,15 @@ import { memo, useEffect, useMemo, useRef } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { ANIMATION } from "../../../constants/animation";
+import { generateWeekFromDate } from "../../../features/calendar/utils/calendar-grid-utils";
+import type {
+	CalendarEvent,
+	GlobalEventSlotMap,
+} from "../../../features/calendar/utils/event-layout";
+import { computeWeekEventLayout } from "../../../features/calendar/utils/event-layout";
 import { CalendarDayCell } from "./calendar-day-cell";
-import type { CalendarGridColors } from "./calendar-month-page";
 import { CELL_HEIGHT } from "./constants";
-import type { CalendarEvent, GlobalEventSlotMap } from "./event-layout";
-import { computeWeekEventLayout } from "./event-layout";
-import { generateWeekFromDate } from "./utils";
+import type { CalendarGridColors } from "./types";
 import { WeekEventBars } from "./week-event-bars";
 
 const DAY_NUMBER_HEIGHT = parseNumeric(spacing[6]);
@@ -16,7 +19,7 @@ const EVENT_AREA_TOP = DAY_NUMBER_HEIGHT - 2;
 
 const SELECTION_BORDER_RADIUS = parseNumeric(radius.xl);
 
-type CalendarWeekPageProps = {
+type WeekGridProps = {
 	dateKey: string;
 	weekOffset: number;
 	colors: CalendarGridColors;
@@ -28,7 +31,7 @@ type CalendarWeekPageProps = {
 	globalSlots?: GlobalEventSlotMap;
 };
 
-export const CalendarWeekPage = memo(function CalendarWeekPage({
+export const WeekGrid = memo(function WeekGrid({
 	dateKey,
 	weekOffset,
 	colors,
@@ -38,7 +41,7 @@ export const CalendarWeekPage = memo(function CalendarWeekPage({
 	onSelectDate,
 	today,
 	globalSlots,
-}: CalendarWeekPageProps) {
+}: WeekGridProps) {
 	const week = useMemo(
 		() => generateWeekFromDate(dateKey, weekOffset, today),
 		[dateKey, weekOffset, today],

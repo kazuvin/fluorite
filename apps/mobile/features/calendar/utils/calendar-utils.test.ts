@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { CalendarDay } from "../../../components/ui/calendar-grid/utils";
+import type { CalendarDay } from "./calendar-grid-utils";
 import { getDayTestId, getTodayString, padGrid } from "./calendar-utils";
 
 describe("calendar-utils", () => {

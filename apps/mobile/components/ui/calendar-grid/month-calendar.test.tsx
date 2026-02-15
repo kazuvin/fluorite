@@ -1,6 +1,6 @@
 import { render, rerender } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { FlatListCalendar } from "./flatlist-calendar";
+import { MonthCalendar } from "./month-calendar";
 
 const defaultColors = {
 	text: "#000",
@@ -21,13 +21,13 @@ const defaultProps = {
 	onSelectDate: vi.fn(),
 };
 
-describe("FlatListCalendar", () => {
+describe("MonthCalendar", () => {
 	describe("他月の日付を選択した場合", () => {
 		it("12月表示中に1月の日付を選択しても月カレンダーは移動しない", () => {
 			const onMonthChange = vi.fn();
 
 			const { rerender } = render(
-				<FlatListCalendar
+				<MonthCalendar
 					{...defaultProps}
 					onMonthChange={onMonthChange}
 					selectedDateKey={null}
@@ -37,7 +37,7 @@ describe("FlatListCalendar", () => {
 
 			// 12月のグリッドに表示されている1月1日を選択
 			rerender(
-				<FlatListCalendar
+				<MonthCalendar
 					{...defaultProps}
 					onMonthChange={onMonthChange}
 					selectedDateKey="2026-01-01"
@@ -56,7 +56,7 @@ describe("FlatListCalendar", () => {
 
 			// 12月表示中に1月1日を選択中（1月1日は12月グリッドの5行目にある）
 			const { rerender } = render(
-				<FlatListCalendar
+				<MonthCalendar
 					{...defaultProps}
 					onMonthChange={onMonthChange}
 					selectedDateKey="2026-01-01"
@@ -66,7 +66,7 @@ describe("FlatListCalendar", () => {
 
 			// 選択解除（週→月に戻る）
 			rerender(
-				<FlatListCalendar
+				<MonthCalendar
 					{...defaultProps}
 					onMonthChange={onMonthChange}
 					selectedDateKey={null}
@@ -83,7 +83,7 @@ describe("FlatListCalendar", () => {
 
 			// 12月表示中に1月15日を選択中（1月15日は12月グリッドにない）
 			const { rerender } = render(
-				<FlatListCalendar
+				<MonthCalendar
 					{...defaultProps}
 					onMonthChange={onMonthChange}
 					selectedDateKey="2026-01-15"
@@ -93,7 +93,7 @@ describe("FlatListCalendar", () => {
 
 			// 選択解除（週→月に戻る）
 			rerender(
-				<FlatListCalendar
+				<MonthCalendar
 					{...defaultProps}
 					onMonthChange={onMonthChange}
 					selectedDateKey={null}

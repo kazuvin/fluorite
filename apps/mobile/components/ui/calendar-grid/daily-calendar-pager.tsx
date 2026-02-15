@@ -6,13 +6,19 @@ import {
 	View,
 	useWindowDimensions,
 } from "react-native";
+import {
+	generateOffsets,
+	getAdjacentDateKey,
+} from "../../../features/calendar/utils/calendar-grid-utils";
+import {
+	computeDailyEventLayout,
+	timeToSlot,
+} from "../../../features/calendar/utils/daily-event-layout";
+import type { CalendarEvent } from "../../../features/calendar/utils/event-layout";
 import { INITIAL_INDEX, OFFSET_RANGE } from "./constants";
 import { DailyCalendar } from "./daily-calendar";
-import { computeDailyEventLayout, timeToSlot } from "./daily-event-layout";
-import type { CalendarEvent } from "./event-layout";
-import { generateOffsets, getAdjacentDateKey } from "./utils";
 
-type FlatListDailyCalendarProps = {
+type DailyCalendarPagerProps = {
 	dateKey: string;
 	events: CalendarEvent[];
 	textColor: string;
@@ -54,12 +60,12 @@ const DailyCalendarPage = memo(function DailyCalendarPage({
 	);
 });
 
-export const FlatListDailyCalendar = memo(function FlatListDailyCalendar({
+export const DailyCalendarPager = memo(function DailyCalendarPager({
 	dateKey,
 	events,
 	textColor,
 	onDateChange,
-}: FlatListDailyCalendarProps) {
+}: DailyCalendarPagerProps) {
 	const { width } = useWindowDimensions();
 	const flatListRef = useRef<FlatList<number>>(null);
 	const offsets = useMemo(() => generateOffsets(OFFSET_RANGE), []);
@@ -115,7 +121,7 @@ export const FlatListDailyCalendar = memo(function FlatListDailyCalendar({
 	const keyExtractor = useCallback((item: number) => `daily-${item}`, []);
 
 	return (
-		<View testID="flatlist-daily-calendar" style={{ flex: 1 }}>
+		<View testID="daily-calendar-pager" style={{ flex: 1 }}>
 			<FlatList
 				ref={flatListRef}
 				data={offsets}

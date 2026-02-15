@@ -1,13 +1,13 @@
 import { memo, useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { FlatList, type NativeScrollEvent, type NativeSyntheticEvent, View } from "react-native";
-import type { CalendarGridColors } from "./calendar-month-page";
-import { CalendarWeekPage } from "./calendar-week-page";
+import { parseDateKey } from "../../../features/calendar/utils/calendar-grid-utils";
+import type { CalendarEvent } from "../../../features/calendar/utils/event-layout";
+import { computeGlobalEventSlots } from "../../../features/calendar/utils/event-layout";
 import { CELL_HEIGHT, INITIAL_INDEX, OFFSET_RANGE } from "./constants";
-import type { CalendarEvent } from "./event-layout";
-import { computeGlobalEventSlots } from "./event-layout";
-import { parseDateKey } from "./utils";
+import type { CalendarGridColors } from "./types";
+import { WeekGrid } from "./week-grid";
 
-type FlatListWeekCalendarProps = {
+type WeekCalendarProps = {
 	dateKey: string;
 	colors: CalendarGridColors;
 	events: CalendarEvent[];
@@ -18,7 +18,7 @@ type FlatListWeekCalendarProps = {
 	today?: Date;
 };
 
-export const FlatListWeekCalendar = memo(function FlatListWeekCalendar({
+export const WeekCalendar = memo(function WeekCalendar({
 	dateKey,
 	colors,
 	events,
@@ -27,7 +27,7 @@ export const FlatListWeekCalendar = memo(function FlatListWeekCalendar({
 	onSelectDate,
 	onWeekChange,
 	today,
-}: FlatListWeekCalendarProps) {
+}: WeekCalendarProps) {
 	const flatListRef = useRef<FlatList<number>>(null);
 
 	const globalSlots = useMemo(() => computeGlobalEventSlots(events), [events]);
@@ -101,7 +101,7 @@ export const FlatListWeekCalendar = memo(function FlatListWeekCalendar({
 
 	const renderWeekItem = useCallback(
 		({ item: offset }: { item: number }) => (
-			<CalendarWeekPage
+			<WeekGrid
 				dateKey={anchorDateKey}
 				weekOffset={offset}
 				colors={colors}

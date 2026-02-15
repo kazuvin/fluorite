@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { useDailyCalendarAnimation } from "./use-daily-calendar-animation";
+import { useDailyCalendarVisibility } from "./use-daily-calendar-visibility";
 
 vi.mock("react-native-reanimated", () => {
 	const { useRef } = require("react");
@@ -72,7 +72,7 @@ vi.mock("react-native-reanimated", () => {
 	};
 });
 
-describe("useDailyCalendarAnimation", () => {
+describe("useDailyCalendarVisibility", () => {
 	beforeEach(() => {
 		vi.useFakeTimers();
 		vi.clearAllMocks();
@@ -83,24 +83,24 @@ describe("useDailyCalendarAnimation", () => {
 	});
 
 	it("returns animated style", () => {
-		const { result } = renderHook(() => useDailyCalendarAnimation(false));
+		const { result } = renderHook(() => useDailyCalendarVisibility(false));
 		expect(result.current.animatedStyle).toBeDefined();
 	});
 
 	it("has opacity 0 when not selected", () => {
-		const { result } = renderHook(() => useDailyCalendarAnimation(false));
+		const { result } = renderHook(() => useDailyCalendarVisibility(false));
 		expect(result.current.animatedStyle.opacity).toBe(0);
 	});
 
 	it("has opacity 1 when selected", () => {
-		const { result } = renderHook(() => useDailyCalendarAnimation(true));
+		const { result } = renderHook(() => useDailyCalendarVisibility(true));
 		expect(result.current.animatedStyle.opacity).toBe(1);
 	});
 
 	describe("entering animation は次のイベントループまで遅延する", () => {
 		it("false → true 遷移直後はアニメーション値がまだ初期状態のまま", () => {
 			const { result, rerender } = renderHook(
-				({ isSelected }) => useDailyCalendarAnimation(isSelected),
+				({ isSelected }) => useDailyCalendarVisibility(isSelected),
 				{ initialProps: { isSelected: false } },
 			);
 
@@ -111,7 +111,7 @@ describe("useDailyCalendarAnimation", () => {
 
 		it("false → true 遷移後、次のイベントループでアニメーション値が目標値に更新される", () => {
 			const { result, rerender } = renderHook(
-				({ isSelected }) => useDailyCalendarAnimation(isSelected),
+				({ isSelected }) => useDailyCalendarVisibility(isSelected),
 				{ initialProps: { isSelected: false } },
 			);
 
@@ -128,18 +128,18 @@ describe("useDailyCalendarAnimation", () => {
 
 	describe("showDailyCalendar", () => {
 		it("isSelected=false のとき showDailyCalendar は false", () => {
-			const { result } = renderHook(() => useDailyCalendarAnimation(false));
+			const { result } = renderHook(() => useDailyCalendarVisibility(false));
 			expect(result.current.showDailyCalendar).toBe(false);
 		});
 
 		it("isSelected=true のとき showDailyCalendar は true", () => {
-			const { result } = renderHook(() => useDailyCalendarAnimation(true));
+			const { result } = renderHook(() => useDailyCalendarVisibility(true));
 			expect(result.current.showDailyCalendar).toBe(true);
 		});
 
 		it("isSelected が false → true になったとき useEffect 後に showDailyCalendar が true になる", () => {
 			const { result, rerender } = renderHook(
-				({ isSelected }) => useDailyCalendarAnimation(isSelected),
+				({ isSelected }) => useDailyCalendarVisibility(isSelected),
 				{ initialProps: { isSelected: false } },
 			);
 			expect(result.current.showDailyCalendar).toBe(false);
@@ -150,7 +150,7 @@ describe("useDailyCalendarAnimation", () => {
 
 		it("isSelected が true → false になったとき即座に false にならず withTiming 完了後に false になる", () => {
 			const { result, rerender } = renderHook(
-				({ isSelected }) => useDailyCalendarAnimation(isSelected),
+				({ isSelected }) => useDailyCalendarVisibility(isSelected),
 				{ initialProps: { isSelected: true } },
 			);
 			expect(result.current.showDailyCalendar).toBe(true);
@@ -168,7 +168,7 @@ describe("useDailyCalendarAnimation", () => {
 
 		it("退場中に再度 isSelected=true になったらアニメーションがキャンセルされ表示を維持する", () => {
 			const { result, rerender } = renderHook(
-				({ isSelected }) => useDailyCalendarAnimation(isSelected),
+				({ isSelected }) => useDailyCalendarVisibility(isSelected),
 				{ initialProps: { isSelected: true } },
 			);
 

@@ -1,16 +1,16 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 import {
-	computeSameWeekdayDateKey,
-	findWeekIndexForDateKey,
-	generateCalendarGrid,
-} from "../../../components/ui/calendar-grid/utils";
-import {
 	clearSelectedDateAtom,
 	selectDateAtom,
 	selectedDateValueAtom,
 	setSelectedDateAtom,
 } from "../stores/selected-date-atoms";
+import {
+	computeSameWeekdayDateKey,
+	findWeekIndexForDateKey,
+	generateCalendarGrid,
+} from "../utils/calendar-grid-utils";
 
 type SelectedDateState = {
 	selectedDateKey: string | null;

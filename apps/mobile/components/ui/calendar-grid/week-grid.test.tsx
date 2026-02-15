@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { CalendarWeekPage } from "./calendar-week-page";
+import { WeekGrid } from "./week-grid";
 
 const defaultColors = {
 	text: "#000000",
@@ -9,10 +9,10 @@ const defaultColors = {
 	muted: "#8E8E93",
 };
 
-describe("CalendarWeekPage", () => {
+describe("WeekGrid", () => {
 	it("7つのセルがレンダリングされる", () => {
 		render(
-			<CalendarWeekPage
+			<WeekGrid
 				dateKey="2026-01-15"
 				weekOffset={0}
 				colors={defaultColors}
@@ -32,7 +32,7 @@ describe("CalendarWeekPage", () => {
 
 	it("コンテナの testID が week-page である", () => {
 		render(
-			<CalendarWeekPage
+			<WeekGrid
 				dateKey="2026-01-15"
 				weekOffset={0}
 				colors={defaultColors}
@@ -45,7 +45,7 @@ describe("CalendarWeekPage", () => {
 
 	it("weekOffset=1 で翌週が表示される", () => {
 		render(
-			<CalendarWeekPage
+			<WeekGrid
 				dateKey="2026-01-15"
 				weekOffset={1}
 				colors={defaultColors}
@@ -61,7 +61,7 @@ describe("CalendarWeekPage", () => {
 	it("onSelectDate が呼ばれると dateKey が渡される", () => {
 		const onSelectDate = vi.fn();
 		render(
-			<CalendarWeekPage
+			<WeekGrid
 				dateKey="2026-01-15"
 				weekOffset={0}
 				colors={defaultColors}
@@ -76,7 +76,7 @@ describe("CalendarWeekPage", () => {
 
 	it("選択インジケーターは常にレンダリングされる（Animated.View）", () => {
 		render(
-			<CalendarWeekPage
+			<WeekGrid
 				dateKey="2026-01-15"
 				weekOffset={0}
 				colors={defaultColors}
@@ -90,7 +90,7 @@ describe("CalendarWeekPage", () => {
 
 	it("selectedDateKey に一致するセルが選択状態になる", () => {
 		render(
-			<CalendarWeekPage
+			<WeekGrid
 				dateKey="2026-01-15"
 				weekOffset={0}
 				colors={defaultColors}
@@ -104,7 +104,7 @@ describe("CalendarWeekPage", () => {
 
 	it("イベントバーがレンダリングされる", () => {
 		render(
-			<CalendarWeekPage
+			<WeekGrid
 				dateKey="2026-01-15"
 				weekOffset={0}
 				colors={defaultColors}

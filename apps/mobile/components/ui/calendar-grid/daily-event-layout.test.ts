@@ -4,8 +4,8 @@ import {
 	SLOTS_PER_HOUR,
 	computeDailyEventLayout,
 	timeToSlot,
-} from "./daily-event-layout";
-import type { CalendarEvent } from "./event-layout";
+} from "../../../features/calendar/utils/daily-event-layout";
+import type { CalendarEvent } from "../../../features/calendar/utils/event-layout";
 
 describe("timeToSlot", () => {
 	it("00:00 はスロット 0 になる", () => {

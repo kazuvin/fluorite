@@ -1,21 +1,21 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { FlatListDailyCalendar } from "./flatlist-daily-calendar";
+import { DailyCalendarPager } from "./daily-calendar-pager";
 
-describe("FlatListDailyCalendar", () => {
+describe("DailyCalendarPager", () => {
 	it("コンテナがレンダリングされる", () => {
-		render(<FlatListDailyCalendar dateKey="2026-01-15" events={[]} textColor="#000000" />);
-		expect(screen.getByTestId("flatlist-daily-calendar")).toBeInTheDocument();
+		render(<DailyCalendarPager dateKey="2026-01-15" events={[]} textColor="#000000" />);
+		expect(screen.getByTestId("daily-calendar-pager")).toBeInTheDocument();
 	});
 
 	it("FlatList が水平スクロール可能に設定されている", () => {
-		render(<FlatListDailyCalendar dateKey="2026-01-15" events={[]} textColor="#000000" />);
-		const container = screen.getByTestId("flatlist-daily-calendar");
+		render(<DailyCalendarPager dateKey="2026-01-15" events={[]} textColor="#000000" />);
+		const container = screen.getByTestId("daily-calendar-pager");
 		expect(container).toBeInTheDocument();
 	});
 
 	it("DailyCalendar がページ内にレンダリングされる", () => {
-		render(<FlatListDailyCalendar dateKey="2026-01-15" events={[]} textColor="#000000" />);
+		render(<DailyCalendarPager dateKey="2026-01-15" events={[]} textColor="#000000" />);
 		// FlatList の仮想化により複数ページがレンダリングされる
 		const calendars = screen.getAllByTestId("daily-calendar");
 		expect(calendars.length).toBeGreaterThan(0);
@@ -33,31 +33,31 @@ describe("FlatListDailyCalendar", () => {
 				time: { start: "10:00", end: "11:00" },
 			},
 		];
-		render(<FlatListDailyCalendar dateKey="2026-01-15" events={events} textColor="#000000" />);
+		render(<DailyCalendarPager dateKey="2026-01-15" events={events} textColor="#000000" />);
 		expect(screen.getByText("会議")).toBeInTheDocument();
 	});
 
 	it("onDateChange コールバックが props として受け取れる", () => {
 		const onDateChange = () => {};
 		render(
-			<FlatListDailyCalendar
+			<DailyCalendarPager
 				dateKey="2026-01-15"
 				events={[]}
 				textColor="#000000"
 				onDateChange={onDateChange}
 			/>,
 		);
-		expect(screen.getByTestId("flatlist-daily-calendar")).toBeInTheDocument();
+		expect(screen.getByTestId("daily-calendar-pager")).toBeInTheDocument();
 	});
 
 	it("外部から dateKey が変更されても remount せずコンテナが維持される", () => {
 		const { rerender } = render(
-			<FlatListDailyCalendar dateKey="2026-01-15" events={[]} textColor="#000000" />,
+			<DailyCalendarPager dateKey="2026-01-15" events={[]} textColor="#000000" />,
 		);
-		const containerBefore = screen.getByTestId("flatlist-daily-calendar");
+		const containerBefore = screen.getByTestId("daily-calendar-pager");
 
-		rerender(<FlatListDailyCalendar dateKey="2026-01-20" events={[]} textColor="#000000" />);
-		const containerAfter = screen.getByTestId("flatlist-daily-calendar");
+		rerender(<DailyCalendarPager dateKey="2026-01-20" events={[]} textColor="#000000" />);
+		const containerAfter = screen.getByTestId("daily-calendar-pager");
 
 		// key による remount ではなく、同一インスタンスが維持される
 		expect(containerBefore).toBe(containerAfter);

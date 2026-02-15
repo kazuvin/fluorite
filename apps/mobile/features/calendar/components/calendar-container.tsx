@@ -2,15 +2,15 @@ import { colors } from "@fluorite/design-tokens";
 import { useCallback, useRef } from "react";
 import { StyleSheet, View, useColorScheme, useWindowDimensions } from "react-native";
 import Animated from "react-native-reanimated";
-import { FlatListCalendar } from "../../../components/ui/calendar-grid";
-import { FlatListDailyCalendar } from "../../../components/ui/calendar-grid/flatlist-daily-calendar";
-import { useCalendarGrid } from "../hooks/use-calendar-grid";
-import { useDailyCalendarAnimation } from "../hooks/use-daily-calendar-animation";
+import { MonthCalendar } from "../../../components/ui/calendar-grid";
+import { DailyCalendarPager } from "../../../components/ui/calendar-grid/daily-calendar-pager";
+import { useCalendarState } from "../hooks/use-calendar-state";
+import { useDailyCalendarVisibility } from "../hooks/use-daily-calendar-visibility";
 import { useDailySlideAnimation } from "../hooks/use-daily-slide-animation";
 import { useSelectedDate } from "../hooks/use-selected-date";
 import { CategoryFilterBar } from "./category-filter-bar";
 
-export function CalendarGridContainer() {
+export function CalendarContainer() {
 	const scheme = useColorScheme() ?? "light";
 	const theme = colors[scheme];
 	const { width } = useWindowDimensions();
@@ -23,7 +23,7 @@ export function CalendarGridContainer() {
 		direction,
 		filteredCalendarEvents,
 		handleMonthChange,
-	} = useCalendarGrid();
+	} = useCalendarState();
 
 	const {
 		selectedDateKey,
@@ -35,7 +35,7 @@ export function CalendarGridContainer() {
 
 	const isSelected = selectedDateKey != null;
 	const { animatedStyle: dailyCalendarStyle, showDailyCalendar } =
-		useDailyCalendarAnimation(isSelected);
+		useDailyCalendarVisibility(isSelected);
 
 	// 退場アニメーション中も最後の dateKey を保持する
 	const dailyDateKeyRef = useRef(selectedDateKey);
@@ -72,7 +72,7 @@ export function CalendarGridContainer() {
 
 	return (
 		<View style={styles.root}>
-			<FlatListCalendar
+			<MonthCalendar
 				baseYear={baseYear}
 				baseMonth={baseMonth}
 				viewingYear={viewingYear}
@@ -97,7 +97,7 @@ export function CalendarGridContainer() {
 			{(isSelected || showDailyCalendar) && dailyDateKey && (
 				<Animated.View style={[styles.dailyCalendarContainer, dailyCalendarStyle]}>
 					<Animated.View style={[styles.dailyCalendarInner, slideStyle]}>
-						<FlatListDailyCalendar
+						<DailyCalendarPager
 							dateKey={dailyDateKey}
 							events={filteredCalendarEvents}
 							textColor={theme.text}

@@ -1,18 +1,13 @@
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ThemedView } from "../components/shared/themed-view";
-import {
-	AddEventFab,
-	CalendarGridContainer,
-	DeselectDateFab,
-	TodayFab,
-} from "../features/calendar";
+import { AddEventFab, CalendarContainer, DeselectDateFab, TodayFab } from "../features/calendar";
 
 export default function HomeScreen() {
 	return (
 		<ThemedView style={styles.container}>
 			<SafeAreaView style={styles.safeArea}>
-				<CalendarGridContainer />
+				<CalendarContainer />
 			</SafeAreaView>
 			<TodayFab />
 			<DeselectDateFab />

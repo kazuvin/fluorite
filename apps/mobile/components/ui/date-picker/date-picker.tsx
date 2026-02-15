@@ -2,7 +2,7 @@ import { colors, fontSize, parseNumeric, radius, spacing } from "@fluorite/desig
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View, useColorScheme } from "react-native";
 
-import { generateCalendarGrid } from "../calendar-grid/utils";
+import { generateCalendarGrid } from "../../../features/calendar/utils/calendar-grid-utils";
 import { IconSymbol } from "../icon-symbol";
 import { formatDateLabel, parseDateString } from "./utils";
 

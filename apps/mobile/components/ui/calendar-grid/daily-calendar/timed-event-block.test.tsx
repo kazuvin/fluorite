@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { DailyEventPosition } from "../daily-event-layout";
+import type { DailyEventPosition } from "../../../../features/calendar/utils/daily-event-layout";
 import { TimedEventBlock } from "./timed-event-block";
 
 const createPosition = (overrides: Partial<DailyEventPosition> = {}): DailyEventPosition => ({

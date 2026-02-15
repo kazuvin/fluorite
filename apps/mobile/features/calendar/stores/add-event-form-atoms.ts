@@ -1,6 +1,6 @@
 import { atom } from "jotai";
-import type { CalendarDay } from "../../../components/ui/calendar-grid/utils";
-import { generateCalendarGrid } from "../../../components/ui/calendar-grid/utils";
+import type { CalendarDay } from "../utils/calendar-grid-utils";
+import { generateCalendarGrid } from "../utils/calendar-grid-utils";
 import { getTodayString, padGrid } from "../utils/calendar-utils";
 
 export type DatePickerTarget = "start" | "end" | null;

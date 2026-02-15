@@ -1,7 +1,7 @@
 import { colors, fontSize, parseNumeric, spacing } from "@fluorite/design-tokens";
 import { Pressable, StyleSheet, Text, View, useColorScheme } from "react-native";
-import type { CalendarDay } from "../../../../components/ui/calendar-grid/utils";
 import { IconSymbol } from "../../../../components/ui/icon-symbol";
+import type { CalendarDay } from "../../utils/calendar-grid-utils";
 import { getDayTestId } from "../../utils/calendar-utils";
 
 const WEEKDAY_LABELS = ["日", "月", "火", "水", "木", "金", "土"];

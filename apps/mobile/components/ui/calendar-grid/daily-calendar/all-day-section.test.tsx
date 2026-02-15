@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { CalendarEvent } from "../event-layout";
+import type { CalendarEvent } from "../../../../features/calendar/utils/event-layout";
 import { AllDaySection } from "./all-day-section";
 
 const createEvent = (overrides: Partial<CalendarEvent> = {}): CalendarEvent => ({

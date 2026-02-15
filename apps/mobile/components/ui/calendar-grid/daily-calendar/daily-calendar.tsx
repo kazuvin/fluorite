@@ -1,6 +1,6 @@
 import { fontSize, fontWeight, parseNumeric, spacing } from "@fluorite/design-tokens";
 import { ScrollView, StyleSheet, View, useWindowDimensions } from "react-native";
-import type { DailyEventLayout } from "../daily-event-layout";
+import type { DailyEventLayout } from "../../../../features/calendar/utils/daily-event-layout";
 import { AllDaySection } from "./all-day-section";
 import { CurrentTimeIndicator } from "./current-time-indicator";
 import { TIME_LABEL_WIDTH, TimeGrid } from "./time-grid";

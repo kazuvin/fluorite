@@ -1,15 +1,15 @@
 import { fontWeight, parseNumeric, radius } from "@fluorite/design-tokens";
 import { StyleSheet, Text, View } from "react-native";
+import type { CalendarDay } from "../../../features/calendar/utils/calendar-grid-utils";
+import type { EventCellLayoutMap } from "../../../features/calendar/utils/event-layout";
 import { EVENT_BAR_GAP, EVENT_BAR_HEIGHT, MAX_VISIBLE_SLOTS } from "./constants";
-import type { MonthEventLayout } from "./event-layout";
-import type { CalendarDay } from "./utils";
 
 const EVENT_BAR_RADIUS = parseNumeric(radius.md);
 const EVENT_BAR_FONT_SIZE = 9;
 
 type WeekEventBarsProps = {
 	week: CalendarDay[];
-	layout: MonthEventLayout;
+	layout: EventCellLayoutMap;
 	cellWidth: number;
 	eventAreaTop: number;
 	mutedColor: string;

@@ -3,17 +3,17 @@ import { describe, expect, it } from "vitest";
 import { generateCalendarGrid, generateWeekFromDate } from "./calendar-grid-utils";
 import type { CalendarDay } from "./calendar-grid-utils";
 import {
+	computeEventCellLayoutMap,
 	computeGlobalEventSlots,
-	computeMonthEventLayout,
 	computeWeekEventLayout,
 	eventNotesToCalendarEvents,
 } from "./event-layout";
 import type {
 	CalendarEvent,
 	DayCellLayout,
+	EventCellLayoutMap,
 	EventSlot,
 	GlobalEventSlotMap,
-	MonthEventLayout,
 } from "./event-layout";
 
 function makeGrid(year: number, month: number): CalendarDay[][] {
@@ -21,7 +21,7 @@ function makeGrid(year: number, month: number): CalendarDay[][] {
 }
 
 /** layout.get で取得したセルが存在することを検証して返す */
-function getCell(layout: MonthEventLayout, key: string): DayCellLayout {
+function getCell(layout: EventCellLayoutMap, key: string): DayCellLayout {
 	const cell = layout.get(key);
 	expect(cell).toBeDefined();
 	return cell as DayCellLayout;
@@ -172,7 +172,7 @@ describe("eventNotesToCalendarEvents", () => {
 	});
 });
 
-describe("computeMonthEventLayout", () => {
+describe("computeEventCellLayoutMap", () => {
 	it("単一の終日イベントが1セルに配置される（spanInWeek=1, isStart=true, isEnd=true）", () => {
 		const grid = makeGrid(2026, 1); // 2026年2月
 		const events: CalendarEvent[] = [
@@ -185,7 +185,7 @@ describe("computeMonthEventLayout", () => {
 				type: "allDay",
 			},
 		];
-		const layout = computeMonthEventLayout(events, grid);
+		const layout = computeEventCellLayoutMap(events, grid);
 		const cell = getCell(layout, "2026-02-15");
 		const slot = getSlot(cell, 0);
 		expect(slot.spanInWeek).toBe(1);
@@ -206,7 +206,7 @@ describe("computeMonthEventLayout", () => {
 				type: "allDay",
 			},
 		];
-		const layout = computeMonthEventLayout(events, grid);
+		const layout = computeEventCellLayoutMap(events, grid);
 		const cell = getCell(layout, "2026-02-10");
 		const slot = getSlot(cell, 0);
 		expect(slot.spanInWeek).toBe(3);
@@ -224,7 +224,7 @@ describe("computeMonthEventLayout", () => {
 				type: "allDay",
 			},
 		];
-		const layout = computeMonthEventLayout(events, grid);
+		const layout = computeEventCellLayoutMap(events, grid);
 		const startCell = getCell(layout, "2026-02-10");
 		const slot = getSlot(startCell, 0);
 		expect(slot.isStart).toBe(true);
@@ -249,7 +249,7 @@ describe("computeMonthEventLayout", () => {
 				type: "allDay",
 			},
 		];
-		const layout = computeMonthEventLayout(events, grid);
+		const layout = computeEventCellLayoutMap(events, grid);
 
 		const satCell = getCell(layout, "2026-02-07");
 		const satSlot = getSlot(satCell, 0);
@@ -308,7 +308,7 @@ describe("computeMonthEventLayout", () => {
 				type: "timed",
 			},
 		];
-		const layout = computeMonthEventLayout(events, grid);
+		const layout = computeEventCellLayoutMap(events, grid);
 		const cell = getCell(layout, "2026-02-15");
 		expect(cell.slots).toHaveLength(3);
 		expect(cell.slots[0]).not.toBeNull();
@@ -337,7 +337,7 @@ describe("computeMonthEventLayout", () => {
 				type: "allDay",
 			},
 		];
-		const layout = computeMonthEventLayout(events, grid);
+		const layout = computeEventCellLayoutMap(events, grid);
 		const cell = getCell(layout, "2026-02-15");
 		const row0 = getSlot(cell, 0);
 		const row1 = getSlot(cell, 1);
@@ -357,7 +357,7 @@ describe("computeMonthEventLayout", () => {
 				type: "allDay",
 			},
 		];
-		const layout = computeMonthEventLayout(events, grid);
+		const layout = computeEventCellLayoutMap(events, grid);
 		const cell = getCell(layout, "2026-03-31");
 		const slot = getSlot(cell, 0);
 		expect(slot.event.title).toBe("3月のイベント");
@@ -376,7 +376,7 @@ describe("computeMonthEventLayout", () => {
 				type: "allDay",
 			},
 		];
-		const layout = computeMonthEventLayout(events, grid);
+		const layout = computeEventCellLayoutMap(events, grid);
 		const startCell = getCell(layout, "2026-02-27");
 		const slot = getSlot(startCell, 0);
 		expect(slot.isStart).toBe(true);
@@ -421,7 +421,7 @@ describe("computeMonthEventLayout", () => {
 				type: "timed",
 			},
 		];
-		const layout = computeMonthEventLayout(events, grid);
+		const layout = computeEventCellLayoutMap(events, grid);
 		const cell = getCell(layout, "2026-03-31");
 		expect(cell.overflowCount).toBe(1);
 	});
@@ -446,7 +446,7 @@ describe("computeMonthEventLayout", () => {
 				type: "timed",
 			},
 		];
-		const layout = computeMonthEventLayout(events, grid);
+		const layout = computeEventCellLayoutMap(events, grid);
 		const midCell = getCell(layout, "2026-02-11");
 		expect(midCell.slots[0]).toBeNull();
 		const slot1 = getSlot(midCell, 1);
@@ -455,7 +455,7 @@ describe("computeMonthEventLayout", () => {
 
 	it("空のイベント配列でも各日の DayCellLayout が生成される", () => {
 		const grid = makeGrid(2026, 1);
-		const layout = computeMonthEventLayout([], grid);
+		const layout = computeEventCellLayoutMap([], grid);
 		for (let d = 1; d <= 28; d++) {
 			const dd = String(d).padStart(2, "0");
 			const key = `2026-02-${dd}`;
@@ -466,7 +466,7 @@ describe("computeMonthEventLayout", () => {
 	});
 });
 
-describe("computeMonthEventLayout - 正月休みの配置検証", () => {
+describe("computeEventCellLayoutMap - 正月休みの配置検証", () => {
 	it("正月休み(1/1-1/4)が1月グリッドのWeek0-1に配置され、Week4-5には配置されない", () => {
 		const grid = makeGrid(2026, 0); // 1月
 		const events: CalendarEvent[] = [
@@ -479,7 +479,7 @@ describe("computeMonthEventLayout - 正月休みの配置検証", () => {
 				type: "allDay",
 			},
 		];
-		const layout = computeMonthEventLayout(events, grid);
+		const layout = computeEventCellLayoutMap(events, grid);
 
 		const jan1Cell = getCell(layout, "2026-01-01");
 		const jan1Slot = getSlot(jan1Cell, 0);
@@ -516,7 +516,7 @@ describe("computeMonthEventLayout - 正月休みの配置検証", () => {
 	});
 });
 
-describe("computeMonthEventLayout - 月間分離", () => {
+describe("computeEventCellLayoutMap - 月間分離", () => {
 	it("1月のイベントが2月のグリッドに表示されない", () => {
 		const grid = makeGrid(2026, 1); // 2月
 		const events: CalendarEvent[] = [
@@ -545,7 +545,7 @@ describe("computeMonthEventLayout - 月間分離", () => {
 				type: "timed",
 			},
 		];
-		const layout = computeMonthEventLayout(events, grid);
+		const layout = computeEventCellLayoutMap(events, grid);
 		for (const week of grid) {
 			for (const day of week) {
 				const cell = getCell(layout, day.dateKey);
@@ -569,7 +569,7 @@ describe("computeMonthEventLayout - 月間分離", () => {
 				type: "allDay",
 			},
 		];
-		const layout = computeMonthEventLayout(events, grid);
+		const layout = computeEventCellLayoutMap(events, grid);
 		const cell = getCell(layout, "2026-01-05");
 		const slot = getSlot(cell, 0);
 		expect(slot.event.title).toBe("仕事始め");
@@ -907,7 +907,7 @@ describe("computeWeekEventLayout with globalSlots", () => {
 	});
 });
 
-describe("computeMonthEventLayout with globalSlots", () => {
+describe("computeEventCellLayoutMap with globalSlots", () => {
 	it("globalSlots 指定時にスロット位置がマップ通りになる", () => {
 		const grid = makeGrid(2026, 1);
 		const events: CalendarEvent[] = [
@@ -932,7 +932,7 @@ describe("computeMonthEventLayout with globalSlots", () => {
 			["a", 2],
 			["b", 0],
 		]);
-		const layout = computeMonthEventLayout(events, grid, globalSlots);
+		const layout = computeEventCellLayoutMap(events, grid, globalSlots);
 		const cell = getCell(layout, "2026-02-10");
 		expect(cell.slots[0]?.event.id).toBe("b");
 		expect(cell.slots[1]).toBeNull();

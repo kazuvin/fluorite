@@ -12,13 +12,6 @@ import {
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { ANIMATION } from "../../../constants/animation";
 import { useCalendarTransition } from "../../../features/calendar/hooks/use-calendar-transition";
-import { RollingNumber } from "../rolling-number";
-import { type CalendarGridColors, CalendarMonthPage } from "./calendar-month-page";
-import { CalendarWeekPage } from "./calendar-week-page";
-import { INITIAL_INDEX, MONTH_HEIGHT, OFFSET_RANGE, WEEKDAY_LABELS } from "./constants";
-import type { CalendarEvent } from "./event-layout";
-import { computeGlobalEventSlots } from "./event-layout";
-import { FlatListWeekCalendar } from "./flatlist-week-calendar";
 import {
 	findWeekIndexForDateKey,
 	generateCalendarGrid,
@@ -26,9 +19,17 @@ import {
 	isSameWeek,
 	offsetToYearMonth,
 	parseDateKey,
-} from "./utils";
+} from "../../../features/calendar/utils/calendar-grid-utils";
+import type { CalendarEvent } from "../../../features/calendar/utils/event-layout";
+import { computeGlobalEventSlots } from "../../../features/calendar/utils/event-layout";
+import { RollingNumber } from "../rolling-number";
+import { INITIAL_INDEX, MONTH_HEIGHT, OFFSET_RANGE, WEEKDAY_LABELS } from "./constants";
+import { MonthGrid } from "./month-grid";
+import type { CalendarGridColors } from "./types";
+import { WeekCalendar } from "./week-calendar";
+import { WeekGrid } from "./week-grid";
 
-type FlatListCalendarProps = {
+type MonthCalendarProps = {
 	baseYear: number;
 	baseMonth: number;
 	viewingYear: number;
@@ -43,7 +44,7 @@ type FlatListCalendarProps = {
 	onWeekChange?: (centerDateKey: string) => void;
 };
 
-export function FlatListCalendar({
+export function MonthCalendar({
 	baseYear,
 	baseMonth,
 	viewingYear,
@@ -56,7 +57,7 @@ export function FlatListCalendar({
 	selectedWeekIndex,
 	onSelectDate,
 	onWeekChange,
-}: FlatListCalendarProps) {
+}: MonthCalendarProps) {
 	const { width } = useWindowDimensions();
 	const flatListRef = useRef<FlatList<number>>(null);
 
@@ -99,7 +100,7 @@ export function FlatListCalendar({
 		({ item: offset }: { item: number }) => {
 			const { year, month } = offsetToYearMonth(baseYear, baseMonth, offset);
 			return (
-				<CalendarMonthPage
+				<MonthGrid
 					year={year}
 					month={month}
 					today={today}
@@ -189,13 +190,13 @@ export function FlatListCalendar({
 	}
 
 	// 週アンカー変更時にスライドアニメーションを発火（週スワイプ由来の場合はスキップ）
-	// 退場する旧週を CalendarWeekPage でプリレンダリングし、チラつきを防止
+	// 退場する旧週を WeekGrid でプリレンダリングし、チラつきを防止
 	const currentAnchor = weekAnchorRef.current;
 	if (currentAnchor && prevWeekAnchorRef.current && currentAnchor !== prevWeekAnchorRef.current) {
 		if (!weekSwipedRef.current) {
 			const slideDirection = currentAnchor > prevWeekAnchorRef.current ? 1 : -1;
 
-			// 退場: 旧週を CalendarWeekPage でレンダリングし、スライドアウト
+			// 退場: 旧週を WeekGrid でレンダリングし、スライドアウト
 			slidingOutAnchorRef.current = prevWeekAnchorRef.current;
 			weekSlideOutOpacity.value = 1;
 			weekSlideOutX.value = 0;
@@ -205,7 +206,7 @@ export function FlatListCalendar({
 				}
 			});
 
-			// 入場: 新週の FlatListWeekCalendar をスライドイン
+			// 入場: 新週の WeekCalendar をスライドイン
 			weekSlideX.value = slideDirection * width;
 			weekSlideX.value = withTiming(0, ANIMATION.entering);
 		}
@@ -358,7 +359,7 @@ export function FlatListCalendar({
 						{/* 退場する旧週（スライドアウト） */}
 						{slidingOutAnchorRef.current && (
 							<Animated.View style={[styles.weekCalendarSliding, weekSlideOutStyle]}>
-								<CalendarWeekPage
+								<WeekGrid
 									dateKey={slidingOutAnchorRef.current}
 									weekOffset={0}
 									colors={colors}
@@ -373,7 +374,7 @@ export function FlatListCalendar({
 
 						{/* 入場する新週 / 通常表示 */}
 						<Animated.View style={weekSlideStyle}>
-							<FlatListWeekCalendar
+							<WeekCalendar
 								dateKey={weekAnchorRef.current}
 								colors={colors}
 								events={events}

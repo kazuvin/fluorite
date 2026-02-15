@@ -1,6 +1,5 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
-import type { CalendarDay } from "../../../components/ui/calendar-grid/utils";
 import { formatDateLabel } from "../../../components/ui/date-picker/utils";
 import {
 	type DatePickerTarget,
@@ -26,6 +25,7 @@ import {
 	titleValueAtom,
 	visibleValueAtom,
 } from "../stores/add-event-form-atoms";
+import type { CalendarDay } from "../utils/calendar-grid-utils";
 
 export type { DatePickerTarget } from "../stores/add-event-form-atoms";
 

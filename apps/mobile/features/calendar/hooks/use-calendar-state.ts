@@ -1,6 +1,5 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useMemo, useRef } from "react";
-import type { CalendarEvent } from "../../../components/ui/calendar-grid";
 import { computeDirection } from "../../../components/ui/rolling-number";
 import {
 	baseMonthValueAtom,
@@ -10,8 +9,9 @@ import {
 	viewingMonthValueAtom,
 	viewingYearValueAtom,
 } from "../stores/calendar-atoms";
+import type { CalendarEvent } from "../utils/event-layout";
 
-type CalendarGridState = {
+type CalendarState = {
 	baseYear: number;
 	baseMonth: number;
 	viewingYear: number;
@@ -21,7 +21,7 @@ type CalendarGridState = {
 	handleMonthChange: (year: number, month: number) => void;
 };
 
-export function useCalendarGrid(): CalendarGridState {
+export function useCalendarState(): CalendarState {
 	const baseYear = useAtomValue(baseYearValueAtom);
 	const baseMonth = useAtomValue(baseMonthValueAtom);
 	const viewingYear = useAtomValue(viewingYearValueAtom);

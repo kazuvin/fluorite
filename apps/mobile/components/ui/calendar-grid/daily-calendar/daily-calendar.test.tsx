@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import type { DailyEventLayout } from "../daily-event-layout";
+import type { DailyEventLayout } from "../../../../features/calendar/utils/daily-event-layout";
 import { DailyCalendar } from "./daily-calendar";
 
 const createEmptyLayout = (): DailyEventLayout => ({

@@ -3,16 +3,16 @@ import { Provider, createStore } from "jotai";
 import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
 import { setViewingMonthAtom } from "../stores/calendar-atoms";
-import { useCalendarGrid } from "./use-calendar-grid";
+import { useCalendarState } from "./use-calendar-state";
 
 const createWrapper =
 	(store: ReturnType<typeof createStore>) =>
 	({ children }: { children: ReactNode }) => <Provider store={store}>{children}</Provider>;
 
-describe("useCalendarGrid", () => {
+describe("useCalendarState", () => {
 	it("初期状態で現在の年月を返す", () => {
 		const store = createStore();
-		const { result } = renderHook(() => useCalendarGrid(), {
+		const { result } = renderHook(() => useCalendarState(), {
 			wrapper: createWrapper(store),
 		});
 
@@ -25,7 +25,7 @@ describe("useCalendarGrid", () => {
 
 	it("handleMonthChange で viewingYear/viewingMonth が更新される", () => {
 		const store = createStore();
-		const { result, rerender } = renderHook(() => useCalendarGrid(), {
+		const { result, rerender } = renderHook(() => useCalendarState(), {
 			wrapper: createWrapper(store),
 		});
 
@@ -40,7 +40,7 @@ describe("useCalendarGrid", () => {
 		const store = createStore();
 		store.set(setViewingMonthAtom, { year: 2026, month: 0 });
 
-		const { result, rerender } = renderHook(() => useCalendarGrid(), {
+		const { result, rerender } = renderHook(() => useCalendarState(), {
 			wrapper: createWrapper(store),
 		});
 
@@ -54,7 +54,7 @@ describe("useCalendarGrid", () => {
 		const store = createStore();
 		store.set(setViewingMonthAtom, { year: 2026, month: 1 });
 
-		const { result, rerender } = renderHook(() => useCalendarGrid(), {
+		const { result, rerender } = renderHook(() => useCalendarState(), {
 			wrapper: createWrapper(store),
 		});
 
@@ -66,7 +66,7 @@ describe("useCalendarGrid", () => {
 
 	it("filteredCalendarEvents を返す", () => {
 		const store = createStore();
-		const { result } = renderHook(() => useCalendarGrid(), {
+		const { result } = renderHook(() => useCalendarState(), {
 			wrapper: createWrapper(store),
 		});
 

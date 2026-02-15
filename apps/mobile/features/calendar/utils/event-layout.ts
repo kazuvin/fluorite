@@ -24,7 +24,7 @@ export type DayCellLayout = {
 	overflowCount: number;
 };
 
-export type MonthEventLayout = Map<string, DayCellLayout>;
+export type EventCellLayoutMap = Map<string, DayCellLayout>;
 
 export type GlobalEventSlotMap = Map<string, number>;
 
@@ -154,8 +154,8 @@ export function computeWeekEventLayout(
 	events: CalendarEvent[],
 	week: CalendarDay[],
 	globalSlots?: GlobalEventSlotMap,
-): MonthEventLayout {
-	const layout: MonthEventLayout = new Map();
+): EventCellLayoutMap {
+	const layout: EventCellLayoutMap = new Map();
 
 	for (const day of week) {
 		layout.set(day.dateKey, emptyDayCellLayout());
@@ -214,12 +214,12 @@ export function computeWeekEventLayout(
 	return layout;
 }
 
-export function computeMonthEventLayout(
+export function computeEventCellLayoutMap(
 	events: CalendarEvent[],
 	grid: CalendarDay[][],
 	globalSlots?: GlobalEventSlotMap,
-): MonthEventLayout {
-	const layout: MonthEventLayout = new Map();
+): EventCellLayoutMap {
+	const layout: EventCellLayoutMap = new Map();
 
 	for (const week of grid) {
 		for (const day of week) {

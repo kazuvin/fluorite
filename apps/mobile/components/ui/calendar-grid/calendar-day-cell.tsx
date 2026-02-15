@@ -1,7 +1,7 @@
 import { fontSize, fontWeight, parseNumeric, radius, spacing } from "@fluorite/design-tokens";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import type { CalendarGridColors } from "./calendar-month-page";
-import type { CalendarDay } from "./utils";
+import type { CalendarDay } from "../../../features/calendar/utils/calendar-grid-utils";
+import type { CalendarGridColors } from "./types";
 
 type CalendarDayCellProps = {
 	day: CalendarDay;
