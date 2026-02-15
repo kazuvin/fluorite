@@ -127,7 +127,7 @@ function DialogHeader({ children, style }: { children: ReactNode; style?: ViewSt
 	return (
 		<View
 			testID="dialog-header"
-			style={[styles.header, { borderBottomColor: theme.border }, style]}
+			style={[styles.header, { borderBottomColor: theme.borderMuted }, style]}
 		>
 			{children}
 		</View>
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
 	card: {
 		width: "100%",
 		borderCurve: "continuous",
-		borderRadius: parseNumeric(radius["2xl"]),
+		borderRadius: parseNumeric(radius["3xl"]),
 		padding: parseNumeric(spacing[8]),
 	},
 	header: {
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
 		gap: parseNumeric(spacing[6]),
 	},
 	title: {
-		fontSize: parseNumeric(fontSize.lg),
+		fontSize: parseNumeric(fontSize.base),
 		fontWeight: fontWeight.semibold,
 	},
 	description: {
