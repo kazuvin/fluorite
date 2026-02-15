@@ -1,6 +1,5 @@
-import { StyleSheet, View } from "react-native";
-
-const CURRENT_TIME_LINE_COLOR = "#FF3B30";
+import { colors, parseNumeric, radius } from "@fluorite/design-tokens";
+import { StyleSheet, View, useColorScheme } from "react-native";
 
 type CurrentTimeIndicatorProps = {
 	slot: number;
@@ -13,12 +12,20 @@ export function CurrentTimeIndicator({
 	slotHeight,
 	topOffset = 0,
 }: CurrentTimeIndicatorProps) {
+	const scheme = useColorScheme() ?? "light";
+	const currentTimeColor = colors[scheme].destructive;
 	const top = slot * slotHeight + topOffset;
 
 	return (
 		<View testID="current-time-indicator" style={[styles.container, { top }]}>
-			<View testID="current-time-circle" style={styles.circle} />
-			<View testID="current-time-line" style={styles.line} />
+			<View
+				testID="current-time-circle"
+				style={[styles.circle, { backgroundColor: currentTimeColor }]}
+			/>
+			<View
+				testID="current-time-line"
+				style={[styles.line, { backgroundColor: currentTimeColor }]}
+			/>
 		</View>
 	);
 }
@@ -35,13 +42,11 @@ const styles = StyleSheet.create({
 	circle: {
 		width: 8,
 		height: 8,
-		borderRadius: 4,
-		backgroundColor: CURRENT_TIME_LINE_COLOR,
+		borderRadius: parseNumeric(radius.full),
 		marginLeft: -4,
 	},
 	line: {
 		flex: 1,
 		height: 2,
-		backgroundColor: CURRENT_TIME_LINE_COLOR,
 	},
 });

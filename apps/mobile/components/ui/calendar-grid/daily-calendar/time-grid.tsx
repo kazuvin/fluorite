@@ -1,8 +1,8 @@
-import { fontSize, parseNumeric, spacing } from "@fluorite/design-tokens";
-import { StyleSheet, Text, View } from "react-native";
+import { colors, fontSize, parseNumeric, spacing } from "@fluorite/design-tokens";
+import { StyleSheet, Text, View, useColorScheme } from "react-native";
 
 const HOURS_IN_DAY = 24;
-const TIME_LABEL_WIDTH = 48;
+const TIME_LABEL_WIDTH = parseNumeric(spacing["12"]); // 48px
 
 type TimeGridProps = {
 	textColor: string;
@@ -10,6 +10,8 @@ type TimeGridProps = {
 };
 
 export function TimeGrid({ textColor, hourHeight }: TimeGridProps) {
+	const scheme = useColorScheme() ?? "light";
+	const theme = colors[scheme];
 	const totalHeight = HOURS_IN_DAY * hourHeight;
 	const hours = Array.from({ length: HOURS_IN_DAY }, (_, i) => i);
 
@@ -20,7 +22,10 @@ export function TimeGrid({ textColor, hourHeight }: TimeGridProps) {
 					<View style={styles.labelContainer}>
 						<Text style={[styles.label, { color: textColor }]}>{`${hour}:00`}</Text>
 					</View>
-					<View testID={`hour-line-${hour}`} style={styles.line} />
+					<View
+						testID={`hour-line-${hour}`}
+						style={[styles.line, { backgroundColor: theme.borderMuted }]}
+					/>
 				</View>
 			))}
 		</View>
@@ -39,8 +44,7 @@ const styles = StyleSheet.create({
 	},
 	labelContainer: {
 		width: TIME_LABEL_WIDTH,
-		paddingRight: parseNumeric(spacing["2"]),
-		alignItems: "flex-end",
+		alignItems: "flex-start",
 	},
 	label: {
 		fontSize: parseNumeric(fontSize.xs),
@@ -49,6 +53,5 @@ const styles = StyleSheet.create({
 	line: {
 		flex: 1,
 		height: 1,
-		backgroundColor: "rgba(0,0,0,0.1)",
 	},
 });

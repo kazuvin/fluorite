@@ -1,5 +1,12 @@
-import { fontSize, fontWeight, parseNumeric, spacing } from "@fluorite/design-tokens";
-import { StyleSheet, Text, View } from "react-native";
+import {
+	colors,
+	fontSize,
+	fontWeight,
+	parseNumeric,
+	radius,
+	spacing,
+} from "@fluorite/design-tokens";
+import { StyleSheet, Text, View, useColorScheme } from "react-native";
 import type { DailyEventPosition } from "../../../../features/calendar/utils/daily-event-layout";
 
 type TimedEventBlockProps = {
@@ -17,6 +24,8 @@ export function TimedEventBlock({
 	leftOffset,
 	topOffset = 0,
 }: TimedEventBlockProps) {
+	const scheme = useColorScheme() ?? "light";
+	const theme = colors[scheme];
 	const { event, top, height, column, totalColumns } = position;
 
 	const availableWidth = containerWidth - leftOffset;
@@ -37,7 +46,7 @@ export function TimedEventBlock({
 				},
 			]}
 		>
-			<Text style={styles.title} numberOfLines={2}>
+			<Text style={[styles.title, { color: theme.textOnPrimary }]} numberOfLines={2}>
 				{event.title}
 			</Text>
 		</View>
@@ -47,14 +56,14 @@ export function TimedEventBlock({
 const styles = StyleSheet.create({
 	container: {
 		position: "absolute",
-		borderRadius: 4,
+		borderRadius: parseNumeric(radius.lg),
+		borderCurve: "continuous",
 		paddingHorizontal: parseNumeric(spacing["1"]),
-		paddingVertical: 2,
+		paddingVertical: parseNumeric(spacing["1"]),
 		overflow: "hidden",
 	},
 	title: {
 		fontSize: parseNumeric(fontSize.xs),
 		fontWeight: fontWeight.medium,
-		color: "#FFFFFF",
 	},
 });

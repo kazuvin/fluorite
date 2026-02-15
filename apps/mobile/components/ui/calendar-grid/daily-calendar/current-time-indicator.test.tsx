@@ -1,6 +1,9 @@
+import { colors } from "@fluorite/design-tokens";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { CurrentTimeIndicator } from "./current-time-indicator";
+
+const destructiveColor = colors.light.destructive;
 
 describe("CurrentTimeIndicator", () => {
 	it("指定されたスロット位置に基づいて top スタイルが設定される", () => {
@@ -18,12 +21,12 @@ describe("CurrentTimeIndicator", () => {
 	it("赤い線としてレンダリングされる", () => {
 		render(<CurrentTimeIndicator slot={0} slotHeight={5} />);
 		const line = screen.getByTestId("current-time-line");
-		expect(line).toHaveStyle({ backgroundColor: "#FF3B30" });
+		expect(line).toHaveStyle({ backgroundColor: destructiveColor });
 	});
 
 	it("左側に赤い丸が表示される", () => {
 		render(<CurrentTimeIndicator slot={0} slotHeight={5} />);
 		const circle = screen.getByTestId("current-time-circle");
-		expect(circle).toHaveStyle({ backgroundColor: "#FF3B30" });
+		expect(circle).toHaveStyle({ backgroundColor: destructiveColor });
 	});
 });

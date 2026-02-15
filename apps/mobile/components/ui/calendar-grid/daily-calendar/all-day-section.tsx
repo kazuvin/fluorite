@@ -1,5 +1,12 @@
-import { fontSize, fontWeight, parseNumeric, spacing } from "@fluorite/design-tokens";
-import { StyleSheet, Text, View } from "react-native";
+import {
+	colors,
+	fontSize,
+	fontWeight,
+	parseNumeric,
+	radius,
+	spacing,
+} from "@fluorite/design-tokens";
+import { StyleSheet, Text, View, useColorScheme } from "react-native";
 import type { CalendarEvent } from "../../../../features/calendar/utils/event-layout";
 
 type AllDaySectionProps = {
@@ -8,10 +15,16 @@ type AllDaySectionProps = {
 };
 
 export function AllDaySection({ events, textColor }: AllDaySectionProps) {
+	const scheme = useColorScheme() ?? "light";
+	const theme = colors[scheme];
+
 	if (events.length === 0) return null;
 
 	return (
-		<View testID="all-day-section" style={styles.container}>
+		<View
+			testID="all-day-section"
+			style={[styles.container, { borderBottomColor: theme.borderMuted }]}
+		>
 			<View style={styles.labelContainer}>
 				<Text style={[styles.label, { color: textColor }]}>終日</Text>
 			</View>
@@ -22,7 +35,7 @@ export function AllDaySection({ events, textColor }: AllDaySectionProps) {
 						testID={`all-day-event-${event.id}`}
 						style={[styles.eventBlock, { backgroundColor: event.color }]}
 					>
-						<Text style={styles.eventTitle} numberOfLines={1}>
+						<Text style={[styles.eventTitle, { color: theme.textOnPrimary }]} numberOfLines={1}>
 							{event.title}
 						</Text>
 					</View>
@@ -36,13 +49,12 @@ const styles = StyleSheet.create({
 	container: {
 		flexDirection: "row",
 		paddingVertical: parseNumeric(spacing["2"]),
+		paddingHorizontal: parseNumeric(spacing["4"]),
 		borderBottomWidth: 1,
-		borderBottomColor: "rgba(0,0,0,0.1)",
 	},
 	labelContainer: {
-		width: 48,
-		paddingRight: parseNumeric(spacing["2"]),
-		alignItems: "flex-end",
+		width: parseNumeric(spacing["12"]),
+		alignItems: "flex-start",
 		justifyContent: "center",
 	},
 	label: {
@@ -57,11 +69,11 @@ const styles = StyleSheet.create({
 	eventBlock: {
 		paddingHorizontal: parseNumeric(spacing["2"]),
 		paddingVertical: parseNumeric(spacing["1"]),
-		borderRadius: 4,
+		borderRadius: parseNumeric(radius.lg),
+		borderCurve: "continuous",
 	},
 	eventTitle: {
 		fontSize: parseNumeric(fontSize.xs),
 		fontWeight: fontWeight.medium,
-		color: "#FFFFFF",
 	},
 });

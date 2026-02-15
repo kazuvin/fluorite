@@ -8,8 +8,7 @@ import { TimedEventBlock } from "./timed-event-block";
 
 const HOUR_HEIGHT = 60;
 const SLOT_HEIGHT = HOUR_HEIGHT / 12; // 5px per 5 minutes
-const GRID_PADDING_VERTICAL = 16;
-const EVENT_LEFT_GAP = 4; // 時刻ラベルとイベントの間隔
+const GRID_PADDING_VERTICAL = parseNumeric(spacing["4"]);
 
 type DailyCalendarProps = {
 	dateKey: string;
@@ -38,8 +37,8 @@ export function DailyCalendar({ dateKey, layout, textColor, currentTimeSlot }: D
 							key={position.event.id}
 							position={position}
 							slotHeight={SLOT_HEIGHT}
-							containerWidth={windowWidth - parseNumeric(spacing["4"]) * 2}
-							leftOffset={TIME_LABEL_WIDTH + EVENT_LEFT_GAP}
+							containerWidth={windowWidth - parseNumeric(spacing["4"])}
+							leftOffset={parseNumeric(spacing["4"]) + TIME_LABEL_WIDTH}
 							topOffset={GRID_PADDING_VERTICAL}
 						/>
 					))}
