@@ -112,9 +112,9 @@ vi.mock("../../../components/ui/text-area", () => ({
 	),
 }));
 
-import { AddEventFab } from "./add-event-fab";
+import { AddEvent } from "./add-event";
 
-describe("AddEventFab", () => {
+describe("AddEvent", () => {
 	let store: ReturnType<typeof createStore>;
 
 	beforeEach(() => {
@@ -137,42 +137,42 @@ describe("AddEventFab", () => {
 	}
 
 	const openDialog = () => {
-		renderWithProvider(<AddEventFab />);
+		renderWithProvider(<AddEvent />);
 		fireEvent.click(screen.getByTestId("add-event-fab"));
 	};
 
 	describe("基本レンダリング", () => {
 		it("FAB ボタンが表示される", () => {
-			renderWithProvider(<AddEventFab />);
+			renderWithProvider(<AddEvent />);
 			expect(screen.getByTestId("add-event-fab")).toBeInTheDocument();
 		});
 
 		it("accessibilityRole が button に設定されている", () => {
-			renderWithProvider(<AddEventFab />);
+			renderWithProvider(<AddEvent />);
 			expect(screen.getByRole("button")).toBeInTheDocument();
 		});
 	});
 
 	describe("Dialog の開閉", () => {
 		it("初期状態では Dialog が表示されない", () => {
-			renderWithProvider(<AddEventFab />);
+			renderWithProvider(<AddEvent />);
 			expect(screen.queryByTestId("dialog-card")).toBeNull();
 		});
 
 		it("FAB を押すと Dialog が表示される", () => {
-			renderWithProvider(<AddEventFab />);
+			renderWithProvider(<AddEvent />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			expect(screen.getByTestId("dialog-card")).toBeInTheDocument();
 		});
 
 		it("Dialog にタイトルが表示される", () => {
-			renderWithProvider(<AddEventFab />);
+			renderWithProvider(<AddEvent />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			expect(screen.getByText("予定を追加")).toBeInTheDocument();
 		});
 
 		it("DialogHeader 内に DialogTitle と DialogClose が配置される", () => {
-			renderWithProvider(<AddEventFab />);
+			renderWithProvider(<AddEvent />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			const header = screen.getByTestId("dialog-header");
 			expect(header).toBeInTheDocument();
@@ -181,13 +181,13 @@ describe("AddEventFab", () => {
 		});
 
 		it("DialogContent が表示される", () => {
-			renderWithProvider(<AddEventFab />);
+			renderWithProvider(<AddEvent />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			expect(screen.getByTestId("dialog-content")).toBeInTheDocument();
 		});
 
 		it("オーバーレイを押しても Dialog は閉じない", () => {
-			renderWithProvider(<AddEventFab />);
+			renderWithProvider(<AddEvent />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			expect(screen.getByTestId("dialog-card")).toBeInTheDocument();
 			fireEvent.click(screen.getByTestId("dialog-overlay"));
@@ -195,7 +195,7 @@ describe("AddEventFab", () => {
 		});
 
 		it("閉じるボタンを押すと Dialog が閉じる", () => {
-			renderWithProvider(<AddEventFab />);
+			renderWithProvider(<AddEvent />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			expect(screen.getByTestId("dialog-card")).toBeInTheDocument();
 			fireEvent.click(screen.getByTestId("dialog-close"));
@@ -205,7 +205,7 @@ describe("AddEventFab", () => {
 
 	describe("追加ボタン", () => {
 		it("Dialog 内に追加ボタンが表示される", () => {
-			renderWithProvider(<AddEventFab />);
+			renderWithProvider(<AddEvent />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			expect(screen.getByText("追加する")).toBeInTheDocument();
 		});
@@ -213,13 +213,13 @@ describe("AddEventFab", () => {
 
 	describe("タイトル入力", () => {
 		it("Dialog 内にタイトル入力欄が表示される", () => {
-			renderWithProvider(<AddEventFab />);
+			renderWithProvider(<AddEvent />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			expect(screen.getByPlaceholderText("タイトル")).toBeInTheDocument();
 		});
 
 		it("タイトルを入力できる", () => {
-			renderWithProvider(<AddEventFab />);
+			renderWithProvider(<AddEvent />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			const input = screen.getByPlaceholderText("タイトル");
 			fireEvent.change(input, { target: { value: "チームミーティング" } });
@@ -227,7 +227,7 @@ describe("AddEventFab", () => {
 		});
 
 		it("Dialog を閉じて再度開くとタイトルがリセットされる", () => {
-			renderWithProvider(<AddEventFab />);
+			renderWithProvider(<AddEvent />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 			const input = screen.getByPlaceholderText("タイトル");
 			fireEvent.change(input, { target: { value: "チームミーティング" } });
@@ -277,7 +277,7 @@ describe("AddEventFab", () => {
 
 	describe("フォームリセット", () => {
 		it("Dialog を閉じて再度開くと全フィールドがリセットされる", () => {
-			renderWithProvider(<AddEventFab />);
+			renderWithProvider(<AddEvent />);
 			fireEvent.click(screen.getByTestId("add-event-fab"));
 
 			// タイトルに値を入力

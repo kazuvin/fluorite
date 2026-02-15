@@ -131,7 +131,7 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 							<Text
 								style={{
 									color: getDateTriggerHasValue("start") ? theme.text : theme.textMuted,
-									fontSize: parseNumeric(fontSize.xs),
+									fontSize: parseNumeric(fontSize.sm),
 								}}
 							>
 								{getDateTriggerDisplayValue("start")}
@@ -159,7 +159,7 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 							<Text
 								style={{
 									color: getDateTriggerHasValue("end") ? theme.text : theme.textMuted,
-									fontSize: parseNumeric(fontSize.xs),
+									fontSize: parseNumeric(fontSize.sm),
 								}}
 							>
 								{getDateTriggerDisplayValue("end")}
@@ -258,9 +258,9 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 	dateTrigger: {
-		borderRadius: parseNumeric(radius.xl),
+		borderRadius: parseNumeric(radius.lg),
 		borderCurve: "continuous",
-		padding: parseNumeric(spacing[4]),
+		padding: parseNumeric(spacing[3]),
 		borderWidth: OUTLINE_WIDTH,
 		borderColor: "transparent",
 		margin: OUTLINE_OFFSET,

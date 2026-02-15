@@ -1,4 +1,4 @@
-import { colors, fontSize, parseNumeric, spacing } from "@fluorite/design-tokens";
+import { colors, fontSize, fontWeight, parseNumeric, spacing } from "@fluorite/design-tokens";
 import { Pressable, StyleSheet, Text, View, useColorScheme } from "react-native";
 import { IconSymbol } from "../../../../components/ui/icon-symbol";
 import type { CalendarDay } from "../../utils/calendar-grid-utils";
@@ -42,6 +42,7 @@ export function DateRangePickerInline({
 					style={{
 						color: theme.text,
 						fontSize: parseNumeric(fontSize.base),
+						fontWeight: fontWeight.semibold,
 					}}
 				>
 					{displayYear}年{displayMonth + 1}月
@@ -56,8 +57,8 @@ export function DateRangePickerInline({
 					<View key={label} style={styles.dayCell}>
 						<Text
 							style={{
-								color: theme.text,
-								fontSize: parseNumeric(fontSize.base),
+								color: theme.textMuted,
+								fontSize: parseNumeric(fontSize.sm),
 							}}
 						>
 							{label}

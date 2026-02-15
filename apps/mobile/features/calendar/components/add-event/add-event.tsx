@@ -2,7 +2,7 @@ import { useAddEventForm } from "../../hooks/use-add-event-form";
 import { AddEventDialog } from "./add-event-dialog";
 import { AddEventFabButton } from "./add-event-fab-button";
 
-export function AddEventFab() {
+export function AddEvent() {
 	const { formState, ui, actions } = useAddEventForm();
 
 	return (
