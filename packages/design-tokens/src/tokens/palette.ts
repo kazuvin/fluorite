@@ -4,6 +4,8 @@ export type PaletteTokens = {
 	background: string;
 	surface: string;
 	surfaceRaised: string;
+	card: string;
+	cardForeground: string;
 	text: string;
 	textMuted: string;
 	textOnPrimary: string;
@@ -33,6 +35,8 @@ export const lightPalette: PaletteTokens = {
 	background: h({ h: 265, s: 8, l: 96 }),
 	surface: h({ h: 265, s: 12, l: 91 }),
 	surfaceRaised: h({ h: 0, s: 0, l: 100 }),
+	card: h({ h: 0, s: 0, l: 100 }),
+	cardForeground: h({ h: 265, s: 10, l: 12 }),
 	// Text
 	text: h({ h: 265, s: 10, l: 12 }),
 	textMuted: h({ h: 265, s: 8, l: 46 }),
@@ -65,6 +69,8 @@ const lightHSL: Record<keyof PaletteTokens, HSL | null> = {
 	background: { h: 265, s: 8, l: 96 },
 	surface: { h: 265, s: 12, l: 91 },
 	surfaceRaised: { h: 0, s: 0, l: 100 },
+	card: { h: 0, s: 0, l: 100 },
+	cardForeground: { h: 265, s: 10, l: 12 },
 	text: { h: 265, s: 10, l: 12 },
 	textMuted: { h: 265, s: 8, l: 46 },
 	textOnPrimary: null,
@@ -140,6 +146,10 @@ export function generateDarkPalette(_light: PaletteTokens): PaletteTokens {
 			dark[key] = hslToHex({ h: hsl.h, s: hsl.s * 0.5, l: 12 });
 		} else if (key === "surfaceRaised") {
 			dark[key] = hslToHex({ h: hsl.h, s: hsl.s, l: 16 });
+		} else if (key === "card") {
+			dark[key] = hslToHex({ h: 265, s: 8, l: 16 });
+		} else if (key === "cardForeground") {
+			dark[key] = hslToHex({ h: hsl.h, s: hsl.s * 0.5, l: 92 });
 		} else if (key === "text") {
 			dark[key] = hslToHex({ h: hsl.h, s: hsl.s * 0.5, l: 92 });
 		} else if (key === "textMuted" || key === "icon") {

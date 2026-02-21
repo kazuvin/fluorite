@@ -37,6 +37,8 @@
 	--color-background: #f5f4f6;
 	--color-surface: #e8e5eb;
 	--color-surfaceRaised: #ffffff;
+	--color-card: #ffffff;
+	--color-cardForeground: #1e1c22;
 	--color-text: #1e1c22;
 	--color-textMuted: #746c7f;
 	--color-textOnPrimary: #ffffff;
@@ -64,6 +66,8 @@
 		--color-background: #141316;
 		--color-surface: #1e1d20;
 		--color-surfaceRaised: #292929;
+		--color-card: #28262c;
+		--color-cardForeground: #eaeaec;
 		--color-text: #eaeaec;
 		--color-textMuted: #938f99;
 		--color-textOnPrimary: #ffffff;

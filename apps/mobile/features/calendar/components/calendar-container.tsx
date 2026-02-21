@@ -1,4 +1,4 @@
-import { colors } from "@fluorite/design-tokens";
+import { colors, parseNumeric, radius } from "@fluorite/design-tokens";
 import { useCallback, useRef } from "react";
 import { StyleSheet, View, useColorScheme, useWindowDimensions } from "react-native";
 import Animated from "react-native-reanimated";
@@ -95,16 +95,18 @@ export function CalendarContainer() {
 				<CategoryFilterBar />
 			</View>
 			{(isSelected || showDailyCalendar) && dailyDateKey && (
-				<Animated.View style={[styles.dailyCalendarContainer, dailyCalendarStyle]}>
-					<Animated.View style={[styles.dailyCalendarInner, slideStyle]}>
-						<DailyCalendarPager
-							dateKey={dailyDateKey}
-							events={filteredCalendarEvents}
-							textColor={theme.text}
-							onDateChange={handleNavigateToDateWithMark}
-						/>
+				<View style={[styles.dailyCalendarCard, { backgroundColor: theme.card }]}>
+					<Animated.View style={[styles.dailyCalendarContainer, dailyCalendarStyle]}>
+						<Animated.View style={[styles.dailyCalendarInner, slideStyle]}>
+							<DailyCalendarPager
+								dateKey={dailyDateKey}
+								events={filteredCalendarEvents}
+								textColor={theme.text}
+								onDateChange={handleNavigateToDateWithMark}
+							/>
+						</Animated.View>
 					</Animated.View>
-				</Animated.View>
+				</View>
 			)}
 		</View>
 	);
@@ -116,6 +118,13 @@ const styles = StyleSheet.create({
 	},
 	filterBarContainer: {
 		flexShrink: 0,
+	},
+	dailyCalendarCard: {
+		flex: 1,
+		borderTopLeftRadius: parseNumeric(radius["3xl"]),
+		borderTopRightRadius: parseNumeric(radius["3xl"]),
+		borderCurve: "continuous",
+		overflow: "hidden",
 	},
 	dailyCalendarContainer: {
 		flex: 1,

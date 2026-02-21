@@ -22,13 +22,13 @@ export function DailyCalendar({ dateKey, layout, textColor, currentTimeSlot }: D
 
 	return (
 		<View testID="daily-calendar" style={styles.container}>
-			<AllDaySection events={layout.allDayEvents} textColor={textColor} />
-
 			<ScrollView
 				testID="daily-calendar-scroll"
 				style={styles.scrollView}
+				contentContainerStyle={styles.scrollContent}
 				showsVerticalScrollIndicator={true}
 			>
+				<AllDaySection events={layout.allDayEvents} textColor={textColor} />
 				<View style={styles.gridContainer}>
 					<TimeGrid textColor={textColor} hourHeight={HOUR_HEIGHT} />
 
@@ -66,6 +66,10 @@ const styles = StyleSheet.create({
 	},
 	scrollView: {
 		flex: 1,
+	},
+	scrollContent: {
+		paddingTop: parseNumeric(spacing["6"]),
+		paddingBottom: parseNumeric(spacing["6"]),
 	},
 	gridContainer: {
 		position: "relative",

@@ -137,7 +137,7 @@ function DialogRoot({
 			layout={LinearTransition.duration(ANIMATION.layout.duration).easing(ANIMATION.layout.easing)}
 			testID="dialog-card"
 			accessibilityRole="alert"
-			style={[styles.card, { backgroundColor: theme.background }, swipeAnimatedStyle]}
+			style={[styles.card, { backgroundColor: theme.card }, swipeAnimatedStyle]}
 		>
 			{cardContent}
 		</Animated.View>
