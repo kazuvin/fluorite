@@ -9,8 +9,8 @@ export type PaletteTokens = {
 	textOnPrimary: string;
 	primary: string;
 	primaryMuted: string;
-	secondary: string;
-	secondaryMuted: string;
+	accent: string;
+	accentMuted: string;
 	destructive: string;
 	destructiveMuted: string;
 	success: string;
@@ -37,12 +37,12 @@ export const lightPalette: PaletteTokens = {
 	text: h({ h: 265, s: 10, l: 12 }),
 	textMuted: h({ h: 265, s: 8, l: 46 }),
 	textOnPrimary: "#FFFFFF",
-	// Primary
-	primary: h({ h: 265, s: 60, l: 55 }),
-	primaryMuted: h({ h: 265, s: 40, l: 94 }),
-	// Secondary
-	secondary: h({ h: 172, s: 55, l: 38 }),
-	secondaryMuted: h({ h: 172, s: 35, l: 93 }),
+	// Primary (ニアブラック — モノトーン UI)
+	primary: h({ h: 265, s: 10, l: 15 }),
+	primaryMuted: h({ h: 265, s: 5, l: 95 }),
+	// Accent (蛍石パープル — ブランドアクセント)
+	accent: h({ h: 265, s: 60, l: 55 }),
+	accentMuted: h({ h: 265, s: 40, l: 94 }),
 	// Status
 	destructive: h({ h: 0, s: 65, l: 52 }),
 	destructiveMuted: h({ h: 0, s: 40, l: 95 }),
@@ -68,10 +68,10 @@ const lightHSL: Record<keyof PaletteTokens, HSL | null> = {
 	text: { h: 265, s: 10, l: 12 },
 	textMuted: { h: 265, s: 8, l: 46 },
 	textOnPrimary: null,
-	primary: { h: 265, s: 60, l: 55 },
-	primaryMuted: { h: 265, s: 40, l: 94 },
-	secondary: { h: 172, s: 55, l: 38 },
-	secondaryMuted: { h: 172, s: 35, l: 93 },
+	primary: { h: 265, s: 10, l: 15 },
+	primaryMuted: { h: 265, s: 5, l: 95 },
+	accent: { h: 265, s: 60, l: 55 },
+	accentMuted: { h: 265, s: 40, l: 94 },
 	destructive: { h: 0, s: 65, l: 52 },
 	destructiveMuted: { h: 0, s: 40, l: 95 },
 	success: { h: 152, s: 55, l: 38 },
@@ -89,8 +89,7 @@ const lightHSL: Record<keyof PaletteTokens, HSL | null> = {
 
 // Strong accent トークン（L+10, S+5）
 const strongAccentKeys = new Set<keyof PaletteTokens>([
-	"primary",
-	"secondary",
+	"accent",
 	"destructive",
 	"success",
 	"warning",
@@ -99,8 +98,7 @@ const strongAccentKeys = new Set<keyof PaletteTokens>([
 
 // Pastel (Muted) トークン（L→15, S×0.5）
 const pastelKeys = new Set<keyof PaletteTokens>([
-	"primaryMuted",
-	"secondaryMuted",
+	"accentMuted",
 	"destructiveMuted",
 	"successMuted",
 	"warningMuted",
@@ -124,6 +122,17 @@ export function generateDarkPalette(_light: PaletteTokens): PaletteTokens {
 		}
 
 		if (!hsl) continue;
+
+		if (key === "primary") {
+			// ニアブラック → ライトグレー（ダークモードで反転）
+			dark[key] = hslToHex({ h: hsl.h, s: hsl.s, l: 88 });
+			continue;
+		}
+		if (key === "primaryMuted") {
+			// ライトグレー → ダークグレー（ダークモードで反転）
+			dark[key] = hslToHex({ h: hsl.h, s: hsl.s, l: 15 });
+			continue;
+		}
 
 		if (key === "background") {
 			dark[key] = hslToHex({ h: hsl.h, s: hsl.s, l: 8 });

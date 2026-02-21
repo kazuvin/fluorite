@@ -23,13 +23,15 @@ describe("ButtonText", () => {
 		expect(screen.getByText("保存")).toHaveStyle({ color: "#fff" });
 	});
 
-	it("variant=secondary のとき文字色が白になる", () => {
+	it("variant=secondary のとき文字色が白ではない", () => {
 		render(
 			<Button variant="secondary">
 				<ButtonText>保存</ButtonText>
 			</Button>,
 		);
-		expect(screen.getByText("保存")).toHaveStyle({ color: "#fff" });
+		const el = screen.getByText("保存");
+		expect(el.style.color).not.toBe("#fff");
+		expect(el.style.color).toBeTruthy();
 	});
 
 	it("variant=outline のとき文字色が白ではない", () => {

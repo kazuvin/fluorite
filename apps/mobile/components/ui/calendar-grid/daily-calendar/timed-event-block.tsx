@@ -32,14 +32,18 @@ export function TimedEventBlock({
 	const blockWidth = availableWidth / totalColumns;
 	const blockLeft = leftOffset + column * blockWidth;
 
+	const pixelHeight = height * slotHeight;
+	const isCompact = pixelHeight < 40;
+
 	return (
 		<View
 			testID="timed-event-block"
 			style={[
 				styles.container,
+				isCompact ? styles.paddingCompact : styles.paddingNormal,
 				{
 					top: top * slotHeight + topOffset,
-					height: height * slotHeight,
+					height: pixelHeight,
 					left: blockLeft,
 					width: blockWidth,
 					backgroundColor: event.color,
@@ -56,11 +60,17 @@ export function TimedEventBlock({
 const styles = StyleSheet.create({
 	container: {
 		position: "absolute",
-		borderRadius: parseNumeric(radius.lg),
+		borderRadius: parseNumeric(radius["2xl"]),
 		borderCurve: "continuous",
-		paddingHorizontal: parseNumeric(spacing["1"]),
-		paddingVertical: parseNumeric(spacing["1"]),
 		overflow: "hidden",
+	},
+	paddingNormal: {
+		paddingHorizontal: parseNumeric(spacing["3"]),
+		paddingVertical: parseNumeric(spacing["2"]),
+	},
+	paddingCompact: {
+		paddingHorizontal: parseNumeric(spacing["2"]),
+		paddingVertical: parseNumeric(spacing["1"]),
 	},
 	title: {
 		fontSize: parseNumeric(fontSize.xs),

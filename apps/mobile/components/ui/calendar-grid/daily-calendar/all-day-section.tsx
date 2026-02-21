@@ -67,9 +67,9 @@ const styles = StyleSheet.create({
 		gap: parseNumeric(spacing["1"]),
 	},
 	eventBlock: {
-		paddingHorizontal: parseNumeric(spacing["2"]),
-		paddingVertical: parseNumeric(spacing["1"]),
-		borderRadius: parseNumeric(radius.lg),
+		paddingHorizontal: parseNumeric(spacing["3"]),
+		paddingVertical: parseNumeric(spacing["2"]),
+		borderRadius: parseNumeric(radius["2xl"]),
 		borderCurve: "continuous",
 	},
 	eventTitle: {

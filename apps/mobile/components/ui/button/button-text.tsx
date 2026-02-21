@@ -25,7 +25,7 @@ function getTextColor(
 		case "primary":
 			return theme.textOnPrimary;
 		case "secondary":
-			return theme.textOnPrimary;
+			return theme.text;
 		case "outline":
 			return theme.primary;
 		case "ghost":

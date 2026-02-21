@@ -17,7 +17,7 @@ export function AddEventFabButton({ onPress }: AddEventFabButtonProps) {
 			onPress={onPress}
 			style={({ pressed }) => [
 				styles.fab,
-				{ backgroundColor: theme.primary },
+				{ backgroundColor: theme.accent },
 				pressed && styles.pressed,
 			]}
 		>

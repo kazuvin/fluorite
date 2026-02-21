@@ -36,13 +36,13 @@ function App() {
 						{eventNote.start !== eventNote.end && ` - ${eventNote.end}`}
 					</span>
 					{eventNote.time && (
-						<span className="font-semibold text-primary">
+						<span className="font-semibold text-accent">
 							{eventNote.time.start}
 							{eventNote.time.end && `-${eventNote.time.end}`}
 						</span>
 					)}
 					{eventNote.tags?.map((tag: string) => (
-						<span key={tag} className="px-2 py-0.5 bg-primary/15 text-primary rounded-sm text-sm">
+						<span key={tag} className="px-2 py-0.5 bg-accent/15 text-accent rounded-sm text-sm">
 							#{tag}
 						</span>
 					))}

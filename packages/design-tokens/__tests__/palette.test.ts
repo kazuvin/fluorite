@@ -26,8 +26,8 @@ describe("lightPalette", () => {
 			"textOnPrimary",
 			"primary",
 			"primaryMuted",
-			"secondary",
-			"secondaryMuted",
+			"accent",
+			"accentMuted",
 			"destructive",
 			"destructiveMuted",
 			"success",
@@ -47,8 +47,12 @@ describe("lightPalette", () => {
 		}
 	});
 
-	it("primary は蛍石パープル系", () => {
-		expect(lightPalette.primary).toBe(hslToHex({ h: 265, s: 60, l: 55 }));
+	it("primary はニアブラック", () => {
+		expect(lightPalette.primary).toBe(hslToHex({ h: 265, s: 10, l: 15 }));
+	});
+
+	it("accent は蛍石パープル系", () => {
+		expect(lightPalette.accent).toBe(hslToHex({ h: 265, s: 60, l: 55 }));
 	});
 
 	it("textOnPrimary は白固定", () => {
@@ -97,6 +101,16 @@ describe("generateDarkPalette", () => {
 
 	it("overlay は alpha が大きくなる (0.4→0.7)", () => {
 		expect(dark.overlay).toMatch(/^rgba\(0,\s*0,\s*0,\s*0\.7\)$/);
+	});
+
+	it("primary は明るい色になる (ニアブラック→ライトグレー)", () => {
+		const r = Number.parseInt(dark.primary.slice(1, 3), 16);
+		const g = Number.parseInt(dark.primary.slice(3, 5), 16);
+		const b = Number.parseInt(dark.primary.slice(5, 7), 16);
+		// ダークモードの primary は明るい色: RGB がそれぞれ 180 以上
+		expect(r).toBeGreaterThan(180);
+		expect(g).toBeGreaterThan(180);
+		expect(b).toBeGreaterThan(180);
 	});
 
 	it("すべての値が # で始まるか rgba 形式", () => {

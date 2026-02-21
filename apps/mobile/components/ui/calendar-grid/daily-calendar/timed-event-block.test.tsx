@@ -137,4 +137,34 @@ describe("TimedEventBlock", () => {
 		);
 		expect(screen.getByText("重要な会議")).toBeInTheDocument();
 	});
+
+	it("長い予定（1時間）は余白が大きい", () => {
+		const position = createPosition({ height: 12 }); // 12 * 5 = 60px
+		render(
+			<TimedEventBlock
+				position={position}
+				slotHeight={slotHeight}
+				containerWidth={containerWidth}
+				leftOffset={leftOffset}
+			/>,
+		);
+		const block = screen.getByTestId("timed-event-block");
+		expect(block).toHaveStyle({ paddingLeft: "12px", paddingRight: "12px" });
+		expect(block).toHaveStyle({ paddingTop: "8px", paddingBottom: "8px" });
+	});
+
+	it("短い予定（15分）は余白が小さい", () => {
+		const position = createPosition({ height: 3 }); // 3 * 5 = 15px
+		render(
+			<TimedEventBlock
+				position={position}
+				slotHeight={slotHeight}
+				containerWidth={containerWidth}
+				leftOffset={leftOffset}
+			/>,
+		);
+		const block = screen.getByTestId("timed-event-block");
+		expect(block).toHaveStyle({ paddingLeft: "8px", paddingRight: "8px" });
+		expect(block).toHaveStyle({ paddingTop: "4px", paddingBottom: "4px" });
+	});
 });

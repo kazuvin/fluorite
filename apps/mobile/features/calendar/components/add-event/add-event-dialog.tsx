@@ -2,7 +2,13 @@ import { colors, fontSize, parseNumeric, radius, spacing } from "@fluorite/desig
 import { Pressable, StyleSheet, Text, View, useColorScheme } from "react-native";
 import Animated, { FadeIn, FadeOut, Keyframe, LinearTransition } from "react-native-reanimated";
 import { Button, ButtonText } from "../../../../components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../../components/ui/dialog";
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "../../../../components/ui/dialog";
 import { IconSymbol } from "../../../../components/ui/icon-symbol";
 import { Input } from "../../../../components/ui/input";
 import { Switch } from "../../../../components/ui/switch";
@@ -81,14 +87,7 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 						style={styles.normalHeader}
 					>
 						<DialogTitle>予定を追加</DialogTitle>
-						<Pressable
-							testID="dialog-close"
-							accessibilityRole="button"
-							onPress={onClose}
-							style={[styles.closeButton, { backgroundColor: `${theme.icon}1F` }]}
-						>
-							<IconSymbol name="xmark" size={16} color={theme.icon} />
-						</Pressable>
+						<DialogClose />
 					</Animated.View>
 				)}
 			</DialogHeader>
@@ -273,13 +272,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	backButton: {
-		width: 32,
-		height: 32,
-		borderRadius: 16,
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	closeButton: {
 		width: 32,
 		height: 32,
 		borderRadius: 16,

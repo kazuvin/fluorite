@@ -53,9 +53,9 @@ const styles = StyleSheet.create({
 	badge: {
 		flexDirection: "row",
 		alignItems: "center",
-		gap: parseNumeric(spacing[1]),
-		paddingHorizontal: parseNumeric(spacing[3]),
-		paddingVertical: parseNumeric(spacing[1]),
+		gap: parseNumeric(spacing[2]),
+		paddingHorizontal: parseNumeric(spacing[4]),
+		paddingVertical: parseNumeric(spacing[2]),
 		borderRadius: parseNumeric(radius.full),
 	},
 	label: {
