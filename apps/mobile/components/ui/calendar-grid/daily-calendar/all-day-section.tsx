@@ -67,11 +67,11 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: "row",
 		flexWrap: "wrap",
-		gap: parseNumeric(spacing["1"]),
+		gap: parseNumeric(spacing["2"]),
 	},
 	eventBlock: {
 		paddingHorizontal: parseNumeric(spacing["4"]),
-		paddingVertical: parseNumeric(spacing["2"]),
+		paddingVertical: parseNumeric(spacing["3"]),
 		borderRadius: parseNumeric(radius.full),
 		borderCurve: "continuous",
 	},
