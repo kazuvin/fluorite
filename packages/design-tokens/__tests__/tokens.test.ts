@@ -8,9 +8,9 @@ describe("tokens", () => {
 		expect(Object.keys(colors.light)).toEqual(Object.keys(colors.dark));
 	});
 
-	it("colors.light/dark のキーが 23 個で一致する", () => {
-		expect(Object.keys(colors.light)).toHaveLength(23);
-		expect(Object.keys(colors.dark)).toHaveLength(23);
+	it("colors.light/dark のキーが 33 個で一致する (25 semantic + 8 category)", () => {
+		expect(Object.keys(colors.light)).toHaveLength(33);
+		expect(Object.keys(colors.dark)).toHaveLength(33);
 	});
 
 	it("colors の値はすべて文字列", () => {

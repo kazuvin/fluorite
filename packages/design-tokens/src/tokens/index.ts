@@ -1,3 +1,9 @@
+export {
+	type CategoryColorName,
+	type CategoryPalette,
+	categoryPalette,
+	generateDarkCategoryPalette,
+} from "./category-palette";
 export { colors, type ColorScheme, type ColorToken } from "./colors";
 export { type HSL, hslToHex } from "./hsl";
 export {

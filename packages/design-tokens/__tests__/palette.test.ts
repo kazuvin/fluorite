@@ -3,8 +3,8 @@ import { hslToHex } from "../src/tokens/hsl";
 import { type PaletteTokens, generateDarkPalette, lightPalette } from "../src/tokens/palette";
 
 describe("lightPalette", () => {
-	it("23 個のトークンを持つ", () => {
-		expect(Object.keys(lightPalette)).toHaveLength(23);
+	it("25 個のトークンを持つ", () => {
+		expect(Object.keys(lightPalette)).toHaveLength(25);
 	});
 
 	it("すべての値が # で始まるか rgba 形式", () => {
@@ -48,11 +48,11 @@ describe("lightPalette", () => {
 	});
 
 	it("primary はニアブラック", () => {
-		expect(lightPalette.primary).toBe(hslToHex({ h: 265, s: 10, l: 15 }));
+		expect(lightPalette.primary).toBe(hslToHex({ h: 263, s: 10, l: 15 }));
 	});
 
 	it("accent は蛍石パープル系", () => {
-		expect(lightPalette.accent).toBe(hslToHex({ h: 265, s: 60, l: 55 }));
+		expect(lightPalette.accent).toBe(hslToHex({ h: 263, s: 60, l: 50 }));
 	});
 
 	it("textOnPrimary は白固定", () => {
@@ -67,8 +67,8 @@ describe("lightPalette", () => {
 describe("generateDarkPalette", () => {
 	const dark = generateDarkPalette(lightPalette);
 
-	it("23 個のトークンを持つ", () => {
-		expect(Object.keys(dark)).toHaveLength(23);
+	it("25 個のトークンを持つ", () => {
+		expect(Object.keys(dark)).toHaveLength(25);
 	});
 
 	it("Light と同じキーを持つ", () => {

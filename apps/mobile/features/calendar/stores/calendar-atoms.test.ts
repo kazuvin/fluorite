@@ -1,3 +1,4 @@
+import { categoryPalette } from "@fluorite/design-tokens";
 import { createStore } from "jotai";
 import { describe, expect, it } from "vitest";
 import { MOCK_EVENT_NOTES } from "../__fixtures__/event-notes";
@@ -72,9 +73,9 @@ describe("calendar-atoms", () => {
 		const store = createStore();
 		const events = store.get(calendarEventsValueAtom);
 		const holidayEvent = events.find((e) => e.title === "元日");
-		expect(holidayEvent?.color).toBe("#FF6B6B");
+		expect(holidayEvent?.color).toBe(categoryPalette.rose);
 		const workEvent = events.find((e) => e.title === "会議A");
-		expect(workEvent?.color).toBe("#4A90D9");
+		expect(workEvent?.color).toBe(categoryPalette.slate);
 	});
 
 	it("setViewingMonthAtom で baseYear/baseMonth は変化しない", () => {
@@ -136,7 +137,7 @@ describe("calendar-atoms", () => {
 			const workNotes = MOCK_EVENT_NOTES.filter((n) => n.category === "work");
 			expect(filtered).toHaveLength(workNotes.length);
 			for (const event of filtered) {
-				expect(event.color).toBe("#4A90D9");
+				expect(event.color).toBe(categoryPalette.slate);
 			}
 		});
 

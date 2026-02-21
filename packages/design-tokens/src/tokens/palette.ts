@@ -32,21 +32,21 @@ const h = hslToHex;
 
 export const lightPalette: PaletteTokens = {
 	// Base
-	background: h({ h: 265, s: 8, l: 96 }),
-	surface: h({ h: 265, s: 12, l: 91 }),
+	background: h({ h: 263, s: 8, l: 96 }),
+	surface: h({ h: 263, s: 12, l: 91 }),
 	surfaceRaised: h({ h: 0, s: 0, l: 100 }),
 	card: h({ h: 0, s: 0, l: 100 }),
-	cardForeground: h({ h: 265, s: 10, l: 12 }),
+	cardForeground: h({ h: 263, s: 10, l: 12 }),
 	// Text
-	text: h({ h: 265, s: 10, l: 12 }),
-	textMuted: h({ h: 265, s: 8, l: 46 }),
+	text: h({ h: 263, s: 10, l: 12 }),
+	textMuted: h({ h: 263, s: 8, l: 46 }),
 	textOnPrimary: "#FFFFFF",
 	// Primary (ニアブラック — モノトーン UI)
-	primary: h({ h: 265, s: 10, l: 15 }),
-	primaryMuted: h({ h: 265, s: 5, l: 95 }),
+	primary: h({ h: 263, s: 10, l: 15 }),
+	primaryMuted: h({ h: 263, s: 5, l: 95 }),
 	// Accent (蛍石パープル — ブランドアクセント)
-	accent: h({ h: 265, s: 60, l: 55 }),
-	accentMuted: h({ h: 265, s: 40, l: 94 }),
+	accent: h({ h: 263, s: 60, l: 50 }),
+	accentMuted: h({ h: 263, s: 40, l: 94 }),
 	// Status
 	destructive: h({ h: 0, s: 65, l: 52 }),
 	destructiveMuted: h({ h: 0, s: 40, l: 95 }),
@@ -57,27 +57,27 @@ export const lightPalette: PaletteTokens = {
 	info: h({ h: 215, s: 65, l: 52 }),
 	infoMuted: h({ h: 215, s: 40, l: 94 }),
 	// UI
-	border: h({ h: 265, s: 10, l: 86 }),
-	borderMuted: h({ h: 265, s: 8, l: 92 }),
-	icon: h({ h: 265, s: 8, l: 46 }),
-	iconMuted: h({ h: 265, s: 6, l: 64 }),
+	border: h({ h: 263, s: 10, l: 86 }),
+	borderMuted: h({ h: 263, s: 8, l: 92 }),
+	icon: h({ h: 263, s: 8, l: 46 }),
+	iconMuted: h({ h: 263, s: 6, l: 64 }),
 	overlay: "rgba(0, 0, 0, 0.4)",
 };
 
 // Light HSL 定義（Dark 変換用の参照テーブル）
 const lightHSL: Record<keyof PaletteTokens, HSL | null> = {
-	background: { h: 265, s: 8, l: 96 },
-	surface: { h: 265, s: 12, l: 91 },
+	background: { h: 263, s: 8, l: 96 },
+	surface: { h: 263, s: 12, l: 91 },
 	surfaceRaised: { h: 0, s: 0, l: 100 },
 	card: { h: 0, s: 0, l: 100 },
-	cardForeground: { h: 265, s: 10, l: 12 },
-	text: { h: 265, s: 10, l: 12 },
-	textMuted: { h: 265, s: 8, l: 46 },
+	cardForeground: { h: 263, s: 10, l: 12 },
+	text: { h: 263, s: 10, l: 12 },
+	textMuted: { h: 263, s: 8, l: 46 },
 	textOnPrimary: null,
-	primary: { h: 265, s: 10, l: 15 },
-	primaryMuted: { h: 265, s: 5, l: 95 },
-	accent: { h: 265, s: 60, l: 55 },
-	accentMuted: { h: 265, s: 40, l: 94 },
+	primary: { h: 263, s: 10, l: 15 },
+	primaryMuted: { h: 263, s: 5, l: 95 },
+	accent: { h: 263, s: 60, l: 50 },
+	accentMuted: { h: 263, s: 40, l: 94 },
 	destructive: { h: 0, s: 65, l: 52 },
 	destructiveMuted: { h: 0, s: 40, l: 95 },
 	success: { h: 152, s: 55, l: 38 },
@@ -86,10 +86,10 @@ const lightHSL: Record<keyof PaletteTokens, HSL | null> = {
 	warningMuted: { h: 38, s: 50, l: 94 },
 	info: { h: 215, s: 65, l: 52 },
 	infoMuted: { h: 215, s: 40, l: 94 },
-	border: { h: 265, s: 10, l: 86 },
-	borderMuted: { h: 265, s: 8, l: 92 },
-	icon: { h: 265, s: 8, l: 46 },
-	iconMuted: { h: 265, s: 6, l: 64 },
+	border: { h: 263, s: 10, l: 86 },
+	borderMuted: { h: 263, s: 8, l: 92 },
+	icon: { h: 263, s: 8, l: 46 },
+	iconMuted: { h: 263, s: 6, l: 64 },
 	overlay: null,
 };
 
@@ -147,7 +147,7 @@ export function generateDarkPalette(_light: PaletteTokens): PaletteTokens {
 		} else if (key === "surfaceRaised") {
 			dark[key] = hslToHex({ h: hsl.h, s: hsl.s, l: 16 });
 		} else if (key === "card") {
-			dark[key] = hslToHex({ h: 265, s: 8, l: 16 });
+			dark[key] = hslToHex({ h: 263, s: 8, l: 16 });
 		} else if (key === "cardForeground") {
 			dark[key] = hslToHex({ h: hsl.h, s: hsl.s * 0.5, l: 92 });
 		} else if (key === "text") {

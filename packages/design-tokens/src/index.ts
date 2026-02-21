@@ -1,10 +1,13 @@
 export {
+	categoryPalette,
 	colors,
 	spacing,
 	fontSize,
 	lineHeight,
 	fontWeight,
 	radius,
+	type CategoryColorName,
+	type CategoryPalette,
 	type ColorScheme,
 	type ColorToken,
 	type SpacingToken,

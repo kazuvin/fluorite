@@ -1,8 +1,9 @@
 import { CategoryRegistry } from "@fluorite/core";
+import { categoryPalette } from "@fluorite/design-tokens";
 
 const registry = new CategoryRegistry();
-registry.set("work", "#4A90D9");
-registry.set("personal", "#50C878");
-registry.set("holiday", "#FF6B6B");
+registry.set("work", categoryPalette.slate);
+registry.set("personal", categoryPalette.sage);
+registry.set("holiday", categoryPalette.rose);
 
 export const MOCK_CATEGORY_REGISTRY = registry;
