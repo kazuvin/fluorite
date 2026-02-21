@@ -6,7 +6,7 @@ import {
 	radius,
 	spacing,
 } from "@fluorite/design-tokens";
-import { type ReactNode, createContext, useContext } from "react";
+import { type ReactNode, createContext, useCallback, useContext, useEffect } from "react";
 import {
 	Pressable,
 	StyleSheet,
@@ -16,6 +16,7 @@ import {
 	type ViewStyle,
 	useColorScheme,
 } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useReanimatedKeyboardAnimation } from "react-native-keyboard-controller";
 import Animated, {
 	FadeIn,
@@ -23,7 +24,10 @@ import Animated, {
 	LinearTransition,
 	SlideInDown,
 	SlideOutDown,
+	runOnJS,
 	useAnimatedStyle,
+	useSharedValue,
+	withTiming,
 } from "react-native-reanimated";
 import { ANIMATION } from "../../../constants/animation";
 import { IconSymbol } from "../icon-symbol";
@@ -32,17 +36,33 @@ type DialogProps = {
 	visible: boolean;
 	onClose: () => void;
 	closeOnOverlayPress?: boolean;
+	swipeToDismiss?: boolean;
 	children: ReactNode;
 };
 
 const DialogContext = createContext<{ onClose: () => void }>({ onClose: () => {} });
 
 const KEYBOARD_OFFSET = parseNumeric(spacing[4]);
+const SWIPE_THRESHOLD = 100;
+const SWIPE_DISMISS_DISTANCE = 800;
 
-function DialogRoot({ visible, onClose, closeOnOverlayPress = true, children }: DialogProps) {
+function DialogRoot({
+	visible,
+	onClose,
+	closeOnOverlayPress = true,
+	swipeToDismiss = false,
+	children,
+}: DialogProps) {
 	const scheme = useColorScheme() ?? "light";
 	const theme = colors[scheme];
 	const { height: keyboardHeight } = useReanimatedKeyboardAnimation();
+	const translateY = useSharedValue(0);
+
+	useEffect(() => {
+		if (visible) {
+			translateY.value = 0;
+		}
+	}, [visible, translateY]);
 
 	const keyboardAvoidingStyle = useAnimatedStyle(() => ({
 		transform: [
@@ -50,10 +70,81 @@ function DialogRoot({ visible, onClose, closeOnOverlayPress = true, children }: 
 		],
 	}));
 
+	const dismissWithAnimation = useCallback(() => {
+		translateY.value = withTiming(
+			SWIPE_DISMISS_DISTANCE,
+			{ duration: ANIMATION.exiting.duration, easing: ANIMATION.exiting.easing },
+			(finished) => {
+				if (finished) {
+					runOnJS(onClose)();
+				}
+			},
+		);
+	}, [onClose, translateY]);
+
+	const handleClose = useCallback(() => {
+		if (swipeToDismiss) {
+			dismissWithAnimation();
+		} else {
+			onClose();
+		}
+	}, [swipeToDismiss, dismissWithAnimation, onClose]);
+
+	const panGesture = Gesture.Pan()
+		.onUpdate((e) => {
+			translateY.value = Math.max(0, e.translationY);
+		})
+		.onEnd(() => {
+			if (translateY.value > SWIPE_THRESHOLD) {
+				translateY.value = withTiming(
+					SWIPE_DISMISS_DISTANCE,
+					{ duration: ANIMATION.exiting.duration, easing: ANIMATION.exiting.easing },
+					(finished) => {
+						if (finished) {
+							runOnJS(onClose)();
+						}
+					},
+				);
+			} else {
+				translateY.value = withTiming(0, {
+					duration: ANIMATION.entering.duration,
+					easing: ANIMATION.entering.easing,
+				});
+			}
+		});
+
+	const swipeAnimatedStyle = useAnimatedStyle(() => ({
+		transform: [{ translateY: translateY.value }],
+	}));
+
 	if (!visible) return null;
 
+	const cardContent = (
+		<>
+			{swipeToDismiss && <DragHandle />}
+			{children}
+		</>
+	);
+
+	const cardView = (
+		<Animated.View
+			entering={SlideInDown.duration(ANIMATION.entering.duration).easing(ANIMATION.entering.easing)}
+			exiting={
+				swipeToDismiss
+					? undefined
+					: SlideOutDown.duration(ANIMATION.exiting.duration).easing(ANIMATION.exiting.easing)
+			}
+			layout={LinearTransition.duration(ANIMATION.layout.duration).easing(ANIMATION.layout.easing)}
+			testID="dialog-card"
+			accessibilityRole="alert"
+			style={[styles.card, { backgroundColor: theme.background }, swipeAnimatedStyle]}
+		>
+			{cardContent}
+		</Animated.View>
+	);
+
 	return (
-		<DialogContext.Provider value={{ onClose }}>
+		<DialogContext.Provider value={{ onClose: handleClose }}>
 			<View style={styles.wrapper}>
 				<Animated.View
 					entering={FadeIn.duration(ANIMATION.entering.duration).easing(ANIMATION.entering.easing)}
@@ -63,7 +154,7 @@ function DialogRoot({ visible, onClose, closeOnOverlayPress = true, children }: 
 					<Pressable
 						testID="dialog-overlay"
 						style={StyleSheet.absoluteFill}
-						onPress={closeOnOverlayPress ? onClose : undefined}
+						onPress={closeOnOverlayPress ? handleClose : undefined}
 					/>
 				</Animated.View>
 				<Animated.View
@@ -73,25 +164,24 @@ function DialogRoot({ visible, onClose, closeOnOverlayPress = true, children }: 
 					)}
 					style={[styles.keyboardAvoiding, keyboardAvoidingStyle]}
 				>
-					<Animated.View
-						entering={SlideInDown.duration(ANIMATION.entering.duration).easing(
-							ANIMATION.entering.easing,
-						)}
-						exiting={SlideOutDown.duration(ANIMATION.exiting.duration).easing(
-							ANIMATION.exiting.easing,
-						)}
-						layout={LinearTransition.duration(ANIMATION.layout.duration).easing(
-							ANIMATION.layout.easing,
-						)}
-						testID="dialog-card"
-						accessibilityRole="alert"
-						style={[styles.card, { backgroundColor: theme.background }]}
-					>
-						{children}
-					</Animated.View>
+					{swipeToDismiss ? (
+						<GestureDetector gesture={panGesture}>{cardView}</GestureDetector>
+					) : (
+						cardView
+					)}
 				</Animated.View>
 			</View>
 		</DialogContext.Provider>
+	);
+}
+
+function DragHandle() {
+	const scheme = useColorScheme() ?? "light";
+	const theme = colors[scheme];
+	return (
+		<View testID="dialog-drag-handle" style={styles.dragHandleContainer}>
+			<View style={[styles.dragHandle, { backgroundColor: theme.borderMuted }]} />
+		</View>
 	);
 }
 
@@ -217,5 +307,14 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-end",
 		gap: parseNumeric(spacing[2]),
 		marginTop: parseNumeric(spacing[2]),
+	},
+	dragHandleContainer: {
+		alignItems: "center",
+		paddingBottom: parseNumeric(spacing[2]),
+	},
+	dragHandle: {
+		width: 36,
+		height: 4,
+		borderRadius: 2,
 	},
 });

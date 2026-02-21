@@ -34,8 +34,8 @@
 	--radius-full: 9999px;
 
 	/* Light theme colors (default) */
-	--color-background: #fcfcfd;
-	--color-surface: #f2f0f4;
+	--color-background: #f5f4f6;
+	--color-surface: #e8e5eb;
 	--color-surfaceRaised: #ffffff;
 	--color-text: #1e1c22;
 	--color-textMuted: #746c7f;
@@ -61,8 +61,8 @@
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--color-background: #141216;
-		--color-surface: #1e1c21;
+		--color-background: #141316;
+		--color-surface: #1e1d20;
 		--color-surfaceRaised: #292929;
 		--color-text: #eaeaec;
 		--color-textMuted: #938f99;

@@ -54,7 +54,7 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 	} = actions;
 
 	return (
-		<Dialog visible={visible} onClose={onClose} closeOnOverlayPress={false}>
+		<Dialog visible={visible} onClose={onClose} closeOnOverlayPress={false} swipeToDismiss>
 			<DialogHeader>
 				{isDatePickerMode ? (
 					<Animated.View

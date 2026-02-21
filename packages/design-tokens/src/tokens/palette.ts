@@ -30,8 +30,8 @@ const h = hslToHex;
 
 export const lightPalette: PaletteTokens = {
 	// Base
-	background: h({ h: 265, s: 10, l: 99 }),
-	surface: h({ h: 265, s: 15, l: 95 }),
+	background: h({ h: 265, s: 8, l: 96 }),
+	surface: h({ h: 265, s: 12, l: 91 }),
 	surfaceRaised: h({ h: 0, s: 0, l: 100 }),
 	// Text
 	text: h({ h: 265, s: 10, l: 12 }),
@@ -62,8 +62,8 @@ export const lightPalette: PaletteTokens = {
 
 // Light HSL 定義（Dark 変換用の参照テーブル）
 const lightHSL: Record<keyof PaletteTokens, HSL | null> = {
-	background: { h: 265, s: 10, l: 99 },
-	surface: { h: 265, s: 15, l: 95 },
+	background: { h: 265, s: 8, l: 96 },
+	surface: { h: 265, s: 12, l: 91 },
 	surfaceRaised: { h: 0, s: 0, l: 100 },
 	text: { h: 265, s: 10, l: 12 },
 	textMuted: { h: 265, s: 8, l: 46 },

@@ -205,4 +205,33 @@ describe("Dialog", () => {
 			expect(screen.getByTestId("dialog-keyboard-avoiding")).toBeInTheDocument();
 		});
 	});
+
+	describe("スワイプで閉じる", () => {
+		it("swipeToDismiss=true のときドラッグハンドルが表示される", () => {
+			render(
+				<Dialog visible onClose={vi.fn()} swipeToDismiss>
+					<DialogTitle>テスト</DialogTitle>
+				</Dialog>,
+			);
+			expect(screen.getByTestId("dialog-drag-handle")).toBeInTheDocument();
+		});
+
+		it("swipeToDismiss=false のときドラッグハンドルが表示されない", () => {
+			render(
+				<Dialog visible onClose={vi.fn()} swipeToDismiss={false}>
+					<DialogTitle>テスト</DialogTitle>
+				</Dialog>,
+			);
+			expect(screen.queryByTestId("dialog-drag-handle")).toBeNull();
+		});
+
+		it("デフォルトではドラッグハンドルが表示されない", () => {
+			render(
+				<Dialog visible onClose={vi.fn()}>
+					<DialogTitle>テスト</DialogTitle>
+				</Dialog>,
+			);
+			expect(screen.queryByTestId("dialog-drag-handle")).toBeNull();
+		});
+	});
 });

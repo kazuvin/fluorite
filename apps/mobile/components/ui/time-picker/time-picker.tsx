@@ -63,12 +63,7 @@ export function TimePicker({ value, onValueChange, placeholder, testID }: TimePi
 				onPress={handleToggle}
 				style={[styles.trigger, { backgroundColor: theme.surface }]}
 			>
-				<Text
-					style={[
-						styles.triggerText,
-						{ color: value ? theme.text : theme.textMuted },
-					]}
-				>
+				<Text style={[styles.triggerText, { color: value ? theme.text : theme.textMuted }]}>
 					{value ?? placeholder}
 				</Text>
 			</Pressable>

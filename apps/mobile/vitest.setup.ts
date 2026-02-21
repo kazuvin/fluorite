@@ -48,23 +48,40 @@ vi.mock("react-native-reanimated", () => {
 			const ref = useRef({ value: initial });
 			return ref.current;
 		},
-		withTiming: (toValue: unknown) => toValue,
+		withTiming: (toValue: unknown, _config?: unknown, callback?: (finished: boolean) => void) => {
+			if (callback) callback(true);
+			return toValue;
+		},
 		runOnJS: (fn: unknown) => fn,
 	};
 });
 
 vi.mock("react-native-gesture-handler", () => {
 	const { View } = require("react-native-web");
+	const createChainableGesture = () => {
+		const gesture: Record<string, (...args: unknown[]) => typeof gesture> = {};
+		const chain = () => gesture;
+		for (const method of [
+			"onUpdate",
+			"onEnd",
+			"onStart",
+			"onBegin",
+			"onFinalize",
+			"activeOffsetX",
+			"activeOffsetY",
+			"failOffsetX",
+			"failOffsetY",
+			"minDistance",
+			"enabled",
+		]) {
+			gesture[method] = chain;
+		}
+		return gesture;
+	};
 	return {
 		GestureDetector: ({ children }: { children: unknown }) => children,
 		Gesture: {
-			Pan: () => ({
-				activeOffsetX: () => ({
-					failOffsetY: () => ({
-						onEnd: () => ({}),
-					}),
-				}),
-			}),
+			Pan: () => createChainableGesture(),
 		},
 		GestureHandlerRootView: View,
 	};
