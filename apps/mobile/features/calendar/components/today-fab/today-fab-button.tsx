@@ -1,5 +1,6 @@
 import { colors, parseNumeric, spacing } from "@fluorite/design-tokens";
 import { Pressable, StyleSheet, Text, useColorScheme } from "react-native";
+import { textBase } from "../../../../constants/theme";
 
 type TodayFabButtonProps = {
 	onPress: () => void;
@@ -43,6 +44,7 @@ const styles = StyleSheet.create({
 		shadowRadius: 4,
 	},
 	label: {
+		...textBase,
 		fontSize: 16,
 		fontWeight: "600",
 	},

@@ -30,6 +30,7 @@ import Animated, {
 	withTiming,
 } from "react-native-reanimated";
 import { ANIMATION } from "../../../constants/animation";
+import { textBase } from "../../../constants/theme";
 import { IconSymbol } from "../icon-symbol";
 
 type DialogProps = {
@@ -293,10 +294,12 @@ const styles = StyleSheet.create({
 		gap: parseNumeric(spacing[6]),
 	},
 	title: {
+		...textBase,
 		fontSize: parseNumeric(fontSize.base),
 		fontWeight: fontWeight.semibold,
 	},
 	description: {
+		...textBase,
 		fontSize: parseNumeric(fontSize.base),
 		fontWeight: fontWeight.normal,
 		lineHeight: parseNumeric(fontSize.base) * 1.5,

@@ -51,8 +51,8 @@ describe("lightPalette", () => {
 		expect(lightPalette.primary).toBe(hslToHex({ h: 263, s: 10, l: 15 }));
 	});
 
-	it("accent は蛍石パープル系", () => {
-		expect(lightPalette.accent).toBe(hslToHex({ h: 263, s: 60, l: 50 }));
+	it("accent はカテゴリと統一したパステルパープル", () => {
+		expect(lightPalette.accent).toBe(hslToHex({ h: 263, s: 50, l: 82 }));
 	});
 
 	it("textOnPrimary は白固定", () => {

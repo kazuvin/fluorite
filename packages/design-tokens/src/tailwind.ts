@@ -1,7 +1,7 @@
 import { colors } from "./tokens/colors";
 import { radius } from "./tokens/radius";
 import { spacing } from "./tokens/spacing";
-import { fontSize, fontWeight, lineHeight } from "./tokens/typography";
+import { fontFamily, fontSize, fontWeight, lineHeight } from "./tokens/typography";
 
 function formatEntries(entries: Record<string, string>, prefix: string): string {
 	return Object.entries(entries)
@@ -18,6 +18,7 @@ export function generateThemeCSS(): string {
 
 	// @theme block for Tailwind v4
 	lines.push("@theme {");
+	lines.push(formatEntries(fontFamily, "font-family"));
 	lines.push(formatEntries(spacing, "spacing"));
 	lines.push(formatEntries(fontSize, "font-size"));
 	lines.push(formatEntries(lineHeight, "line-height"));

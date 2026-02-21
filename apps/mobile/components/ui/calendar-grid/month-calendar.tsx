@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { ANIMATION } from "../../../constants/animation";
+import { textBase } from "../../../constants/theme";
 import { useCalendarTransition } from "../../../features/calendar/hooks/use-calendar-transition";
 import {
 	findWeekIndexForDateKey,
@@ -401,6 +402,7 @@ const styles = StyleSheet.create({
 		gap: parseNumeric(spacing[1]),
 	},
 	headerTitle: {
+		...textBase,
 		fontSize: parseNumeric(fontSize.lg),
 		fontWeight: fontWeight.semibold,
 	},
@@ -419,8 +421,9 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 	weekdayText: {
+		...textBase,
 		fontSize: parseNumeric(fontSize.xs),
-		fontWeight: fontWeight.medium,
+		fontWeight: fontWeight.normal,
 	},
 	calendarContainer: {
 		overflow: "hidden" as const,

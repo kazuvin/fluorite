@@ -1,5 +1,5 @@
 import { colors } from "@fluorite/design-tokens";
-import { Platform } from "react-native";
+import { Platform, type TextStyle } from "react-native";
 
 export const Colors = colors;
 
@@ -27,3 +27,8 @@ export const Fonts = Platform.select({
 		mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
 	},
 });
+
+/** 全テキスト共通の基本スタイル（fontFamily を一元管理） */
+export const textBase: TextStyle = {
+	fontFamily: Fonts?.rounded,
+};

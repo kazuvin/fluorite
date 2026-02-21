@@ -1,6 +1,7 @@
 import { colors, fontSize, parseNumeric, radius, spacing } from "@fluorite/design-tokens";
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View, useColorScheme } from "react-native";
+import { textBase } from "../../../constants/theme";
 
 export type TimePickerProps = {
 	value?: string;
@@ -80,6 +81,7 @@ export function TimePicker({ value, onValueChange, placeholder, testID }: TimePi
 					<View style={{ flex: 1, maxHeight: 200 }}>
 						<Text
 							style={{
+								...textBase,
 								fontSize: parseNumeric(fontSize.sm),
 								fontWeight: "600",
 								textAlign: "center",
@@ -107,6 +109,7 @@ export function TimePicker({ value, onValueChange, placeholder, testID }: TimePi
 									>
 										<Text
 											style={{
+												...textBase,
 												color: isSelected ? theme.textOnPrimary : theme.text,
 											}}
 										>
@@ -121,6 +124,7 @@ export function TimePicker({ value, onValueChange, placeholder, testID }: TimePi
 					<View style={{ flex: 1, maxHeight: 200 }}>
 						<Text
 							style={{
+								...textBase,
 								fontSize: parseNumeric(fontSize.sm),
 								fontWeight: "600",
 								textAlign: "center",
@@ -148,6 +152,7 @@ export function TimePicker({ value, onValueChange, placeholder, testID }: TimePi
 									>
 										<Text
 											style={{
+												...textBase,
 												color: isSelected ? theme.textOnPrimary : theme.text,
 											}}
 										>
@@ -173,6 +178,7 @@ const styles = StyleSheet.create({
 		borderColor: "transparent",
 	},
 	triggerText: {
+		...textBase,
 		fontSize: parseNumeric(fontSize.base),
 	},
 });

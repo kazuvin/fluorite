@@ -33,15 +33,15 @@ describe("categoryPalette", () => {
 		}
 	});
 
-	it("accent と同じ s:60, l:50 で色相だけ異なる（白文字が映える深さ）", () => {
+	it("s:50, l:82 の淡いパステルに少し深み（黒文字が映える明るさ）", () => {
 		for (const value of Object.values(categoryPalette)) {
 			const r = Number.parseInt(value.slice(1, 3), 16);
 			const g = Number.parseInt(value.slice(3, 5), 16);
 			const b = Number.parseInt(value.slice(5, 7), 16);
 			const avg = (r + g + b) / 3;
-			// s:60, l:50 なので平均 RGB は 80〜160 の範囲
-			expect(avg, `${value} の明るさが範囲外`).toBeGreaterThan(70);
-			expect(avg, `${value} の明るさが範囲外`).toBeLessThan(170);
+			// s:50, l:82 なので平均 RGB は 185〜225 の範囲
+			expect(avg, `${value} の明るさが範囲外`).toBeGreaterThan(185);
+			expect(avg, `${value} の明るさが範囲外`).toBeLessThan(225);
 		}
 	});
 });
@@ -63,7 +63,7 @@ describe("generateDarkCategoryPalette", () => {
 		}
 	});
 
-	it("Dark は Light より明るい (l+10 ルール)", () => {
+	it("Dark は Light よりやや深い (l:88→75)", () => {
 		for (const key of Object.keys(categoryPalette) as CategoryColorName[]) {
 			const lightR = Number.parseInt(categoryPalette[key].slice(1, 3), 16);
 			const lightG = Number.parseInt(categoryPalette[key].slice(3, 5), 16);
@@ -75,8 +75,8 @@ describe("generateDarkCategoryPalette", () => {
 			const darkLuminance = (darkR + darkG + darkB) / 3;
 			expect(
 				darkLuminance,
-				`${key}: Dark (${dark[key]}) は Light (${categoryPalette[key]}) より明るいべき`,
-			).toBeGreaterThan(lightLuminance);
+				`${key}: Dark (${dark[key]}) は Light (${categoryPalette[key]}) よりやや深いべき`,
+			).toBeLessThan(lightLuminance);
 		}
 	});
 });

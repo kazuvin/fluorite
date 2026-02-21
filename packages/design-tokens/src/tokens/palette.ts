@@ -36,17 +36,17 @@ export const lightPalette: PaletteTokens = {
 	surface: h({ h: 263, s: 12, l: 91 }),
 	surfaceRaised: h({ h: 0, s: 0, l: 100 }),
 	card: h({ h: 0, s: 0, l: 100 }),
-	cardForeground: h({ h: 263, s: 10, l: 12 }),
+	cardForeground: h({ h: 263, s: 8, l: 18 }),
 	// Text
-	text: h({ h: 263, s: 10, l: 12 }),
+	text: h({ h: 263, s: 8, l: 18 }),
 	textMuted: h({ h: 263, s: 8, l: 46 }),
 	textOnPrimary: "#FFFFFF",
 	// Primary (ニアブラック — モノトーン UI)
 	primary: h({ h: 263, s: 10, l: 15 }),
 	primaryMuted: h({ h: 263, s: 5, l: 95 }),
-	// Accent (蛍石パープル — ブランドアクセント)
-	accent: h({ h: 263, s: 60, l: 50 }),
-	accentMuted: h({ h: 263, s: 40, l: 94 }),
+	// Accent (蛍石パープル — カテゴリと統一したパステルトーン)
+	accent: h({ h: 263, s: 50, l: 82 }),
+	accentMuted: h({ h: 263, s: 30, l: 94 }),
 	// Status
 	destructive: h({ h: 0, s: 65, l: 52 }),
 	destructiveMuted: h({ h: 0, s: 40, l: 95 }),
@@ -70,14 +70,14 @@ const lightHSL: Record<keyof PaletteTokens, HSL | null> = {
 	surface: { h: 263, s: 12, l: 91 },
 	surfaceRaised: { h: 0, s: 0, l: 100 },
 	card: { h: 0, s: 0, l: 100 },
-	cardForeground: { h: 263, s: 10, l: 12 },
-	text: { h: 263, s: 10, l: 12 },
+	cardForeground: { h: 263, s: 8, l: 18 },
+	text: { h: 263, s: 8, l: 18 },
 	textMuted: { h: 263, s: 8, l: 46 },
 	textOnPrimary: null,
 	primary: { h: 263, s: 10, l: 15 },
 	primaryMuted: { h: 263, s: 5, l: 95 },
-	accent: { h: 263, s: 60, l: 50 },
-	accentMuted: { h: 263, s: 40, l: 94 },
+	accent: { h: 263, s: 50, l: 82 },
+	accentMuted: { h: 263, s: 30, l: 94 },
 	destructive: { h: 0, s: 65, l: 52 },
 	destructiveMuted: { h: 0, s: 40, l: 95 },
 	success: { h: 152, s: 55, l: 38 },
@@ -93,9 +93,8 @@ const lightHSL: Record<keyof PaletteTokens, HSL | null> = {
 	overlay: null,
 };
 
-// Strong accent トークン（L+10, S+5）
+// Strong accent トークン（L+10, S+5）— ステータス色用
 const strongAccentKeys = new Set<keyof PaletteTokens>([
-	"accent",
 	"destructive",
 	"success",
 	"warning",
@@ -140,6 +139,11 @@ export function generateDarkPalette(_light: PaletteTokens): PaletteTokens {
 			continue;
 		}
 
+		if (key === "accent") {
+			// パステル accent: カテゴリと同じルール (s+5, l→75)
+			dark[key] = hslToHex({ h: hsl.h, s: Math.min(hsl.s + 5, 100), l: 75 });
+			continue;
+		}
 		if (key === "background") {
 			dark[key] = hslToHex({ h: hsl.h, s: hsl.s, l: 8 });
 		} else if (key === "surface") {

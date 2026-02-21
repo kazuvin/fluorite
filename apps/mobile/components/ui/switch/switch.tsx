@@ -1,5 +1,6 @@
 import { colors, fontSize, parseNumeric, spacing } from "@fluorite/design-tokens";
 import { Switch as RNSwitch, StyleSheet, Text, View, useColorScheme } from "react-native";
+import { textBase } from "../../../constants/theme";
 
 export type SwitchProps = {
 	value: boolean;
@@ -35,6 +36,7 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 	},
 	label: {
+		...textBase,
 		fontSize: parseNumeric(fontSize.base),
 		marginRight: parseNumeric(spacing[2]),
 	},

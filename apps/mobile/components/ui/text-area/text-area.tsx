@@ -1,5 +1,6 @@
 import { colors, fontSize, parseNumeric, radius, spacing } from "@fluorite/design-tokens";
 import { StyleSheet, TextInput, type TextInputProps, useColorScheme } from "react-native";
+import { textBase } from "../../../constants/theme";
 
 export type TextAreaProps = Omit<TextInputProps, "style" | "multiline"> & {
 	style?: TextInputProps["style"];
@@ -33,6 +34,7 @@ export function TextArea({ editable = true, rows = 3, style, ...props }: TextAre
 
 const styles = StyleSheet.create({
 	base: {
+		...textBase,
 		borderRadius: parseNumeric(radius.xl),
 		borderCurve: "continuous",
 		padding: parseNumeric(spacing[4]),

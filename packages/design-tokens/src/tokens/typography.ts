@@ -1,3 +1,10 @@
+export const fontFamily = {
+	sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+	mono: "SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+} as const;
+
+export type FontFamilyToken = keyof typeof fontFamily;
+
 export const fontSize = {
 	xs: "12px",
 	sm: "14px",

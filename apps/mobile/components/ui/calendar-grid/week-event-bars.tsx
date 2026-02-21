@@ -1,5 +1,6 @@
-import { fontWeight, parseNumeric, radius } from "@fluorite/design-tokens";
+import { categoryForeground, fontWeight, parseNumeric, radius } from "@fluorite/design-tokens";
 import { StyleSheet, Text, View } from "react-native";
+import { textBase } from "../../../constants/theme";
 import type { CalendarDay } from "../../../features/calendar/utils/calendar-grid-utils";
 import type { EventCellLayoutMap } from "../../../features/calendar/utils/event-layout";
 import { EVENT_BAR_GAP, EVENT_BAR_HEIGHT, MAX_VISIBLE_SLOTS } from "./constants";
@@ -100,11 +101,13 @@ export function WeekEventBars({
 
 const styles = StyleSheet.create({
 	eventText: {
+		...textBase,
 		fontSize: EVENT_BAR_FONT_SIZE,
-		color: "#FFFFFF",
-		fontWeight: fontWeight.medium,
+		color: categoryForeground,
+		fontWeight: fontWeight.semibold,
 	},
 	overflowText: {
+		...textBase,
 		fontSize: EVENT_BAR_FONT_SIZE,
 		textAlign: "center",
 	},

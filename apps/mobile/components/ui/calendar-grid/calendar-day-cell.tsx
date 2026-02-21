@@ -1,5 +1,6 @@
 import { fontSize, fontWeight, parseNumeric, radius, spacing } from "@fluorite/design-tokens";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { textBase } from "../../../constants/theme";
 import type { CalendarDay } from "../../../features/calendar/utils/calendar-grid-utils";
 import type { CalendarGridColors } from "./types";
 
@@ -61,6 +62,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 	dayText: {
+		...textBase,
 		fontSize: parseNumeric(fontSize.xs),
 	},
 });

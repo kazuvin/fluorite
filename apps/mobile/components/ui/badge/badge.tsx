@@ -1,27 +1,30 @@
-import { colors, fontSize, parseNumeric, radius, spacing } from "@fluorite/design-tokens";
+import {
+	categoryForeground,
+	colors,
+	fontSize,
+	parseNumeric,
+	radius,
+	spacing,
+} from "@fluorite/design-tokens";
 import { Pressable, StyleSheet, Text, View, useColorScheme } from "react-native";
+import { textBase } from "../../../constants/theme";
+
+const BORDER_WIDTH = 1.5;
+const BORDER_GAP = 2;
 
 export type BadgeProps = {
 	label: string;
 	selected?: boolean;
 	color?: string;
-	selectedColor?: string;
 	onPress: () => void;
 	testID?: string;
 };
 
-export function Badge({
-	label,
-	selected = false,
-	color,
-	selectedColor,
-	onPress,
-	testID,
-}: BadgeProps) {
+export function Badge({ label, selected = false, color, onPress, testID }: BadgeProps) {
 	const scheme = useColorScheme() ?? "light";
 	const theme = colors[scheme];
 
-	const activeColor = selectedColor ?? color ?? theme.primary;
+	const bgColor = color ?? theme.text;
 
 	return (
 		<Pressable
@@ -29,41 +32,33 @@ export function Badge({
 			accessibilityRole="button"
 			aria-selected={selected}
 			onPress={onPress}
-			style={[
-				styles.badge,
-				selected ? { backgroundColor: activeColor } : { backgroundColor: theme.surface },
-			]}
+			style={[styles.outer, selected && { borderColor: theme.textMuted }]}
 		>
-			{color != null && (
-				<View
-					testID={testID ? `${testID}-dot` : "badge-dot"}
-					style={[styles.dot, { backgroundColor: selected ? theme.textOnPrimary : color }]}
-				/>
-			)}
-			<Text
-				style={[styles.label, selected ? { color: theme.textOnPrimary } : { color: theme.text }]}
-			>
-				{label}
-			</Text>
+			<View style={[styles.inner, { backgroundColor: bgColor }]}>
+				<Text style={[styles.label, { color: color ? categoryForeground : theme.textOnPrimary }]}>
+					{label}
+				</Text>
+			</View>
 		</Pressable>
 	);
 }
 
 const styles = StyleSheet.create({
-	badge: {
+	outer: {
+		borderWidth: BORDER_WIDTH,
+		borderColor: "transparent",
+		borderRadius: parseNumeric(radius.full),
+		padding: BORDER_GAP,
+	},
+	inner: {
 		flexDirection: "row",
 		alignItems: "center",
-		gap: parseNumeric(spacing[2]),
 		paddingHorizontal: parseNumeric(spacing[4]),
 		paddingVertical: parseNumeric(spacing[2]),
 		borderRadius: parseNumeric(radius.full),
 	},
 	label: {
+		...textBase,
 		fontSize: parseNumeric(fontSize.sm),
-	},
-	dot: {
-		width: 8,
-		height: 8,
-		borderRadius: 4,
 	},
 });

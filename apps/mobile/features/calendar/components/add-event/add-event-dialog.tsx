@@ -14,6 +14,7 @@ import { Input } from "../../../../components/ui/input";
 import { Switch } from "../../../../components/ui/switch";
 import { TimePicker } from "../../../../components/ui/time-picker";
 import { ANIMATION } from "../../../../constants/animation";
+import { textBase } from "../../../../constants/theme";
 import type {
 	AddEventFormActions,
 	AddEventFormState,
@@ -132,6 +133,7 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 						>
 							<Text
 								style={{
+									...textBase,
 									color: getDateTriggerHasValue("start") ? theme.text : theme.textMuted,
 									fontSize: parseNumeric(fontSize.base),
 								}}
@@ -177,6 +179,7 @@ export function AddEventDialog({ visible, onClose, formState, ui, actions }: Add
 						>
 							<Text
 								style={{
+									...textBase,
 									color: getDateTriggerHasValue("end") ? theme.text : theme.textMuted,
 									fontSize: parseNumeric(fontSize.base),
 								}}

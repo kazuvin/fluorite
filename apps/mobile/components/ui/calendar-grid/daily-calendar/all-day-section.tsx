@@ -1,4 +1,5 @@
 import {
+	categoryForeground,
 	colors,
 	fontSize,
 	fontWeight,
@@ -7,6 +8,7 @@ import {
 	spacing,
 } from "@fluorite/design-tokens";
 import { StyleSheet, Text, View, useColorScheme } from "react-native";
+import { textBase } from "../../../../constants/theme";
 import type { CalendarEvent } from "../../../../features/calendar/utils/event-layout";
 
 type AllDaySectionProps = {
@@ -35,7 +37,7 @@ export function AllDaySection({ events, textColor }: AllDaySectionProps) {
 						testID={`all-day-event-${event.id}`}
 						style={[styles.eventBlock, { backgroundColor: event.color }]}
 					>
-						<Text style={[styles.eventTitle, { color: theme.textOnPrimary }]} numberOfLines={1}>
+						<Text style={[styles.eventTitle, { color: categoryForeground }]} numberOfLines={1}>
 							{event.title}
 						</Text>
 					</View>
@@ -58,6 +60,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 	label: {
+		...textBase,
 		fontSize: parseNumeric(fontSize.xs),
 	},
 	eventsContainer: {
@@ -67,13 +70,14 @@ const styles = StyleSheet.create({
 		gap: parseNumeric(spacing["1"]),
 	},
 	eventBlock: {
-		paddingHorizontal: parseNumeric(spacing["3"]),
+		paddingHorizontal: parseNumeric(spacing["4"]),
 		paddingVertical: parseNumeric(spacing["2"]),
-		borderRadius: parseNumeric(radius["2xl"]),
+		borderRadius: parseNumeric(radius.full),
 		borderCurve: "continuous",
 	},
 	eventTitle: {
+		...textBase,
 		fontSize: parseNumeric(fontSize.xs),
-		fontWeight: fontWeight.medium,
+		fontWeight: fontWeight.semibold,
 	},
 });

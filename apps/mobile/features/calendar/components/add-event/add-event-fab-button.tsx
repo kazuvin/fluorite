@@ -1,4 +1,4 @@
-import { colors, parseNumeric, spacing } from "@fluorite/design-tokens";
+import { categoryForeground, colors, parseNumeric, spacing } from "@fluorite/design-tokens";
 import { Pressable, StyleSheet, useColorScheme } from "react-native";
 import { IconSymbol } from "../../../../components/ui/icon-symbol";
 
@@ -21,7 +21,7 @@ export function AddEventFabButton({ onPress }: AddEventFabButtonProps) {
 				pressed && styles.pressed,
 			]}
 		>
-			<IconSymbol name="plus" size={20} color={theme.textOnPrimary} />
+			<IconSymbol name="plus" size={20} color={categoryForeground} />
 		</Pressable>
 	);
 }

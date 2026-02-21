@@ -1,6 +1,7 @@
 import { colors, fontSize, parseNumeric, radius, spacing } from "@fluorite/design-tokens";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View, useColorScheme } from "react-native";
+import { textBase } from "../../../constants/theme";
 
 import { IconSymbol } from "../icon-symbol";
 
@@ -78,7 +79,7 @@ export function Select({
 									style={[styles.colorDot, { backgroundColor: option.color }]}
 								/>
 							)}
-							<Text style={{ color: theme.text }}>{option.label}</Text>
+							<Text style={{ ...textBase, color: theme.text }}>{option.label}</Text>
 						</Pressable>
 					))}
 				</View>
@@ -98,6 +99,7 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 	},
 	triggerText: {
+		...textBase,
 		fontSize: parseNumeric(fontSize.base),
 	},
 	options: {

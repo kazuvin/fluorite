@@ -1,6 +1,7 @@
 export {
 	type CategoryColorName,
 	type CategoryPalette,
+	categoryForeground,
 	categoryPalette,
 	generateDarkCategoryPalette,
 } from "./category-palette";
@@ -13,9 +14,11 @@ export {
 } from "./palette";
 export { spacing, type SpacingToken } from "./spacing";
 export {
+	fontFamily,
 	fontSize,
 	lineHeight,
 	fontWeight,
+	type FontFamilyToken,
 	type FontSizeToken,
 	type LineHeightToken,
 	type FontWeightToken,

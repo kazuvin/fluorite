@@ -1,6 +1,7 @@
 import { colors, fontSize, parseNumeric } from "@fluorite/design-tokens";
 import { useContext } from "react";
 import { StyleSheet, Text, type TextStyle } from "react-native";
+import { textBase } from "../../../constants/theme";
 
 import { ButtonContext } from "./button-context";
 
@@ -35,6 +36,7 @@ function getTextColor(
 
 const styles = StyleSheet.create({
 	text: {
+		...textBase,
 		fontSize: parseNumeric(fontSize.lg),
 		fontWeight: "600",
 	},

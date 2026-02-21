@@ -1,5 +1,6 @@
 import { colors, fontSize, parseNumeric, radius, spacing } from "@fluorite/design-tokens";
 import { StyleSheet, TextInput, type TextInputProps, useColorScheme } from "react-native";
+import { textBase } from "../../../constants/theme";
 
 export type InputProps = Omit<TextInputProps, "style"> & {
 	style?: TextInputProps["style"];
@@ -29,6 +30,7 @@ export function Input({ editable = true, style, ...props }: InputProps) {
 
 const styles = StyleSheet.create({
 	base: {
+		...textBase,
 		borderRadius: parseNumeric(radius.xl),
 		borderCurve: "continuous",
 		padding: parseNumeric(spacing[4]),

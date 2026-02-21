@@ -1,7 +1,9 @@
 export {
+	categoryForeground,
 	categoryPalette,
 	colors,
 	spacing,
+	fontFamily,
 	fontSize,
 	lineHeight,
 	fontWeight,
@@ -11,6 +13,7 @@ export {
 	type ColorScheme,
 	type ColorToken,
 	type SpacingToken,
+	type FontFamilyToken,
 	type FontSizeToken,
 	type LineHeightToken,
 	type FontWeightToken,

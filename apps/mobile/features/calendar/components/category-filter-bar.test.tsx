@@ -84,10 +84,10 @@ describe("CategoryFilterBar", () => {
 		expect(screen.getByTestId("category-filter-scroll")).toBeInTheDocument();
 	});
 
-	it("カテゴリバッジにカラードットが表示される", () => {
+	it("カテゴリバッジがカラー pill として表示される", () => {
 		renderWithStore(<CategoryFilterBar />);
-		expect(screen.getByTestId("filter-badge-work-dot")).toBeInTheDocument();
-		expect(screen.getByTestId("filter-badge-personal-dot")).toBeInTheDocument();
-		expect(screen.getByTestId("filter-badge-holiday-dot")).toBeInTheDocument();
+		expect(screen.getByTestId("filter-badge-work")).toBeInTheDocument();
+		expect(screen.getByTestId("filter-badge-personal")).toBeInTheDocument();
+		expect(screen.getByTestId("filter-badge-holiday")).toBeInTheDocument();
 	});
 });

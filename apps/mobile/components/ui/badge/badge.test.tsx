@@ -32,15 +32,15 @@ describe("Badge", () => {
 		});
 	});
 
-	describe("カラードット", () => {
-		it("color を指定するとドットが表示される", () => {
-			render(<Badge label="work" color="#4A90D9" testID="badge" onPress={() => {}} />);
-			expect(screen.getByTestId("badge-dot")).toBeInTheDocument();
+	describe("カラー pill", () => {
+		it("color を指定すると背景色が設定される", () => {
+			render(<Badge label="work" color="#AABBCC" testID="badge" onPress={() => {}} />);
+			expect(screen.getByTestId("badge")).toBeInTheDocument();
 		});
 
-		it("color を指定しないとドットが表示されない", () => {
+		it("color を指定しないと theme.surface が背景になる", () => {
 			render(<Badge label="すべて" testID="badge" onPress={() => {}} />);
-			expect(screen.queryByTestId("badge-dot")).toBeNull();
+			expect(screen.getByTestId("badge")).toBeInTheDocument();
 		});
 	});
 

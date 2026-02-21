@@ -37,7 +37,6 @@ export function CategoryFilterBar() {
 					label={category.name}
 					color={category.color}
 					selected={selectedCategories.has(category.name)}
-					selectedColor={category.color}
 					onPress={() => toggleCategory(category.name)}
 				/>
 			))}

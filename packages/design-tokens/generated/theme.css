@@ -1,4 +1,6 @@
 @theme {
+	--font-family-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+	--font-family-mono: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 	--spacing-0: 0px;
 	--spacing-1: 4px;
 	--spacing-2: 8px;
@@ -38,14 +40,14 @@
 	--color-surface: #e7e5eb;
 	--color-surfaceRaised: #ffffff;
 	--color-card: #ffffff;
-	--color-cardForeground: #1e1c22;
-	--color-text: #1e1c22;
+	--color-cardForeground: #2d2a32;
+	--color-text: #2d2a32;
 	--color-textMuted: #736c7f;
 	--color-textOnPrimary: #ffffff;
 	--color-primary: #25222a;
 	--color-primaryMuted: #f2f2f3;
-	--color-accent: #6e33cc;
-	--color-accentMuted: #eeeaf6;
+	--color-accent: #ccbae8;
+	--color-accentMuted: #efebf4;
 	--color-destructive: #d43535;
 	--color-destructiveMuted: #f7eded;
 	--color-success: #2c9664;
@@ -59,14 +61,14 @@
 	--color-icon: #736c7f;
 	--color-iconMuted: #a29ea9;
 	--color-overlay: rgba(0, 0, 0, 0.4);
-	--color-categoryRose: #cc3333;
-	--color-categoryTerracotta: #cc7333;
-	--color-categorySand: #cca633;
-	--color-categorySage: #33cc66;
-	--color-categoryTeal: #33bfcc;
-	--color-categorySlate: #3373cc;
-	--color-categoryMauve: #cc33b2;
-	--color-categoryBlush: #cc3359;
+	--color-categoryRose: #e8baba;
+	--color-categoryTerracotta: #e8cdba;
+	--color-categorySand: #e8ddba;
+	--color-categorySage: #bae8c9;
+	--color-categoryTeal: #bae4e8;
+	--color-categorySlate: #bacde8;
+	--color-categoryMauve: #e8bae0;
+	--color-categoryBlush: #e8bac6;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -75,14 +77,14 @@
 		--color-surface: #1e1d20;
 		--color-surfaceRaised: #292929;
 		--color-card: #28262c;
-		--color-cardForeground: #eaeaec;
-		--color-text: #eaeaec;
+		--color-cardForeground: #eaeaeb;
+		--color-text: #eaeaeb;
 		--color-textMuted: #938f99;
 		--color-textOnPrimary: #ffffff;
 		--color-primary: #e0dde3;
 		--color-primaryMuted: #262428;
-		--color-accent: #8a57db;
-		--color-accentMuted: #241f2e;
+		--color-accent: #b79ce2;
+		--color-accentMuted: #25212c;
 		--color-destructive: #e25a5a;
 		--color-destructiveMuted: #2e1f1f;
 		--color-success: #31c47f;
@@ -96,13 +98,13 @@
 		--color-icon: #938f99;
 		--color-iconMuted: #605e64;
 		--color-overlay: rgba(0, 0, 0, 0.7);
-		--color-categoryRose: #db5757;
-		--color-categoryTerracotta: #db8e57;
-		--color-categorySand: #dbba57;
-		--color-categorySage: #57db83;
-		--color-categoryTeal: #57d0db;
-		--color-categorySlate: #578edb;
-		--color-categoryMauve: #db57c5;
-		--color-categoryBlush: #db5778;
+		--color-categoryRose: #e29c9c;
+		--color-categoryTerracotta: #e2b99c;
+		--color-categorySand: #e2d19c;
+		--color-categorySage: #9ce2b4;
+		--color-categoryTeal: #9cdce2;
+		--color-categorySlate: #9cb9e2;
+		--color-categoryMauve: #e29cd7;
+		--color-categoryBlush: #e29cae;
 	}
 }

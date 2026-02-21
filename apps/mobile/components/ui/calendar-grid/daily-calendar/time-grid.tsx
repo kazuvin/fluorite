@@ -1,5 +1,6 @@
 import { colors, fontSize, parseNumeric, spacing } from "@fluorite/design-tokens";
 import { StyleSheet, Text, View, useColorScheme } from "react-native";
+import { textBase } from "../../../../constants/theme";
 
 const HOURS_IN_DAY = 24;
 const TIME_LABEL_WIDTH = parseNumeric(spacing["12"]); // 48px
@@ -47,6 +48,7 @@ const styles = StyleSheet.create({
 		alignItems: "flex-start",
 	},
 	label: {
+		...textBase,
 		fontSize: parseNumeric(fontSize.xs),
 		marginTop: -6,
 	},
