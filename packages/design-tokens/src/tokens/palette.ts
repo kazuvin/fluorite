@@ -45,7 +45,7 @@ export const lightPalette: PaletteTokens = {
 	primary: h({ h: 263, s: 10, l: 15 }),
 	primaryMuted: h({ h: 263, s: 5, l: 95 }),
 	// Accent (蛍石パープル — カテゴリと統一したパステルトーン)
-	accent: h({ h: 263, s: 50, l: 82 }),
+	accent: h({ h: 263, s: 55, l: 78 }),
 	accentMuted: h({ h: 263, s: 30, l: 94 }),
 	// Status
 	destructive: h({ h: 0, s: 65, l: 52 }),
@@ -76,7 +76,7 @@ const lightHSL: Record<keyof PaletteTokens, HSL | null> = {
 	textOnPrimary: null,
 	primary: { h: 263, s: 10, l: 15 },
 	primaryMuted: { h: 263, s: 5, l: 95 },
-	accent: { h: 263, s: 50, l: 82 },
+	accent: { h: 263, s: 55, l: 78 },
 	accentMuted: { h: 263, s: 30, l: 94 },
 	destructive: { h: 0, s: 65, l: 52 },
 	destructiveMuted: { h: 0, s: 40, l: 95 },
@@ -140,8 +140,8 @@ export function generateDarkPalette(_light: PaletteTokens): PaletteTokens {
 		}
 
 		if (key === "accent") {
-			// パステル accent: カテゴリと同じルール (s+5, l→75)
-			dark[key] = hslToHex({ h: hsl.h, s: Math.min(hsl.s + 5, 100), l: 75 });
+			// パステル accent: カテゴリと同じルール (s+5, l→71)
+			dark[key] = hslToHex({ h: hsl.h, s: Math.min(hsl.s + 5, 100), l: 71 });
 			continue;
 		}
 		if (key === "background") {

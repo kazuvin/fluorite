@@ -52,7 +52,7 @@ describe("lightPalette", () => {
 	});
 
 	it("accent はカテゴリと統一したパステルパープル", () => {
-		expect(lightPalette.accent).toBe(hslToHex({ h: 263, s: 50, l: 82 }));
+		expect(lightPalette.accent).toBe(hslToHex({ h: 263, s: 55, l: 78 }));
 	});
 
 	it("textOnPrimary は白固定", () => {

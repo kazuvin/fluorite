@@ -14,16 +14,16 @@ export type CategoryPalette = Record<CategoryColorName, string>;
 
 const h = hslToHex;
 
-// 淡いパステルに少し深みを加えた色（s:50, l:82 — accent と統一）
+// 淡いパステルに深みを加えた色（s:55, l:78 — accent と統一）
 const lightHSL: Record<CategoryColorName, HSL> = {
-	rose: { h: 0, s: 50, l: 82 },
-	terracotta: { h: 25, s: 50, l: 82 },
-	sand: { h: 45, s: 50, l: 82 },
-	sage: { h: 140, s: 50, l: 82 },
-	teal: { h: 185, s: 50, l: 82 },
-	slate: { h: 215, s: 50, l: 82 },
-	mauve: { h: 310, s: 50, l: 82 },
-	blush: { h: 345, s: 50, l: 82 },
+	rose: { h: 0, s: 55, l: 78 },
+	terracotta: { h: 25, s: 55, l: 78 },
+	sand: { h: 45, s: 55, l: 78 },
+	sage: { h: 140, s: 55, l: 78 },
+	teal: { h: 185, s: 55, l: 78 },
+	slate: { h: 215, s: 55, l: 78 },
+	mauve: { h: 310, s: 55, l: 78 },
+	blush: { h: 345, s: 55, l: 78 },
 };
 
 export const categoryPalette: CategoryPalette = Object.fromEntries(
@@ -32,7 +32,7 @@ export const categoryPalette: CategoryPalette = Object.fromEntries(
 
 /**
  * Dark テーマ用カテゴリーパレットを生成する。
- * ダーク背景でやや深めだが黒文字が読めるパステル (s+5, l→75)。
+ * ダーク背景でやや深めだが黒文字が読めるパステル (s+5, l→71)。
  */
 /** カテゴリ背景上のテキスト色（パステル背景に合うソフトダーク） */
 export const categoryForeground = hslToHex({ h: 263, s: 10, l: 35 });
@@ -44,7 +44,7 @@ export function generateDarkCategoryPalette(_light: CategoryPalette): CategoryPa
 			h({
 				h: hsl.h,
 				s: Math.min(hsl.s + 5, 100),
-				l: 75,
+				l: 71,
 			}),
 		]),
 	) as CategoryPalette;

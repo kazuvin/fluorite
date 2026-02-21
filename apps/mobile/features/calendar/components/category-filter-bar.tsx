@@ -47,7 +47,7 @@ export function CategoryFilterBar() {
 const styles = StyleSheet.create({
 	container: {
 		flexDirection: "row",
-		gap: parseNumeric(spacing[2]),
+		gap: parseNumeric(spacing[1]),
 		paddingHorizontal: parseNumeric(spacing[4]),
 		paddingVertical: parseNumeric(spacing[3]),
 	},

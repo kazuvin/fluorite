@@ -33,15 +33,15 @@ describe("categoryPalette", () => {
 		}
 	});
 
-	it("s:50, l:82 の淡いパステルに少し深み（黒文字が映える明るさ）", () => {
+	it("s:55, l:78 の淡いパステルに深み（黒文字が映える明るさ）", () => {
 		for (const value of Object.values(categoryPalette)) {
 			const r = Number.parseInt(value.slice(1, 3), 16);
 			const g = Number.parseInt(value.slice(3, 5), 16);
 			const b = Number.parseInt(value.slice(5, 7), 16);
 			const avg = (r + g + b) / 3;
-			// s:50, l:82 なので平均 RGB は 185〜225 の範囲
-			expect(avg, `${value} の明るさが範囲外`).toBeGreaterThan(185);
-			expect(avg, `${value} の明るさが範囲外`).toBeLessThan(225);
+			// s:55, l:78 なので平均 RGB は 175〜215 の範囲
+			expect(avg, `${value} の明るさが範囲外`).toBeGreaterThan(175);
+			expect(avg, `${value} の明るさが範囲外`).toBeLessThan(215);
 		}
 	});
 });
