@@ -1,5 +1,6 @@
 import { colors, parseNumeric, spacing } from "@fluorite/design-tokens";
-import { Pressable, StyleSheet, Text, useColorScheme } from "react-native";
+import { StyleSheet, Text, useColorScheme } from "react-native";
+import { AnimatedPressable } from "../../../../components/ui/animated-pressable";
 import { textBase } from "../../../../constants/theme";
 
 type TodayFabButtonProps = {
@@ -11,18 +12,14 @@ export function TodayFabButton({ onPress }: TodayFabButtonProps) {
 	const theme = colors[scheme];
 
 	return (
-		<Pressable
+		<AnimatedPressable
 			testID="today-fab"
 			accessibilityRole="button"
 			onPress={onPress}
-			style={({ pressed }) => [
-				styles.fab,
-				{ backgroundColor: theme.surfaceRaised },
-				pressed && styles.pressed,
-			]}
+			style={[styles.fab, { backgroundColor: theme.surfaceRaised }]}
 		>
 			<Text style={[styles.label, { color: theme.text }]}>今日</Text>
-		</Pressable>
+		</AnimatedPressable>
 	);
 }
 
@@ -47,8 +44,5 @@ const styles = StyleSheet.create({
 		...textBase,
 		fontSize: 16,
 		fontWeight: "600",
-	},
-	pressed: {
-		opacity: 0.8,
 	},
 });

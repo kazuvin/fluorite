@@ -1,5 +1,6 @@
 import { categoryForeground, colors, parseNumeric, spacing } from "@fluorite/design-tokens";
-import { Pressable, StyleSheet, useColorScheme } from "react-native";
+import { StyleSheet, useColorScheme } from "react-native";
+import { AnimatedPressable } from "../../../../components/ui/animated-pressable";
 import { IconSymbol } from "../../../../components/ui/icon-symbol";
 
 type AddEventFabButtonProps = {
@@ -11,18 +12,14 @@ export function AddEventFabButton({ onPress }: AddEventFabButtonProps) {
 	const theme = colors[scheme];
 
 	return (
-		<Pressable
+		<AnimatedPressable
 			testID="add-event-fab"
 			accessibilityRole="button"
 			onPress={onPress}
-			style={({ pressed }) => [
-				styles.fab,
-				{ backgroundColor: theme.accent },
-				pressed && styles.pressed,
-			]}
+			style={[styles.fab, { backgroundColor: theme.accent }]}
 		>
 			<IconSymbol name="plus" size={20} color={categoryForeground} />
-		</Pressable>
+		</AnimatedPressable>
 	);
 }
 
@@ -41,8 +38,5 @@ const styles = StyleSheet.create({
 		shadowOffset: { width: 0, height: 2 },
 		shadowOpacity: 0.25,
 		shadowRadius: 4,
-	},
-	pressed: {
-		opacity: 0.8,
 	},
 });

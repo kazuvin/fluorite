@@ -6,8 +6,9 @@ import {
 	radius,
 	spacing,
 } from "@fluorite/design-tokens";
-import { Pressable, StyleSheet, Text, View, useColorScheme } from "react-native";
+import { StyleSheet, Text, View, useColorScheme } from "react-native";
 import { textBase } from "../../../constants/theme";
+import { AnimatedPressable } from "../animated-pressable";
 
 const BORDER_WIDTH = 1.5;
 const BORDER_GAP = 2;
@@ -27,7 +28,7 @@ export function Badge({ label, selected = false, color, onPress, testID }: Badge
 	const bgColor = color ?? theme.text;
 
 	return (
-		<Pressable
+		<AnimatedPressable
 			testID={testID}
 			accessibilityRole="button"
 			aria-selected={selected}
@@ -39,7 +40,7 @@ export function Badge({ label, selected = false, color, onPress, testID }: Badge
 					{label}
 				</Text>
 			</View>
-		</Pressable>
+		</AnimatedPressable>
 	);
 }
 

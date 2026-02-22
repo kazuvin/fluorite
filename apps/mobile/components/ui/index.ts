@@ -1,3 +1,4 @@
+export * from "./animated-pressable";
 export * from "./badge";
 export * from "./button";
 export * from "./calendar-grid";

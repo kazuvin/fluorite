@@ -1,5 +1,6 @@
 import { colors, parseNumeric, spacing } from "@fluorite/design-tokens";
-import { Pressable, StyleSheet, useColorScheme } from "react-native";
+import { StyleSheet, useColorScheme } from "react-native";
+import { AnimatedPressable } from "../../../../components/ui/animated-pressable";
 import { IconSymbol } from "../../../../components/ui/icon-symbol";
 
 type DeselectDateFabButtonProps = {
@@ -11,18 +12,14 @@ export function DeselectDateFabButton({ onPress }: DeselectDateFabButtonProps) {
 	const theme = colors[scheme];
 
 	return (
-		<Pressable
+		<AnimatedPressable
 			testID="deselect-date-fab"
 			accessibilityRole="button"
 			onPress={onPress}
-			style={({ pressed }) => [
-				styles.fab,
-				{ backgroundColor: theme.surfaceRaised },
-				pressed && styles.pressed,
-			]}
+			style={[styles.fab, { backgroundColor: theme.surfaceRaised }]}
 		>
 			<IconSymbol name="xmark" size={20} color={theme.icon} />
-		</Pressable>
+		</AnimatedPressable>
 	);
 }
 
@@ -41,8 +38,5 @@ const styles = StyleSheet.create({
 		shadowOffset: { width: 0, height: 2 },
 		shadowOpacity: 0.25,
 		shadowRadius: 4,
-	},
-	pressed: {
-		opacity: 0.8,
 	},
 });

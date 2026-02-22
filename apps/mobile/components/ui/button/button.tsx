@@ -1,14 +1,8 @@
 import { colors, parseNumeric, radius, spacing } from "@fluorite/design-tokens";
 import type { ReactNode } from "react";
 import { useMemo } from "react";
-import {
-	ActivityIndicator,
-	Pressable,
-	StyleSheet,
-	View,
-	type ViewStyle,
-	useColorScheme,
-} from "react-native";
+import { ActivityIndicator, StyleSheet, View, type ViewStyle, useColorScheme } from "react-native";
+import { AnimatedPressable } from "../animated-pressable";
 
 import { ButtonContext, type ButtonContextValue } from "./button-context";
 
@@ -49,26 +43,19 @@ export function Button({
 
 	return (
 		<ButtonContext.Provider value={ctx}>
-			<Pressable
+			<AnimatedPressable
 				accessibilityRole="button"
 				disabled={isDisabled}
 				aria-disabled={isDisabled}
 				onPress={isDisabled ? undefined : onPress}
-				style={({ pressed }) => [
-					styles.base,
-					sizeStyle,
-					variantStyle,
-					pressed && styles.pressed,
-					isDisabled && styles.disabled,
-					style,
-				]}
+				style={[styles.base, sizeStyle, variantStyle, isDisabled && styles.disabled, style]}
 			>
 				{loading ? (
 					<ActivityIndicator testID="button-loading" size="small" color={spinnerColor} />
 				) : (
 					<View style={styles.content}>{children}</View>
 				)}
-			</Pressable>
+			</AnimatedPressable>
 		</ButtonContext.Provider>
 	);
 }
@@ -113,9 +100,6 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		gap: parseNumeric(spacing[2]),
-	},
-	pressed: {
-		opacity: 0.8,
 	},
 	disabled: {
 		opacity: 0.5,
