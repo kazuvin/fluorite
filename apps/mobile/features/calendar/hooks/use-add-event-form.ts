@@ -25,6 +25,7 @@ import {
 	setTitleAtom,
 	startTimeValueAtom,
 	startValueAtom,
+	submitFormAtom,
 	switchDatePickerTargetAtom,
 	titleValueAtom,
 	visibleValueAtom,
@@ -55,6 +56,7 @@ export type AddEventFormUI = {
 export type AddEventFormActions = {
 	handleOpen: () => void;
 	handleClose: () => void;
+	handleSubmit: () => void;
 	setTitle: (text: string) => void;
 	setAllDay: (value: boolean) => void;
 	setStartTime: (value: string) => void;
@@ -104,8 +106,11 @@ export function useAddEventForm() {
 	const prevMonth = useSetAtom(prevMonthAtom);
 	const nextMonth = useSetAtom(nextMonthAtom);
 
+	const submitForm = useSetAtom(submitFormAtom);
+
 	const handleOpen = useCallback(() => openForm(), [openForm]);
 	const handleClose = useCallback(() => closeForm(), [closeForm]);
+	const handleSubmit = useCallback(() => submitForm(), [submitForm]);
 
 	const handleDateTriggerPress = useCallback(
 		(target: "start" | "end") => {
@@ -173,6 +178,7 @@ export function useAddEventForm() {
 		actions: {
 			handleOpen,
 			handleClose,
+			handleSubmit,
 			setTitle,
 			setAllDay,
 			setStartTime,

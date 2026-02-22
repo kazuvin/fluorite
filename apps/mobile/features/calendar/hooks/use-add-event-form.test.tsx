@@ -1,7 +1,16 @@
+import { CategoryRegistry } from "@fluorite/core";
 import { act, renderHook } from "@testing-library/react";
+import { atom } from "jotai";
 import { Provider, createStore } from "jotai";
 import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("../../vault/stores/vault-atoms", () => ({
+	vaultNotesValueAtom: atom([]),
+	vaultCategoryRegistryValueAtom: atom(new CategoryRegistry()),
+	addNoteToVaultAtom: atom(null, async () => {}),
+}));
+
 import { resetFormAtom } from "../stores/add-event-form-atoms";
 import { useAddEventForm } from "./use-add-event-form";
 

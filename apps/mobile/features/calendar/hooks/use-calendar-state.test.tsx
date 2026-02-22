@@ -1,7 +1,15 @@
+import { CategoryRegistry } from "@fluorite/core";
 import { renderHook } from "@testing-library/react";
+import { atom } from "jotai";
 import { Provider, createStore } from "jotai";
 import type { ReactNode } from "react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("../../vault/stores/vault-atoms", () => ({
+	vaultNotesValueAtom: atom([]),
+	vaultCategoryRegistryValueAtom: atom(new CategoryRegistry()),
+}));
+
 import { setViewingMonthAtom } from "../stores/calendar-atoms";
 import { useCalendarState } from "./use-calendar-state";
 

@@ -1,4 +1,6 @@
+import type { EventNote } from "@fluorite/core";
 import { atom } from "jotai";
+import { addNoteToVaultAtom } from "../../vault/stores/vault-atoms";
 import type { CalendarDay } from "../utils/calendar-grid-utils";
 import { generateCalendarGrid } from "../utils/calendar-grid-utils";
 import { getTodayString, padGrid } from "../utils/calendar-utils";
@@ -154,4 +156,28 @@ export const nextMonthAtom = atom(null, (get, set) => {
 	} else {
 		set(displayMonthAtom, month + 1);
 	}
+});
+
+export const submitFormAtom = atom(null, async (get, set) => {
+	const title = get(titleAtom);
+	if (!title) return;
+
+	const start = get(startAtom);
+	const end = get(endAtom) || start;
+	const allDay = get(allDayAtom);
+	const startTime = get(startTimeAtom);
+	const endTime = get(endTimeAtom);
+
+	const note: EventNote = { title, start, end };
+
+	if (allDay) {
+		note.allDay = true;
+	}
+
+	if (!allDay && startTime) {
+		note.time = endTime ? { start: startTime, end: endTime } : { start: startTime };
+	}
+
+	await set(addNoteToVaultAtom, note);
+	set(closeFormAtom);
 });

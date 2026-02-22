@@ -1,7 +1,23 @@
 import { categoryPalette } from "@fluorite/design-tokens";
-import { createStore } from "jotai";
-import { describe, expect, it } from "vitest";
+import { atom, createStore } from "jotai";
+import { describe, expect, it, vi } from "vitest";
 import { MOCK_EVENT_NOTES } from "../__fixtures__/event-notes";
+
+vi.mock("../../vault/stores/vault-atoms", async () => {
+	const { CategoryRegistry } = await import("@fluorite/core");
+	const { categoryPalette: palette } = await import("@fluorite/design-tokens");
+	const { atom: a } = await import("jotai");
+	const { MOCK_EVENT_NOTES: notes } = await import("../__fixtures__/event-notes");
+	const registry = new CategoryRegistry();
+	registry.set("work", palette.slate);
+	registry.set("personal", palette.sage);
+	registry.set("holiday", palette.rose);
+	return {
+		vaultNotesValueAtom: a(notes),
+		vaultCategoryRegistryValueAtom: a(registry),
+	};
+});
+
 import {
 	baseMonthValueAtom,
 	baseYearValueAtom,
@@ -44,9 +60,9 @@ describe("calendar-atoms", () => {
 		expect(store.get(viewingMonthValueAtom)).toBe(3);
 	});
 
-	it("初期状態: eventNotesValueAtom がモックデータを返す", () => {
+	it("初期状態: eventNotesValueAtom が Vault のデータを返す", () => {
 		const store = createStore();
-		expect(store.get(eventNotesValueAtom)).toBe(MOCK_EVENT_NOTES);
+		expect(store.get(eventNotesValueAtom)).toEqual(MOCK_EVENT_NOTES);
 	});
 
 	it("calendarEventsValueAtom が eventNotes から CalendarEvent[] に変換される", () => {

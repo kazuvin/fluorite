@@ -1,7 +1,8 @@
-import type { CategoryRegistry } from "@fluorite/core";
 import { atom } from "jotai";
-import { MOCK_CATEGORY_REGISTRY } from "../__fixtures__/category-registry";
-import { MOCK_EVENT_NOTES } from "../__fixtures__/event-notes";
+import {
+	vaultCategoryRegistryValueAtom,
+	vaultNotesValueAtom,
+} from "../../vault/stores/vault-atoms";
 import { eventNotesToCalendarEvents } from "../utils/event-layout";
 
 // --- Private primitive atoms ---
@@ -9,8 +10,8 @@ const baseYearAtom = atom(new Date().getFullYear());
 const baseMonthAtom = atom(new Date().getMonth());
 const viewingYearAtom = atom(new Date().getFullYear());
 const viewingMonthAtom = atom(new Date().getMonth());
-const eventNotesAtom = atom(MOCK_EVENT_NOTES);
-const categoryRegistryAtom = atom<CategoryRegistry>(MOCK_CATEGORY_REGISTRY);
+const eventNotesAtom = atom((get) => get(vaultNotesValueAtom));
+const categoryRegistryAtom = atom((get) => get(vaultCategoryRegistryValueAtom));
 
 const selectedCategoriesAtom = atom<Set<string>>(new Set());
 

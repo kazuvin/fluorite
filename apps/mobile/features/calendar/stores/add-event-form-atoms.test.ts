@@ -1,5 +1,10 @@
-import { createStore } from "jotai";
+import { atom, createStore } from "jotai";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("../../vault/stores/vault-atoms", () => ({
+	vaultNotesValueAtom: atom([]),
+	addNoteToVaultAtom: atom(null, async () => {}),
+}));
 import {
 	allDayValueAtom,
 	closeFormAtom,

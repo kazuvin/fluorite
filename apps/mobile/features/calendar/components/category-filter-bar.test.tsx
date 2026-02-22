@@ -1,7 +1,22 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { Provider, createStore } from "jotai";
 import type { ReactNode } from "react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("../../vault/stores/vault-atoms", async () => {
+	const { CategoryRegistry } = await import("@fluorite/core");
+	const { categoryPalette: palette } = await import("@fluorite/design-tokens");
+	const { atom: a } = await import("jotai");
+	const registry = new CategoryRegistry();
+	registry.set("work", palette.slate);
+	registry.set("personal", palette.sage);
+	registry.set("holiday", palette.rose);
+	return {
+		vaultNotesValueAtom: a([]),
+		vaultCategoryRegistryValueAtom: a(registry),
+	};
+});
+
 import { categoryRegistryValueAtom, selectedCategoriesValueAtom } from "../stores/calendar-atoms";
 import { CategoryFilterBar } from "./category-filter-bar";
 
